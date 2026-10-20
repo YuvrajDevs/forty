@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
-import { billingAvailable, buy, loadOffers, refreshEntitlement } from '../../lib/billing';
+import { billingAvailable, buy, loadOffers, previewBuild, refreshEntitlement } from '../../lib/billing';
 import type { Offers } from '../../lib/billing';
 import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { addActiveDays, iso } from '../../lib/schedule';
@@ -76,6 +76,8 @@ export default function Paywall() {
     // Preview builds (Expo Go) have no Google Play, so just let the person in.
     if (!billingAvailable) return enter();
     const offer = offers?.[plan];
+    // Debug and test builds have no Play offers; let them through. Store builds never do.
+    if (!offer && (__DEV__ || previewBuild)) return enter();
     if (!offer) return setMessage('Prices could not be loaded. Check your connection and try again.');
     setBusy(true);
     const result = await buy(offer);

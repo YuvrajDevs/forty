@@ -14,6 +14,9 @@ export type BuyResult = 'purchased' | 'pending' | 'cancelled' | 'error';
 const inExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 export const billingAvailable = Platform.OS === 'android' && !inExpoGo;
 
+/** Sideloaded test builds (made with EXPO_PUBLIC_PREVIEW=1) skip the purchase so the app can be tried without Google Play. */
+export const previewBuild = process.env.EXPO_PUBLIC_PREVIEW === '1';
+
 type Iap = typeof import('expo-iap');
 let iap: Iap | null = null;
 let connected = false;

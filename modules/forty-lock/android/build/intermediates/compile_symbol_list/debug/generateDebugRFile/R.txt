@@ -1,0 +1,2 @@
+int string forty_lock_service_description 0x0
+int xml forty_lock_service 0x0

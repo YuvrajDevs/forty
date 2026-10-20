@@ -1,0 +1,3 @@
+expo.modules.fortylock
+string forty_lock_service_description
+xml forty_lock_service

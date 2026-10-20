@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="forty_lock_service_description">FortyBible notices which app opens, so it can ask you to read first. It does not read or record anything on your screen.</string>
+</resources>

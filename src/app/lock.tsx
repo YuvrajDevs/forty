@@ -7,6 +7,7 @@ import { Button } from '../components/Button';
 import { LOCKABLE_APPS } from '../lib/apps';
 import { emergencyUnlock, goHome, openApp } from '../lib/lock';
 import { useOnboarding } from '../lib/onboarding';
+import { useApps } from '../lib/useApps';
 import { ensureDayPlan, getToday, skipToday } from '../lib/progress';
 import { colors, fonts, radius, spacing } from '../theme';
 
@@ -17,7 +18,8 @@ export default function Lock() {
   const t = getToday(s);
   const pending = t.active ? t.readings.length - t.doneCount : 0;
   const next = t.nextIndex >= 0 ? t.readings[t.nextIndex] : undefined;
-  const name = LOCKABLE_APPS.find((a) => a.id === pkg)?.name ?? 'This app';
+  const info = useApps().find((a) => a.id === pkg);
+  const name = info?.name ?? LOCKABLE_APPS.find((a) => a.id === pkg)?.name ?? 'This app';
 
   useEffect(() => {
     ensureDayPlan();
@@ -51,7 +53,7 @@ export default function Lock() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
-        <AppIcon id={pkg} name={name} size={72} />
+        <AppIcon id={pkg} icon={info?.icon} name={name} size={72} />
         <Text style={styles.eyebrow}>{name.toUpperCase()} IS LOCKED</Text>
         <Text style={styles.title}>Read first.</Text>
         <View style={styles.card}>
