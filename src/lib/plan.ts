@@ -57,7 +57,7 @@ export function labelFor(chapters: Chapter[]): string {
   return parts.join(', ');
 }
 
-function makeReading(chapters: Chapter[]): Reading {
+export function makeReading(chapters: Chapter[]): Reading {
   const words = chapters.reduce((sum, c) => sum + c.words, 0);
   return { label: labelFor(chapters), chapters, words, minutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)) };
 }
@@ -129,23 +129,4 @@ export function finishDate(start: Date, days: number): Date {
   const d = new Date(start.getFullYear(), start.getMonth(), start.getDate());
   d.setDate(d.getDate() + Math.max(1, Math.floor(days)) - 1);
   return d;
-}
-
-export function daysBehind(startedOn: Date, today: Date, chaptersDone: number, chapters: Chapter[], days: number): number {
-  const msPerDay = 86_400_000;
-  const elapsed = Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
-    Date.UTC(startedOn.getFullYear(), startedOn.getMonth(), startedOn.getDate())) / msPerDay);
-  const plan = buildPlan(chapters, days);
-  let expected = 0;
-  for (let i = 0; i < Math.min(elapsed, plan.length); i++) {
-    expected += plan[i].readings.reduce((n, r) => n + r.chapters.length, 0);
-  }
-  let behind = 0;
-  let cum = 0;
-  for (let i = 0; i < Math.min(elapsed, plan.length); i++) {
-    cum += plan[i].readings.reduce((n, r) => n + r.chapters.length, 0);
-    if (cum > chaptersDone) behind++;
-  }
-  void expected;
-  return behind;
 }

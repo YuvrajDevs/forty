@@ -30,9 +30,8 @@ export default function Paywall() {
       completed: true,
       startedOn: iso(new Date()),
       deadline: iso(addActiveDays(new Date(), days, lockDays)),
-      chaptersDone: 0,
-      baseline: null,
-      doneToday: null,
+      dayPlan: null,
+      readChapters: [],
       doneDates: [],
     });
     router.replace('/today');

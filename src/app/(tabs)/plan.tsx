@@ -31,12 +31,12 @@ export default function Plan() {
 
   const changeScope = (scope: ScopeId) => {
     if (scope === s.scope) return;
-    Alert.alert('Change your plan?', `This starts ${SCOPES.find((x) => x.id === scope)?.title} from the beginning. Your streak is kept.`, [
+    Alert.alert('Change your plan?', `Chapters you have already read count towards it, and your streak is kept.`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Change plan',
         onPress: () => {
-          setOnboarding({ scope, chaptersDone: 0, baseline: null, doneToday: null, startedOn: iso(new Date()) });
+          setOnboarding({ scope, dayPlan: null });
           setReadingDays(Math.min(s.days, 365));
         },
       },

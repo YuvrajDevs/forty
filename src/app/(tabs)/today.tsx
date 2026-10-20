@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { useOnboarding } from '../../lib/onboarding';
-import { getToday } from '../../lib/progress';
+import { ensureDayPlan, getToday } from '../../lib/progress';
 import { fromIso, streak } from '../../lib/schedule';
 import { SCOPES } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
@@ -15,14 +16,17 @@ const greeting = () => {
 
 export default function Today() {
   const s = useOnboarding();
+  useEffect(() => {
+    ensureDayPlan();
+  }, []);
   const t = getToday(s);
   const title = SCOPES.find((x) => x.id === s.scope)?.title ?? '';
   const now = new Date();
   const run = streak(s.doneDates, s.lockDays, now, s.startedOn ? fromIso(s.startedOn) : now);
-  const totalChapters = t.chapters.length;
-  const done = s.chaptersDone;
+  const totalChapters = t.chaptersRead + t.unreadChapters.length;
+  const done = t.chaptersRead;
   const pct = totalChapters ? (done / totalChapters) * 100 : 0;
-  const allDone = t.readings.length > 0 && t.doneCount >= t.readings.length;
+  const allDone = t.readings.length > 0 && t.nextIndex === -1;
   const date = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
@@ -57,8 +61,8 @@ export default function Today() {
           <Text style={styles.empty}>Today is a rest day. Your apps stay open. You can still read in the Read tab.</Text>
         ) : (
           t.readings.map((r, i) => {
-            const isDone = i < t.doneCount;
-            const isNext = i === t.doneCount;
+            const isDone = t.done[i];
+            const isNext = i === t.nextIndex;
             return (
               <Pressable
                 key={i}

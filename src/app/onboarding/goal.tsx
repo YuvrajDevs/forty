@@ -19,7 +19,7 @@ export default function Goal() {
           <Option
             key={o.id}
             label={o.title}
-            hint={`${chapters.length} chapters · ${hoursLabel(summarize(chapters, 1).totalMinutes)}`}
+            hint={`${chapters.length.toLocaleString('en-US')} chapters · ${hoursLabel(summarize(chapters, 1).totalMinutes)}`}
             selected={scope === o.id}
             onPress={() => setOnboarding({ scope: o.id })}
           />

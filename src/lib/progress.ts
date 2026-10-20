@@ -1,99 +1,73 @@
 import { getOnboarding, setOnboarding } from './onboarding';
 import type { OnboardingState } from './onboarding';
-import { replan, SESSION_WORDS, summarize } from './plan';
-import type { Chapter, Reading } from './plan';
-import { activeDaysBetween, addActiveDays, fromIso, iso, isActive } from './schedule';
+import { SESSION_WORDS, summarize } from './plan';
+import { addActiveDays, iso } from './schedule';
 import { chaptersFor } from './scopes';
+import { computeToday, freshReadings, key } from './today';
+import type { Today } from './today';
 
-export type Today = {
-  date: string;
-  chapters: Chapter[];
-  baseline: number;
-  readings: Reading[];
-  doneCount: number;
-  daysLeft: number;
-  active: boolean;
-  finished: boolean;
-};
+export type { Today };
 
-export function getToday(s: OnboardingState, now = new Date()): Today {
+export const getToday = (s: OnboardingState, now = new Date()): Today => computeToday(chaptersFor(s.scope), s, now);
+
+/** Saves today's list the first time it is needed, so it does not shift as chapters get read. */
+export function ensureDayPlan() {
+  const s = getOnboarding();
+  const now = new Date();
   const date = iso(now);
-  const chapters = chaptersFor(s.scope);
-  const baseline = s.baseline?.date === date ? s.baseline.chapters : s.chaptersDone;
-  const doneCount = s.doneToday?.date === date ? s.doneToday.count : 0;
-  const deadline = s.deadline ? fromIso(s.deadline) : now;
-  const daysLeft = Math.max(1, activeDaysBetween(now, deadline, s.lockDays));
-  const active = isActive(now, s.lockDays);
-  const finished = baseline >= chapters.length;
-  const readings = active && !finished ? replan(chapters, baseline, daysLeft)[0]?.readings ?? [] : [];
-  return { date, chapters, baseline, readings, doneCount, daysLeft, active, finished };
+  if (s.dayPlan?.date === date) return;
+  const readings = freshReadings(chaptersFor(s.scope), s, now);
+  setOnboarding({ dayPlan: { date, readings: readings.map((r) => r.chapters.map(key)) } });
 }
 
-export function completeNextReading() {
+/** Today's list is rebuilt after a pace change, unless some of it has already been read. */
+function refreshDayPlan() {
   const s = getOnboarding();
-  const t = getToday(s);
-  if (t.doneCount >= t.readings.length) return;
-  const r = t.readings[t.doneCount];
-  const allDone = t.doneCount + 1 === t.readings.length;
   const read = new Set(s.readChapters);
-  r.chapters.forEach((c) => read.add(`${c.bookId}:${c.chapter}`));
-  setOnboarding({
-    baseline: { date: t.date, chapters: t.baseline },
-    doneToday: { date: t.date, count: t.doneCount + 1 },
-    chaptersDone: s.chaptersDone + r.chapters.length,
-    doneDates: allDone && !s.doneDates.includes(t.date) ? [...s.doneDates, t.date] : s.doneDates,
-    readChapters: [...read],
-  });
+  if (s.dayPlan && !s.dayPlan.readings.flat().some((k) => read.has(k))) setOnboarding({ dayPlan: null });
 }
 
 /**
- * Marks a chapter read from the Read tab. If that finishes the chapters of today's next
- * planned reading, the reading counts as completed too.
+ * Marks chapters read, from the reader or from the Read tab. Any reading counts for the day's
+ * streak, and a planned reading is done once all of its chapters are read.
  */
-export function markChapterRead(bookId: string, chapter: number) {
-  const key = `${bookId}:${chapter}`;
+export function markChaptersRead(keys: string[]) {
+  ensureDayPlan();
   const s = getOnboarding();
-  if (!s.readChapters.includes(key)) setOnboarding({ readChapters: [...s.readChapters, key] });
-  for (let i = 0; i < 12; i++) {
-    const cur = getOnboarding();
-    const t = getToday(cur);
-    const next = t.readings[t.doneCount];
-    if (!next || !next.chapters.every((c) => cur.readChapters.includes(`${c.bookId}:${c.chapter}`))) break;
-    completeNextReading();
-  }
+  const date = iso(new Date());
+  setOnboarding({
+    readChapters: [...new Set([...s.readChapters, ...keys])],
+    doneDates: s.doneDates.includes(date) ? s.doneDates : [...s.doneDates, date],
+  });
 }
 
-/** Words left from where today started. */
-const remaining = (s: OnboardingState) => {
-  const t = getToday(s);
-  return t.chapters.slice(t.baseline);
-};
+const unreadWords = (s: OnboardingState) => getToday(s).unreadChapters.reduce((sum, c) => sum + c.words, 0);
 
 /** Sets the finish date from a number of reading days counted from today. */
 export function setReadingDays(n: number, mask = getOnboarding().lockDays) {
   setOnboarding({ lockDays: mask, deadline: iso(addActiveDays(new Date(), Math.max(1, n), mask)) });
+  refreshDayPlan();
 }
 
 /** Sets the pace as readings per day; the finish date follows. */
 export function setReadingsPerDay(r: number) {
   const s = getOnboarding();
-  const words = remaining(s).reduce((sum, c) => sum + c.words, 0);
-  const days = Math.max(1, Math.ceil(words / (r * SESSION_WORDS)));
+  const days = Math.max(1, Math.ceil(unreadWords(s) / (r * SESSION_WORDS)));
   setOnboarding({ deadline: iso(addActiveDays(new Date(), days, s.lockDays)) });
+  refreshDayPlan();
 }
 
 /** Changes lock days but keeps today's pace, so the finish date moves instead. */
 export function setLockDays(mask: boolean[]) {
   const s = getOnboarding();
   if (!mask.some(Boolean)) return;
-  const t = getToday(s);
-  const locks = summarize(remaining(s), t.daysLeft).locksPerDay;
-  const words = remaining(s).reduce((sum, c) => sum + c.words, 0);
-  const days = Math.max(1, Math.ceil(words / (locks * SESSION_WORDS)));
+  const locks = currentLocksPerDay(s);
+  const days = Math.max(1, Math.ceil(unreadWords(s) / (locks * SESSION_WORDS)));
   setOnboarding({ lockDays: mask, deadline: iso(addActiveDays(new Date(), days, mask)) });
+  refreshDayPlan();
 }
 
 export function currentLocksPerDay(s: OnboardingState): number {
   const t = getToday(s);
-  return summarize(t.chapters.slice(t.baseline), t.daysLeft).locksPerDay;
+  return summarize(t.unreadChapters, t.daysLeft).locksPerDay;
 }

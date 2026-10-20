@@ -31,7 +31,7 @@ export default function Notifications() {
       secondary={{ label: 'Not now', onPress: () => router.push('/onboarding/journey') }}
     >
       <Text style={styles.body}>
-        One quiet nudge a day, at a time that suits you. You can change or turn it off in Settings whenever you like.
+        One quiet nudge a day. You can turn it off any time in your phone's notification settings.
       </Text>
     </Quiz>
   );

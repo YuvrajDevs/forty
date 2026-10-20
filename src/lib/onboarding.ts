@@ -24,9 +24,8 @@ export type OnboardingState = {
   /** Chapters read, as "bookId:chapter". */
   readChapters: string[];
   deadline: string | null;
-  chaptersDone: number;
-  baseline: { date: string; chapters: number } | null;
-  doneToday: { date: string; count: number } | null;
+  /** Today's readings as "bookId:chapter" keys, fixed at the start of the day so they stay stable. */
+  dayPlan: { date: string; readings: string[][] } | null;
   doneDates: string[];
 };
 
@@ -51,9 +50,7 @@ const initial: OnboardingState = {
   readerFontSize: 20,
   readChapters: [],
   deadline: null,
-  chaptersDone: 0,
-  baseline: null,
-  doneToday: null,
+  dayPlan: null,
   doneDates: [],
 };
 

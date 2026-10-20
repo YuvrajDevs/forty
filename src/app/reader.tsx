@@ -7,7 +7,8 @@ import { Button } from '../components/Button';
 import { BOOKS } from '../data/books';
 import { WEB } from '../data/web';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
-import { completeNextReading, getToday, markChapterRead } from '../lib/progress';
+import { getToday, markChaptersRead } from '../lib/progress';
+import { key } from '../lib/today';
 import { colors, fonts, spacing } from '../theme';
 
 type Ref = { bookId: string; bookName: string; chapter: number };
@@ -42,7 +43,7 @@ export default function Reader() {
   const size = s.readerFontSize;
 
   const today = getToday(s);
-  const reading = plan ? today.readings[today.doneCount] : undefined;
+  const reading = plan && today.nextIndex >= 0 ? today.readings[today.nextIndex] : undefined;
   const book = BOOKS.find((b) => b.id === params.book);
 
   const refs: Ref[] = useMemo(() => {
@@ -110,7 +111,7 @@ export default function Reader() {
             label={atEnd && waited ? "I've read this" : atEnd ? 'Take your time' : 'Keep reading'}
             disabled={!(atEnd && waited)}
             onPress={() => {
-              completeNextReading();
+              if (reading) markChaptersRead(reading.chapters.map(key));
               router.back();
             }}
           />
@@ -125,7 +126,7 @@ export default function Reader() {
                 variant={isRead ? 'done' : 'primary'}
                 label={isRead ? 'Read ✓' : 'Read'}
                 disabled={isRead}
-                onPress={() => markChapterRead(book.id, freeChapter)}
+                onPress={() => markChaptersRead([`${book.id}:${freeChapter}`])}
               />
             </View>
             <View style={{ flex: 1 }}>
