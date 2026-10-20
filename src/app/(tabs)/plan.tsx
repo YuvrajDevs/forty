@@ -1,3 +1,4 @@
+import Slider from '@react-native-community/slider';
 import { router } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -105,13 +106,30 @@ export default function Plan() {
             <Stepper value={hourLabel(s.lockEndHour)} onMinus={() => step('lockEndHour', -1)} onPlus={() => step('lockEndHour', 1)} />
           </View>
         </View>
-        <Text style={styles.label}>Apps stay open after a reading for</Text>
-        <View style={styles.chips}>
-          {([30, 60] as const).map((m) => (
-            <Pressable key={m} onPress={() => setOnboarding({ unlockMinutes: m })} style={[styles.chip, s.unlockMinutes === m && styles.chipOn]}>
-              <Text style={styles.chipText}>{m} minutes</Text>
-            </Pressable>
-          ))}
+        <View style={[styles.card, { marginTop: 12 }]}>
+          <View style={styles.stepRow}>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>Time between readings</Text>
+            <Text style={styles.gapValue}>{s.gapHours} {s.gapHours === 1 ? 'hour' : 'hours'}</Text>
+          </View>
+          <Slider
+            style={{ marginTop: 8 }}
+            minimumValue={1}
+            maximumValue={12}
+            step={1}
+            value={s.gapHours}
+            onValueChange={(v) => setOnboarding({ gapHours: v })}
+            minimumTrackTintColor={colors.gold}
+            maximumTrackTintColor={colors.border}
+            thumbTintColor={colors.gold}
+            accessibilityLabel="Hours between readings"
+          />
+          <View style={styles.sliderEnds}>
+            <Text style={styles.cardHint}>1 hr</Text>
+            <Text style={styles.cardHint}>12 hrs</Text>
+          </View>
+          <Text style={[styles.cardHint, { marginTop: 8 }]}>
+            Your first reading appears when you first open a locked app. The next one comes at least this long after you finish.
+          </Text>
         </View>
 
         <Text style={styles.section}>Change plan</Text>
@@ -164,6 +182,8 @@ const styles = StyleSheet.create({
   stepRow: { flexDirection: 'row', alignItems: 'center' },
   cardTitle: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
   cardHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
+  gapValue: { fontFamily: fonts.semibold, fontSize: 16, color: colors.gold },
+  sliderEnds: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 6 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   stepBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' },
   stepBtnText: { fontFamily: fonts.medium, fontSize: 20, lineHeight: 24, color: colors.text },

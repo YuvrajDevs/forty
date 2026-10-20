@@ -32,17 +32,25 @@ const meta = [];
 
 for (const [id, name, testament] of BOOKS) {
   const rows = await (await fetch(`${BASE}${id}.json`)).json();
+  // Verse text keeps light structure for readability: "\u00b6" starts a paragraph or stanza,
+  // and a leading "\n" starts a new line of poetry.
   const chapters = [];
+  let pendingBreak = false;
   for (const r of rows) {
+    if (r.type === 'paragraph start' || r.type === 'stanza start') pendingBreak = true;
     if (r.type !== 'paragraph text' && r.type !== 'line text') continue;
     const c = r.chapterNumber - 1;
     const v = r.verseNumber - 1;
     chapters[c] ??= [];
-    chapters[c][v] = ((chapters[c][v] ?? '') + ' ' + r.value.replace(/\s+/g, ' ').trim()).trim();
+    const text = r.value.replace(/\s+/g, ' ').trim();
+    if (!text) continue;
+    const prefix = pendingBreak ? '\u00b6' : r.type === 'line text' ? '\n' : chapters[c][v] ? ' ' : '';
+    pendingBreak = false;
+    chapters[c][v] = (chapters[c][v] ?? '') + prefix + text;
   }
-  const clean = chapters.map((ch) => ch.map((t) => t ?? ''));
+  const clean = chapters.map((ch) => Array.from(ch, (t) => t ?? ''));
   writeFileSync(`src/data/web/${id}.json`, JSON.stringify(clean));
-  const words = clean.map((ch) => ch.join(' ').split(/\s+/).filter(Boolean).length);
+  const words = clean.map((ch) => ch.join(' ').replace(/\u00b6/g, ' ').split(/\s+/).filter(Boolean).length);
   meta.push({ id, name, testament, words });
   console.log(id, clean.length, words.reduce((a, b) => a + b, 0));
 }

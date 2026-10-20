@@ -3,11 +3,14 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BOOKS } from '../../data/books';
+import { useOnboarding } from '../../lib/onboarding';
 import { colors, fonts, radius, spacing } from '../../theme';
 
 export default function Read() {
   const [testament, setTestament] = useState<'ot' | 'nt'>('nt');
   const [open, setOpen] = useState<string | null>(null);
+  const { readChapters } = useOnboarding();
+  const readSet = new Set(readChapters);
   const books = BOOKS.filter((b) => b.testament === testament);
 
   return (
@@ -31,15 +34,18 @@ export default function Read() {
             <View key={b.id} style={styles.book}>
               <Pressable onPress={() => setOpen(isOpen ? null : b.id)} style={styles.bookRow}>
                 <Text style={styles.bookName}>{b.name}</Text>
-                <Text style={styles.bookMeta}>{b.words.length} {b.words.length === 1 ? 'chapter' : 'chapters'}</Text>
+                <Text style={styles.bookMeta}>{b.words.filter((_, i) => readSet.has(`${b.id}:${i + 1}`)).length}/{b.words.length} read</Text>
               </Pressable>
               {isOpen ? (
                 <View style={styles.chapters}>
-                  {b.words.map((_, i) => (
-                    <Pressable key={i} onPress={() => router.push(`/reader?mode=free&book=${b.id}&chapter=${i + 1}`)} style={styles.chapter}>
-                      <Text style={styles.chapterText}>{i + 1}</Text>
-                    </Pressable>
-                  ))}
+                  {b.words.map((_, i) => {
+                    const isRead = readSet.has(`${b.id}:${i + 1}`);
+                    return (
+                      <Pressable key={i} onPress={() => router.push(`/reader?mode=free&book=${b.id}&chapter=${i + 1}`)} style={[styles.chapter, isRead && styles.chapterRead]}>
+                        <Text style={[styles.chapterText, isRead && styles.chapterTextRead]}>{i + 1}</Text>
+                      </Pressable>
+                    );
+                  })}
                 </View>
               ) : null}
             </View>
@@ -66,5 +72,7 @@ const styles = StyleSheet.create({
   bookMeta: { fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },
   chapters: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 14, paddingBottom: 16 },
   chapter: { width: 48, height: 48, borderRadius: 14, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' },
+  chapterRead: { backgroundColor: colors.green },
+  chapterTextRead: { color: '#FFFFFF' },
   chapterText: { fontFamily: fonts.medium, fontSize: 15, color: colors.text },
 });

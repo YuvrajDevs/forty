@@ -5,11 +5,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
 import { BOOKS } from '../data/books';
 import { WEB } from '../data/web';
-import { useOnboarding } from '../lib/onboarding';
-import { completeNextReading, getToday } from '../lib/progress';
+import { setOnboarding, useOnboarding } from '../lib/onboarding';
+import { completeNextReading, getToday, markChapterRead } from '../lib/progress';
 import { colors, fonts, spacing } from '../theme';
 
 type Ref = { bookId: string; bookName: string; chapter: number };
+type Run = { num?: number; text: string };
+
+const MIN_SIZE = 16;
+const MAX_SIZE = 28;
+
+/** Turns a chapter's verses into paragraphs; see scripts/build-web.mjs for the markers. */
+function paragraphs(verses: string[]): Run[][] {
+  const out: Run[][] = [[]];
+  verses.forEach((v, i) => {
+    let numbered = false;
+    v.split('¶').forEach((part, k) => {
+      if (k > 0 && out[out.length - 1].length) out.push([]);
+      const text = part.replace(/^\n/, '');
+      if (!text.trim()) return;
+      out[out.length - 1].push({ num: numbered ? undefined : i + 1, text: (part.startsWith('\n') && out[out.length - 1].length ? '\n' : '') + text });
+      numbered = true;
+    });
+  });
+  return out.filter((p) => p.length);
+}
 
 export default function Reader() {
   const params = useLocalSearchParams<{ mode?: string; book?: string; chapter?: string }>();
@@ -18,6 +38,7 @@ export default function Reader() {
   const [freeChapter, setFreeChapter] = useState(Number(params.chapter ?? 1));
   const [atEnd, setAtEnd] = useState(false);
   const [waited, setWaited] = useState(false);
+  const size = s.readerFontSize;
 
   const today = getToday(s);
   const reading = plan ? today.readings[today.doneCount] : undefined;
@@ -45,40 +66,41 @@ export default function Reader() {
   };
 
   const title = plan ? reading?.label ?? '' : book ? `${book.name} ${freeChapter}` : '';
-
-  const finish = () => {
-    completeNextReading();
-    router.back();
-  };
+  const isRead = book ? s.readChapters.includes(`${book.id}:${freeChapter}`) : false;
+  const resize = (d: number) => setOnboarding({ readerFontSize: Math.max(MIN_SIZE, Math.min(MAX_SIZE, size + d)) });
 
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
-        <Pressable accessibilityLabel="Close" hitSlop={12} onPress={() => router.back()} style={styles.close}>
+        <Pressable accessibilityLabel="Close" hitSlop={12} onPress={() => router.back()} style={styles.iconBtn}>
           <Text style={styles.closeText}>{'‹'}</Text>
         </Pressable>
         <Text style={styles.topTitle} numberOfLines={1}>{title}</Text>
+        <Pressable accessibilityLabel="Smaller text" hitSlop={8} onPress={() => resize(-2)} style={styles.sizeBtn}>
+          <Text style={[styles.sizeText, { fontSize: 14 }]}>A</Text>
+        </Pressable>
+        <Pressable accessibilityLabel="Larger text" hitSlop={8} onPress={() => resize(2)} style={styles.sizeBtn}>
+          <Text style={[styles.sizeText, { fontSize: 22 }]}>A</Text>
+        </Pressable>
       </View>
       <ScrollView contentContainerStyle={styles.body} onScroll={onScroll} scrollEventThrottle={100} showsVerticalScrollIndicator={false}>
-        {plan && !reading ? <Text style={styles.verse}>Nothing left to read today.</Text> : null}
-        {refs.map((r) => {
-          const verses = WEB[r.bookId]?.[r.chapter - 1] ?? [];
-          return (
-            <View key={`${r.bookId}-${r.chapter}`} style={{ marginBottom: spacing.xl }}>
-              <Text style={styles.chapterTitle}>{r.bookName} {r.chapter}</Text>
-              <Text style={styles.verse}>
-                {verses.map((v, i) =>
-                  v ? (
-                    <Text key={i}>
-                      <Text style={styles.num}>{i + 1} </Text>
-                      {v}{' '}
-                    </Text>
-                  ) : null,
-                )}
+        {plan && !reading ? <Text style={[styles.verse, { fontSize: size, lineHeight: size * 1.75 }]}>Nothing left to read today.</Text> : null}
+        {refs.map((r) => (
+          <View key={`${r.bookId}-${r.chapter}`} style={styles.chapter}>
+            <Text style={styles.chapterTitle}>{r.bookName} {r.chapter}</Text>
+            {paragraphs(WEB[r.bookId]?.[r.chapter - 1] ?? []).map((p, pi) => (
+              <Text key={pi} style={[styles.verse, { fontSize: size, lineHeight: size * 1.75 }]}>
+                {p.map((run, ri) => (
+                  <Text key={ri}>
+                    {ri > 0 && !run.text.startsWith('\n') ? ' ' : ''}
+                    {run.num ? <Text style={[styles.num, { fontSize: Math.round(size * 0.58) }]}>{run.num}{' '}</Text> : null}
+                    {run.text}
+                  </Text>
+                ))}
               </Text>
-            </View>
-          );
-        })}
+            ))}
+          </View>
+        ))}
         <Text style={styles.credit}>World English Bible, public domain.</Text>
       </ScrollView>
       <View style={styles.footer}>
@@ -86,15 +108,26 @@ export default function Reader() {
           <Button
             label={atEnd && waited ? "I've read this" : atEnd ? 'Take your time' : 'Keep reading'}
             disabled={!(atEnd && waited)}
-            onPress={finish}
+            onPress={() => {
+              completeNextReading();
+              router.back();
+            }}
           />
         ) : book ? (
           <View style={styles.pager}>
             <View style={{ flex: 1 }}>
-              <Button label="Previous" disabled={freeChapter <= 1} onPress={() => setFreeChapter((c) => c - 1)} />
+              <Button variant="soft" label="Previous" disabled={freeChapter <= 1} onPress={() => setFreeChapter((c) => c - 1)} />
+            </View>
+            <View style={{ flex: 1.15 }}>
+              <Button
+                variant={isRead ? 'done' : 'primary'}
+                label={isRead ? 'Read ✓' : 'Read'}
+                disabled={isRead}
+                onPress={() => markChapterRead(book.id, freeChapter)}
+              />
             </View>
             <View style={{ flex: 1 }}>
-              <Button label="Next" disabled={freeChapter >= book.words.length} onPress={() => setFreeChapter((c) => c + 1)} />
+              <Button variant="soft" label="Next" disabled={freeChapter >= book.words.length} onPress={() => setFreeChapter((c) => c + 1)} />
             </View>
           </View>
         ) : null}
@@ -105,15 +138,18 @@ export default function Reader() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
-  top: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
-  close: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  top: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  iconBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
   closeText: { fontFamily: fonts.body, fontSize: 32, lineHeight: 34, color: colors.text },
   topTitle: { flex: 1, fontFamily: fonts.medium, fontSize: 14, color: colors.textSecondary },
-  body: { padding: spacing.lg, paddingTop: spacing.lg },
-  chapterTitle: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 44, lineHeight: 46, color: colors.text, marginBottom: spacing.md },
-  verse: { fontFamily: fonts.scripture, fontSize: 19, lineHeight: 32, color: colors.text },
-  num: { fontFamily: fonts.semibold, fontSize: 11, color: colors.gold },
+  sizeBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
+  sizeText: { fontFamily: fonts.scriptureBold, color: colors.text },
+  body: { paddingHorizontal: 28, paddingTop: spacing.lg, paddingBottom: spacing.lg },
+  chapter: { marginBottom: spacing.xl },
+  chapterTitle: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 48, lineHeight: 50, color: colors.text, marginBottom: spacing.lg },
+  verse: { fontFamily: fonts.scripture, color: colors.text, textAlign: 'left', marginBottom: 18, letterSpacing: 0.1 },
+  num: { fontFamily: fonts.semibold, color: colors.gold },
   credit: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.lg },
   footer: { padding: spacing.lg, paddingTop: spacing.sm },
-  pager: { flexDirection: 'row', gap: 12 },
+  pager: { flexDirection: 'row', gap: 10 },
 });

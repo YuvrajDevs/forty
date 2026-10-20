@@ -18,7 +18,11 @@ export type OnboardingState = {
   lockDays: boolean[];
   lockStartHour: number;
   lockEndHour: number;
-  unlockMinutes: 30 | 60;
+  /** Hours between one reading prompt and the next. */
+  gapHours: number;
+  readerFontSize: number;
+  /** Chapters read, as "bookId:chapter". */
+  readChapters: string[];
   deadline: string | null;
   chaptersDone: number;
   baseline: { date: string; chapters: number } | null;
@@ -43,7 +47,9 @@ const initial: OnboardingState = {
   lockDays: [true, true, true, true, true, true, true],
   lockStartHour: 7,
   lockEndHour: 22,
-  unlockMinutes: 60,
+  gapHours: 3,
+  readerFontSize: 20,
+  readChapters: [],
   deadline: null,
   chaptersDone: 0,
   baseline: null,

@@ -35,12 +35,32 @@ export function completeNextReading() {
   if (t.doneCount >= t.readings.length) return;
   const r = t.readings[t.doneCount];
   const allDone = t.doneCount + 1 === t.readings.length;
+  const read = new Set(s.readChapters);
+  r.chapters.forEach((c) => read.add(`${c.bookId}:${c.chapter}`));
   setOnboarding({
     baseline: { date: t.date, chapters: t.baseline },
     doneToday: { date: t.date, count: t.doneCount + 1 },
     chaptersDone: s.chaptersDone + r.chapters.length,
     doneDates: allDone && !s.doneDates.includes(t.date) ? [...s.doneDates, t.date] : s.doneDates,
+    readChapters: [...read],
   });
+}
+
+/**
+ * Marks a chapter read from the Read tab. If that finishes the chapters of today's next
+ * planned reading, the reading counts as completed too.
+ */
+export function markChapterRead(bookId: string, chapter: number) {
+  const key = `${bookId}:${chapter}`;
+  const s = getOnboarding();
+  if (!s.readChapters.includes(key)) setOnboarding({ readChapters: [...s.readChapters, key] });
+  for (let i = 0; i < 12; i++) {
+    const cur = getOnboarding();
+    const t = getToday(cur);
+    const next = t.readings[t.doneCount];
+    if (!next || !next.chapters.every((c) => cur.readChapters.includes(`${c.bookId}:${c.chapter}`))) break;
+    completeNextReading();
+  }
 }
 
 /** Words left from where today started. */
