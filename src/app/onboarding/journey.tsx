@@ -6,13 +6,13 @@ import { buildPlan } from '../../lib/plan';
 import { chaptersFor, SCOPES } from '../../lib/scopes';
 import { colors, fonts, radius } from '../../theme';
 
-const MILESTONES = [
-  'Your plan starts',
-  'Your second unlock',
-  'Your first streak',
-  'Halfway through your trial',
-  'We remind you your trial ends in 2 days',
-  'One more day to go',
+const STEPS = [
+  { title: 'You begin', text: 'A small first step. Opening a locked app and reading first may feel a little unusual.' },
+  { title: 'It feels unusual', text: "You notice the pause before the scroll. That's okay. Your mind is learning something new." },
+  { title: 'Your first streak', text: 'Three days in a row. It starts to feel less like a rule and more like a rhythm.' },
+  { title: 'You start to notice', text: 'You catch yourself reaching for the phone, and you choose the reading first.' },
+  { title: 'It gets natural', text: "The pause feels easier now. We'll remind you that your free trial ends in 2 days." },
+  { title: 'Almost a habit', text: 'Reading first is becoming part of your day. One more day to go.' },
 ];
 
 export default function Journey() {
@@ -22,15 +22,10 @@ export default function Journey() {
   const chaptersBy = (d: number) =>
     plan.slice(0, d).reduce((n, day) => n + day.readings.reduce((m, r) => m + r.chapters.length, 0), 0);
   const plural = (n: number) => `${n} ${n === 1 ? 'chapter' : 'chapters'}`;
-  const dayText = (d: number) => {
-    const rs = plan[d - 1]?.readings ?? [];
-    const mins = rs.reduce((n, r) => n + r.minutes, 0);
-    return rs.length ? `${rs.map((r) => r.label).join(', ')} \u00B7 about ${mins} min` : 'Rest day';
-  };
 
   return (
     <Quiz title="Your first 7 days" subtitle="Here is how your free week could go." onContinue={() => router.push('/onboarding/why-it-works')}>
-      {MILESTONES.map((m, i) => (
+      {STEPS.map((st, i) => (
         <View key={i} style={styles.row}>
           <View style={styles.rail}>
             <View style={styles.badge}>
@@ -39,8 +34,8 @@ export default function Journey() {
             <View style={styles.line} />
           </View>
           <View style={styles.item}>
-            <Text style={styles.milestone}>{m}</Text>
-            <Text style={styles.readings} numberOfLines={2}>{dayText(i + 1)}</Text>
+            <Text style={styles.milestone}>{st.title}</Text>
+            <Text style={styles.readings}>{st.text}</Text>
           </View>
         </View>
       ))}
@@ -58,7 +53,7 @@ export default function Journey() {
           <Text style={styles.finalBody}>
             About {plural(chaptersBy(7))} of {name} read, and seven days of putting God first.
           </Text>
-          <Text style={styles.finalFine}>Billing starts only if you keep going. Cancel any time in Google Play.</Text>
+          <Text style={styles.finalFine}>Billing starts only if you keep going. Cancel any time.</Text>
         </View>
       </View>
     </Quiz>
