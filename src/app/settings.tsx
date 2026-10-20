@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TRANSLATIONS } from '../lib/bible';
 import { requestNotificationPermission } from '../lib/notifications';
@@ -81,9 +81,6 @@ export default function Settings() {
           <Switch value={s.remindersOn} onValueChange={toggleReminders} trackColor={{ true: colors.gold, false: colors.border }} thumbColor="#FFFFFF" />
         </View>
         <Row icon="information-circle-outline" label="How the lock works" onPress={() => router.push('/legal?doc=lock')} />
-
-        <Text style={styles.section}>Subscription</Text>
-        <Row icon="card-outline" label="Manage subscription" onPress={() => Linking.openURL('https://play.google.com/store/account/subscriptions')} />
 
         <Text style={styles.section}>Your data</Text>
         <Row icon="refresh-outline" label="Restart onboarding" onPress={restart} />
