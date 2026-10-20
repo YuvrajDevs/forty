@@ -1,23 +1,42 @@
 # Building FortyBible and setting up Google Play
 
-Nothing in this file has been run yet. The native lock module and the billing code were written
-but never compiled or tested on a device, so expect to fix small things on the first build.
+## 1. Local builds (set up on this Mac, no accounts needed)
 
-## 1. First build (needs one of these)
-
-**Cloud build (easiest):** create a free Expo account, then
+The Android toolchain lives in `/opt/homebrew/share/android-commandlinetools` (JDK 17 from Homebrew).
+`source .android-env.sh` sets the paths (the file is not committed; recreate it from the exports below).
 
 ```bash
-npx eas-cli login
-npx eas-cli init
-npx eas-cli build --profile development --platform android
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
+export PATH=$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
 ```
 
-Install the APK on the phone, then run `npx expo start --dev-client` on the Mac.
+Generate the native project (it is git-ignored) and build:
 
-**Local build:** install JDK 17 and the Android command-line tools, then `npx expo run:android`.
+```bash
+npx expo prebuild --platform android --no-install
+echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+cd android
+./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a        # dev build, needs `npx expo start` running
+EXPO_PUBLIC_PREVIEW=1 ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a   # standalone test APK
+```
 
-Expo Go cannot run the lock or billing. Everything else works in Expo Go.
+- `EXPO_PUBLIC_PREVIEW=1` lets a sideloaded test build skip the purchase. Never set it for a Play build.
+- Test APK: `android/app/build/outputs/apk/release/app-release.apk` (signed with the debug key, for testing only).
+- Store build: `./gradlew bundleRelease` after setting up a real upload keystore (or use EAS).
+
+Emulator used for testing: `system-images;android-36;google_apis;arm64-v8a`, AVD `fortytest`.
+Expo Go cannot run the lock or billing; everything else works in Expo Go.
+
+### What was tested on the Android emulator
+
+Onboarding (all screens), installed-app picker with real icons, hold-to-commit, the three permission
+buttons and their live status, the notification permission prompt, the lock prompt opening over
+Chrome, reading then returning to Chrome with the gap applied, the second reading, Emergency access,
+and a standalone release build with no dev server.
+
+Not tested: Google Play billing (no Play Store on the emulator), notification delivery at the
+scheduled time, real Vivo background-killing behaviour.
 
 ## 2. Google Play Console (one-time US$25 developer account)
 
@@ -37,7 +56,7 @@ Expo Go cannot run the lock or billing. Everything else works in Expo Go.
 - Add a real support contact in `SUPPORT_EMAIL` in `src/lib/legal.ts` and host the privacy policy at a URL.
 - Have the privacy policy and terms text reviewed before publishing.
 
-## 4. Things to check on the first device build
+## 4. Things to check on the Vivo
 
 - The `expo-build-properties` Kotlin version (2.2.0) works with Expo SDK 57. If Gradle complains, check the
   expo-iap installation guide for the version it needs.

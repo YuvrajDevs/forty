@@ -1,0 +1,6 @@
+[
+    {
+        "merged": "expo.modules.fortylock.forty-lock-release-3:/xml/forty_lock_service.xml",
+        "source": "expo.modules.fortylock.forty-lock-main-4:/xml/forty_lock_service.xml"
+    }
+]

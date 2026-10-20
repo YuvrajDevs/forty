@@ -1,0 +1,48 @@
+{
+    "logs": [
+        {
+            "outputFile": "expo.modules.fortylock.forty-lock-release-3:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "2",
+                        "startOffsets": "14",
+                        "endColumns": "177",
+                        "endOffsets": "189"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "179",
+                        "endOffsets": "230"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "expo.modules.fortylock.forty-lock-mergeReleaseResources-1:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "2",
+                        "startOffsets": "14",
+                        "endColumns": "177",
+                        "endOffsets": "189"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "179",
+                        "endOffsets": "230"
+                    }
+                }
+            ]
+        }
+    ]
+}

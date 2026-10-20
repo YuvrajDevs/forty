@@ -1,0 +1,7 @@
+expo.modules.fortylock.forty-lock-pngs-0 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/build/generated/res/pngs/release
+expo.modules.fortylock.forty-lock-resValues-1 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/build/generated/res/resValues/release
+expo.modules.fortylock.forty-lock-mergeReleaseResources-2 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+expo.modules.fortylock.forty-lock-mergeReleaseResources-3 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+expo.modules.fortylock.forty-lock-release-4 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/build/intermediates/merged_res/release/mergeReleaseResources
+expo.modules.fortylock.forty-lock-main-5 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res
+expo.modules.fortylock.forty-lock-release-6 /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/release/res
