@@ -74,7 +74,7 @@ export default function Reader() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
         <Pressable accessibilityLabel="Close" hitSlop={12} onPress={() => router.back()} style={styles.iconBtn}>
-          <Text style={styles.closeText}>{'‹'}</Text>
+          <Ionicons name="chevron-back" size={26} color={colors.text} />
         </Pressable>
         <Text style={styles.topTitle} numberOfLines={1}>{title}</Text>
         <Pressable accessibilityLabel="Smaller text" hitSlop={8} onPress={() => resize(-2)} style={styles.sizeBtn}>

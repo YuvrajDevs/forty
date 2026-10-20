@@ -25,7 +25,7 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
         <Pressable accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()} style={styles.back}>
-          <Text style={styles.backText}>{'‹'}</Text>
+          <Ionicons name="chevron-back" size={26} color={colors.text} />
         </Pressable>
         <View style={styles.track}>
           <View style={[styles.fill, { width: `${((step ?? TOTAL_STEPS) / TOTAL_STEPS) * 100}%` }]} />
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, gap: spacing.md },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
-  backText: { fontFamily: fonts.body, fontSize: 32, lineHeight: 34, color: colors.text, includeFontPadding: false },
   track: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border, overflow: 'hidden' },
   fill: { height: 4, borderRadius: 2, backgroundColor: colors.gold },
   body: { padding: spacing.lg, paddingTop: spacing.lg },

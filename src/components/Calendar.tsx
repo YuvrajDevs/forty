@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { addDays, fromIso, isActive, iso, weekdayIndex } from '../lib/schedule';
@@ -30,9 +31,9 @@ export function Calendar({ doneDates, lockDays, startedOn, deadline }: Props) {
   return (
     <View style={styles.wrap}>
       <View style={styles.nav}>
-        <Pressable accessibilityLabel="Previous month" hitSlop={10} onPress={() => shift(-1)}><Text style={styles.arrow}>{'‹'}</Text></Pressable>
+        <Pressable accessibilityLabel="Previous month" hitSlop={10} onPress={() => shift(-1)}><Ionicons name="chevron-back" size={22} color={colors.text} /></Pressable>
         <Text style={styles.month}>{label}</Text>
-        <Pressable accessibilityLabel="Next month" hitSlop={10} onPress={() => shift(1)}><Text style={styles.arrow}>{'›'}</Text></Pressable>
+        <Pressable accessibilityLabel="Next month" hitSlop={10} onPress={() => shift(1)}><Ionicons name="chevron-forward" size={22} color={colors.text} /></Pressable>
       </View>
       <View style={styles.row}>
         {HEAD.map((h, i) => <Text key={i} style={styles.head}>{h}</Text>)}
