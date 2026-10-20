@@ -8,7 +8,7 @@ import { Button } from './Button';
 export const TOTAL_STEPS = 12;
 
 type Props = {
-  step: number;
+  step?: number;
   title: string;
   subtitle?: string;
   children: ReactNode;
@@ -16,9 +16,10 @@ type Props = {
   ctaDisabled?: boolean;
   onContinue: () => void;
   footer?: ReactNode;
+  secondary?: { label: string; onPress: () => void };
 };
 
-export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer }: Props) {
+export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer, secondary }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
@@ -26,11 +27,11 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
           <Text style={styles.backText}>{'‹'}</Text>
         </Pressable>
         <View style={styles.track}>
-          <View style={[styles.fill, { width: `${(step / TOTAL_STEPS) * 100}%` }]} />
+          <View style={[styles.fill, { width: `${((step ?? TOTAL_STEPS) / TOTAL_STEPS) * 100}%` }]} />
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>FORTY  {'·'}  {step} OF {TOTAL_STEPS}</Text>
+        <Text style={styles.eyebrow}>{step ? `FORTY  \u00B7  ${step} OF ${TOTAL_STEPS}` : 'FORTY'}</Text>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         <View style={{ marginTop: spacing.lg }}>{children}</View>
@@ -38,6 +39,11 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
       <View style={styles.footer}>
         {footer}
         <Button label={cta} disabled={ctaDisabled} onPress={onContinue} />
+        {secondary ? (
+          <Pressable accessibilityRole="button" onPress={secondary.onPress} style={styles.secondary}>
+            <Text style={styles.secondaryText}>{secondary.label}</Text>
+          </Pressable>
+        ) : null}
       </View>
     </SafeAreaView>
   );
@@ -69,7 +75,7 @@ const styles = StyleSheet.create({
   fill: { height: 4, borderRadius: 2, backgroundColor: colors.gold },
   body: { padding: spacing.lg, paddingTop: spacing.lg },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
-  title: { marginTop: spacing.md, fontFamily: fonts.display, fontSize: 46, lineHeight: 48, letterSpacing: 0.5, color: colors.text },
+  title: { marginTop: spacing.md, fontFamily: fonts.display, includeFontPadding: false, fontSize: 46, lineHeight: 48, letterSpacing: 0.5, color: colors.text },
   subtitle: { marginTop: spacing.sm, fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.textSecondary },
   footer: { padding: spacing.lg, gap: 12 },
   option: {
@@ -81,6 +87,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     marginBottom: 12,
   },
+  secondary: { height: 44, alignItems: 'center', justifyContent: 'center' },
+  secondaryText: { fontFamily: fonts.medium, fontSize: 15, color: colors.textSecondary },
   optionSelected: { backgroundColor: colors.cardSelected },
   optionLabel: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   optionHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },

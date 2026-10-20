@@ -15,7 +15,7 @@ export default function Permissions() {
       step={11}
       title="Three quick permissions"
       subtitle="Android needs your OK for the lock to work. Each one has a plain reason, and you can turn them off any time."
-      onContinue={() => router.replace('/')}
+      onContinue={() => router.push('/onboarding/notifications')}
       cta="Continue"
     >
       {PERMISSIONS.map((p, i) => (
@@ -33,7 +33,7 @@ export default function Permissions() {
 
 const styles = StyleSheet.create({
   card: { flexDirection: 'row', gap: 16, backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 12 },
-  num: { fontFamily: fonts.display, fontSize: 36, lineHeight: 38, color: colors.gold },
+  num: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 36, lineHeight: 38, color: colors.gold },
   name: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   why: { marginTop: 4, fontFamily: fonts.body, fontSize: 14, lineHeight: 21, color: colors.textSecondary },
 });

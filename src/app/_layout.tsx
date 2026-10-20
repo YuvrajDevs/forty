@@ -3,7 +3,8 @@ import { Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, useFonts } fro
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { loadOnboarding } from '../lib/onboarding';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -11,11 +12,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({ Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular });
 
+  const [ready, setReady] = useState(false);
   useEffect(() => {
-    if (loaded || error) SplashScreen.hideAsync();
-  }, [loaded, error]);
+    loadOnboarding().finally(() => setReady(true));
+  }, []);
 
-  if (!loaded && !error) return null;
+  useEffect(() => {
+    if ((loaded || error) && ready) SplashScreen.hideAsync();
+  }, [loaded, error, ready]);
+
+  if ((!loaded && !error) || !ready) return null;
 
   return (
     <>

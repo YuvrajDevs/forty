@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: colors.text,
     textAlign: 'center',
-    includeFontPadding: false,
-    textAlignVertical: 'center',
+    paddingHorizontal: 8,
   },
 });

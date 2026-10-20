@@ -1,10 +1,13 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
+import { useOnboarding } from '../lib/onboarding';
 import { colors, fonts, spacing } from '../theme';
 
 export default function Welcome() {
+  const { completed } = useOnboarding();
+  if (completed) return <Redirect href="/home" />;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.center}>
@@ -21,7 +24,7 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
-  title: { fontFamily: fonts.display, fontSize: 72, lineHeight: 72, letterSpacing: 1, color: colors.text, textAlign: 'center' },
+  title: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 72, lineHeight: 72, letterSpacing: 1, color: colors.text, textAlign: 'center' },
   subtitle: { marginTop: spacing.md, fontFamily: fonts.body, fontSize: 17, color: colors.textSecondary, textAlign: 'center' },
   footer: { padding: spacing.lg },
 });
