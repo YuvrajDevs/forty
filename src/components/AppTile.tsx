@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { APP_ICONS } from '../lib/appIcons';
 import { colors, fonts, radius } from '../theme';
@@ -23,13 +23,15 @@ export function AppIcon({ id, size = 48 }: { id: string; size?: number }) {
 }
 
 export function AppTile({ id, name, selected, onPress }: { id: string; name: string; selected: boolean; onPress: () => void }) {
+  const { width } = useWindowDimensions();
+  const size = Math.floor((width - 48 - 24) / 3); // 24px screen padding each side, two 12px gaps
   return (
     <Pressable
       accessibilityRole="checkbox"
       accessibilityLabel={name}
       accessibilityState={{ checked: selected }}
       onPress={onPress}
-      style={[styles.tile, selected && styles.tileOn]}
+      style={[styles.tile, { width: size, height: size }, selected && styles.tileOn]}
     >
       <AppIcon id={id} />
       <Text style={styles.name} numberOfLines={1}>{name}</Text>
@@ -43,7 +45,7 @@ export function AppTile({ id, name, selected, onPress }: { id: string; name: str
 }
 
 const styles = StyleSheet.create({
-  tile: { flexBasis: '31.5%', flexGrow: 0, aspectRatio: 1, backgroundColor: colors.card, borderRadius: radius.card, alignItems: 'center', justifyContent: 'center', gap: 10 },
+  tile: { backgroundColor: colors.card, borderRadius: radius.card, alignItems: 'center', justifyContent: 'center', gap: 10 },
   tileOn: { backgroundColor: colors.cardSelected },
   name: { fontFamily: fonts.medium, fontSize: 13, color: colors.text, paddingHorizontal: 4 },
   badge: { position: 'absolute', top: 8, right: 8, width: 22, height: 22, borderRadius: 11, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' },

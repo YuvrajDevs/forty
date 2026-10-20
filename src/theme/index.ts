@@ -16,6 +16,8 @@ export const fonts = {
   medium: 'Outfit_500Medium',
   semibold: 'Outfit_600SemiBold',
   display: 'BebasNeue_400Regular',
+  scripture: 'Lora_400Regular',
+  scriptureBold: 'Lora_600SemiBold',
 } as const;
 
 export const spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48 } as const;

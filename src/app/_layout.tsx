@@ -1,4 +1,5 @@
 import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import { Lora_400Regular, Lora_600SemiBold } from '@expo-google-fonts/lora';
 import { Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, useFonts } from '@expo-google-fonts/outfit';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -10,7 +11,7 @@ import { colors } from '../theme';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({ Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular });
+  const [loaded, error] = useFonts({ Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular, Lora_400Regular, Lora_600SemiBold });
 
   const [ready, setReady] = useState(false);
   useEffect(() => {

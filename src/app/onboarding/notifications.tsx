@@ -1,3 +1,4 @@
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { router } from 'expo-router';
 import { Quiz } from '../../components/Quiz';
 import { setOnboarding } from '../../lib/onboarding';
@@ -5,6 +6,8 @@ import { Text, StyleSheet } from 'react-native';
 import { colors, fonts } from '../../theme';
 
 async function askForNotifications(): Promise<boolean> {
+  // Expo Go on Android has no notifications module; the real build does.
+  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return false;
   try {
     const Notifications = await import('expo-notifications');
     const { status } = await Notifications.requestPermissionsAsync();

@@ -14,6 +14,16 @@ export type OnboardingState = {
   remindersOn: boolean;
   startedOn: string | null;
   completed: boolean;
+  /** Monday first. */
+  lockDays: boolean[];
+  lockStartHour: number;
+  lockEndHour: number;
+  unlockMinutes: 30 | 60;
+  deadline: string | null;
+  chaptersDone: number;
+  baseline: { date: string; chapters: number } | null;
+  doneToday: { date: string; count: number } | null;
+  doneDates: string[];
 };
 
 const KEY = 'forty.onboarding.v1';
@@ -30,6 +40,15 @@ const initial: OnboardingState = {
   remindersOn: false,
   startedOn: null,
   completed: false,
+  lockDays: [true, true, true, true, true, true, true],
+  lockStartHour: 7,
+  lockEndHour: 22,
+  unlockMinutes: 60,
+  deadline: null,
+  chaptersDone: 0,
+  baseline: null,
+  doneToday: null,
+  doneDates: [],
 };
 
 let state: OnboardingState = initial;
@@ -48,6 +67,10 @@ export function setOnboarding(patch: Partial<OnboardingState>) {
   state = { ...state, ...patch };
   AsyncStorage.setItem(KEY, JSON.stringify(state)).catch(() => {});
   listeners.forEach((l) => l());
+}
+
+export function getOnboarding(): OnboardingState {
+  return state;
 }
 
 export function resetOnboarding() {

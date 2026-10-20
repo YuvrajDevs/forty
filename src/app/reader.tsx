@@ -1,0 +1,119 @@
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
+import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button } from '../components/Button';
+import { BOOKS } from '../data/books';
+import { WEB } from '../data/web';
+import { useOnboarding } from '../lib/onboarding';
+import { completeNextReading, getToday } from '../lib/progress';
+import { colors, fonts, spacing } from '../theme';
+
+type Ref = { bookId: string; bookName: string; chapter: number };
+
+export default function Reader() {
+  const params = useLocalSearchParams<{ mode?: string; book?: string; chapter?: string }>();
+  const s = useOnboarding();
+  const plan = params.mode === 'plan';
+  const [freeChapter, setFreeChapter] = useState(Number(params.chapter ?? 1));
+  const [atEnd, setAtEnd] = useState(false);
+  const [waited, setWaited] = useState(false);
+
+  const today = getToday(s);
+  const reading = plan ? today.readings[today.doneCount] : undefined;
+  const book = BOOKS.find((b) => b.id === params.book);
+
+  const refs: Ref[] = useMemo(() => {
+    if (plan) return (reading?.chapters ?? []).map((c) => ({ bookId: c.bookId, bookName: c.bookName, chapter: c.chapter }));
+    return book ? [{ bookId: book.id, bookName: book.name, chapter: freeChapter }] : [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan, reading?.label, book?.id, freeChapter]);
+
+  // A short minimum so "I've read this" means something: a fraction of the estimated time, capped.
+  const minSeconds = plan && reading ? Math.min(45, Math.round(reading.minutes * 60 * 0.25)) : 0;
+  useEffect(() => {
+    setAtEnd(false);
+    setWaited(minSeconds === 0);
+    if (!minSeconds) return;
+    const id = setTimeout(() => setWaited(true), minSeconds * 1000);
+    return () => clearTimeout(id);
+  }, [reading?.label, minSeconds, freeChapter]);
+
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 80) setAtEnd(true);
+  };
+
+  const title = plan ? reading?.label ?? '' : book ? `${book.name} ${freeChapter}` : '';
+
+  const finish = () => {
+    completeNextReading();
+    router.back();
+  };
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.top}>
+        <Pressable accessibilityLabel="Close" hitSlop={12} onPress={() => router.back()} style={styles.close}>
+          <Text style={styles.closeText}>{'‹'}</Text>
+        </Pressable>
+        <Text style={styles.topTitle} numberOfLines={1}>{title}</Text>
+      </View>
+      <ScrollView contentContainerStyle={styles.body} onScroll={onScroll} scrollEventThrottle={100} showsVerticalScrollIndicator={false}>
+        {plan && !reading ? <Text style={styles.verse}>Nothing left to read today.</Text> : null}
+        {refs.map((r) => {
+          const verses = WEB[r.bookId]?.[r.chapter - 1] ?? [];
+          return (
+            <View key={`${r.bookId}-${r.chapter}`} style={{ marginBottom: spacing.xl }}>
+              <Text style={styles.chapterTitle}>{r.bookName} {r.chapter}</Text>
+              <Text style={styles.verse}>
+                {verses.map((v, i) =>
+                  v ? (
+                    <Text key={i}>
+                      <Text style={styles.num}>{i + 1} </Text>
+                      {v}{' '}
+                    </Text>
+                  ) : null,
+                )}
+              </Text>
+            </View>
+          );
+        })}
+        <Text style={styles.credit}>World English Bible, public domain.</Text>
+      </ScrollView>
+      <View style={styles.footer}>
+        {plan ? (
+          <Button
+            label={atEnd && waited ? "I've read this" : atEnd ? 'Take your time' : 'Keep reading'}
+            disabled={!(atEnd && waited)}
+            onPress={finish}
+          />
+        ) : book ? (
+          <View style={styles.pager}>
+            <View style={{ flex: 1 }}>
+              <Button label="Previous" disabled={freeChapter <= 1} onPress={() => setFreeChapter((c) => c - 1)} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button label="Next" disabled={freeChapter >= book.words.length} onPress={() => setFreeChapter((c) => c + 1)} />
+            </View>
+          </View>
+        ) : null}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.background },
+  top: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  close: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  closeText: { fontFamily: fonts.body, fontSize: 32, lineHeight: 34, color: colors.text },
+  topTitle: { flex: 1, fontFamily: fonts.medium, fontSize: 14, color: colors.textSecondary },
+  body: { padding: spacing.lg, paddingTop: spacing.lg },
+  chapterTitle: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 44, lineHeight: 46, color: colors.text, marginBottom: spacing.md },
+  verse: { fontFamily: fonts.scripture, fontSize: 19, lineHeight: 32, color: colors.text },
+  num: { fontFamily: fonts.semibold, fontSize: 11, color: colors.gold },
+  credit: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.lg },
+  footer: { padding: spacing.lg, paddingTop: spacing.sm },
+  pager: { flexDirection: 'row', gap: 12 },
+});

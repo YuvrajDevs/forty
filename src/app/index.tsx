@@ -7,7 +7,7 @@ import { colors, fonts, spacing } from '../theme';
 
 export default function Welcome() {
   const { completed } = useOnboarding();
-  if (completed) return <Redirect href="/home" />;
+  if (completed) return <Redirect href="/today" />;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.center}>

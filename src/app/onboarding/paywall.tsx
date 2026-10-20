@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
-import { setOnboarding, useOnboarding } from '../../lib/onboarding';
+import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
+import { addActiveDays, iso } from '../../lib/schedule';
 import { summarize } from '../../lib/plan';
 import { chaptersFor, SCOPES } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
@@ -24,8 +25,17 @@ export default function Paywall() {
   const chosen = PLANS[plan];
 
   const start = () => {
-    setOnboarding({ completed: true, startedOn: new Date().toISOString() });
-    router.replace('/home');
+    const { lockDays } = getOnboarding();
+    setOnboarding({
+      completed: true,
+      startedOn: iso(new Date()),
+      deadline: iso(addActiveDays(new Date(), days, lockDays)),
+      chaptersDone: 0,
+      baseline: null,
+      doneToday: null,
+      doneDates: [],
+    });
+    router.replace('/today');
   };
 
   return (
