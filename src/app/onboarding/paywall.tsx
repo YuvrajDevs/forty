@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
@@ -40,9 +40,7 @@ export default function Paywall() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <View style={styles.sun}>
-          <View style={styles.sunDisc} />
-        </View>
+        <Image source={require('../../../assets/images/sunrise.webp')} style={styles.sun} resizeMode="cover" accessibilityLabel="A sunrise" />
         <Text style={styles.title}>Start your 7-day free trial</Text>
         <Text style={styles.planLine}>
           {title} in {days} days {'·'} {s.locksPerDay} {s.locksPerDay === 1 ? 'reading' : 'readings'} a day
@@ -89,8 +87,7 @@ export default function Paywall() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg },
-  sun: { height: 120, borderRadius: radius.card, backgroundColor: colors.cardSelected, overflow: 'hidden', alignItems: 'center', justifyContent: 'flex-end' },
-  sunDisc: { width: 150, height: 75, borderTopLeftRadius: 75, borderTopRightRadius: 75, backgroundColor: colors.primary },
+  sun: { width: '100%', height: 170, borderRadius: radius.card },
   title: { marginTop: spacing.lg, fontFamily: fonts.display, includeFontPadding: false, fontSize: 48, lineHeight: 50, color: colors.text },
   planLine: { marginTop: 8, fontFamily: fonts.medium, fontSize: 15, color: colors.gold },
   benefits: { marginVertical: spacing.md, gap: 6 },
