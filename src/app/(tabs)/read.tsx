@@ -16,7 +16,7 @@ export default function Read() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>FORTY</Text>
+        <Text style={styles.eyebrow}>FORTYBIBLE</Text>
         <Text style={styles.title}>Read</Text>
         <Text style={styles.sub}>World English Bible, offline. Reading here is for you and doesn't change your plan.</Text>
 

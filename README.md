@@ -1,4 +1,4 @@
-# Forty
+# FortyBible
 
 Read the Bible before you scroll. Android app built with React Native (Expo dev build).
 

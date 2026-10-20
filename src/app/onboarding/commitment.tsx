@@ -43,7 +43,7 @@ export default function Commitment() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
-        <Text style={styles.eyebrow}>FORTY  {'·'}  10 OF 12</Text>
+        <Text style={styles.eyebrow}>FORTYBIBLE  {'·'}  10 OF 12</Text>
         <Text style={styles.title}>Ready to put God first?</Text>
         <Text style={styles.subtitle}>Small, daily reading beats occasional long sessions. Press and hold to make it a promise to yourself.</Text>
       </View>

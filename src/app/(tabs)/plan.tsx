@@ -25,7 +25,7 @@ export default function Plan() {
 
   const toggleDay = (i: number) => {
     const mask = s.lockDays.map((v, j) => (j === i ? !v : v));
-    if (!mask.some(Boolean)) return Alert.alert('Keep at least one day', 'Forty needs at least one reading day a week.');
+    if (!mask.some(Boolean)) return Alert.alert('Keep at least one day', 'FortyBible needs at least one reading day a week.');
     setLockDays(mask);
   };
 
@@ -53,7 +53,7 @@ export default function Plan() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>FORTY</Text>
+        <Text style={styles.eyebrow}>FORTYBIBLE</Text>
         <Text style={styles.title}>Plan</Text>
 
         <View style={styles.summary}>

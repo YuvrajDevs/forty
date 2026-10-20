@@ -32,7 +32,7 @@ export default function Today() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>FORTY</Text>
+        <Text style={styles.eyebrow}>FORTYBIBLE</Text>
         <Text style={styles.title}>{greeting()}</Text>
         <Text style={styles.sub}>{date}</Text>
 

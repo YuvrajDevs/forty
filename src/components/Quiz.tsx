@@ -32,7 +32,7 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>{step ? `FORTY  \u00B7  ${step} OF ${TOTAL_STEPS}` : 'FORTY'}</Text>
+        <Text style={styles.eyebrow}>{step ? `FORTYBIBLE  \u00B7  ${step} OF ${TOTAL_STEPS}` : 'FORTYBIBLE'}</Text>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         <View style={{ marginTop: spacing.lg }}>{children}</View>

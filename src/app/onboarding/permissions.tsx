@@ -4,9 +4,9 @@ import { Quiz } from '../../components/Quiz';
 import { colors, fonts, radius } from '../../theme';
 
 const PERMISSIONS = [
-  { title: 'Accessibility', why: 'Lets Forty notice when one of your chosen apps opens, so it can ask you to read first. Forty never reads what is on your screen.' },
-  { title: 'Display over other apps', why: 'Lets Forty show the reading prompt on top of a locked app.' },
-  { title: 'Usage access', why: 'Helps Forty tell which app is in front so it only locks the ones you picked.' },
+  { title: 'Accessibility', why: 'Lets FortyBible notice when one of your chosen apps opens, so it can ask you to read first. FortyBible never reads what is on your screen.' },
+  { title: 'Display over other apps', why: 'Lets FortyBible show the reading prompt on top of a locked app.' },
+  { title: 'Usage access', why: 'Helps FortyBible tell which app is in front so it only locks the ones you picked.' },
 ];
 
 export default function Permissions() {

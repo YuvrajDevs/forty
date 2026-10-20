@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Forty",
-    "slug": "forty",
+    "name": "FortyBible",
+    "slug": "fortybible",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "forty",
+    "scheme": "fortybible",
     "userInterfaceStyle": "light",
     "android": {
       "adaptiveIcon": {
@@ -15,7 +15,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.yuvrajdevs.forty"
+      "package": "com.yuvrajdevs.fortybible"
     },
     "web": {
       "output": "static",
