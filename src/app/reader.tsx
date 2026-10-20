@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
 import { booksFor, chapterVerses, translationName } from '../lib/bible';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
+import { openApp } from '../lib/lock';
 import { getToday, markChaptersRead } from '../lib/progress';
 import { key } from '../lib/today';
 import { colors, fonts, spacing } from '../theme';
@@ -33,7 +34,7 @@ function paragraphs(verses: string[]): Run[][] {
 }
 
 export default function Reader() {
-  const params = useLocalSearchParams<{ mode?: string; book?: string; chapter?: string }>();
+  const params = useLocalSearchParams<{ mode?: string; book?: string; chapter?: string; lock?: string }>();
   const s = useOnboarding();
   const plan = params.mode === 'plan';
   const [freeChapter, setFreeChapter] = useState(Number(params.chapter ?? 1));
@@ -111,7 +112,11 @@ export default function Reader() {
             disabled={!(atEnd && waited)}
             onPress={() => {
               if (reading) markChaptersRead(reading.chapters.map(key));
-              router.back();
+              if (params.lock) {
+                // Came from the lock: hand the person back to the app they opened.
+                openApp(params.lock);
+                router.replace('/today');
+              } else router.back();
             }}
           />
         ) : book ? (

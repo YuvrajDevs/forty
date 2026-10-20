@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { APP_ICONS } from '../lib/appIcons';
 import { colors, fonts, radius } from '../theme';
@@ -10,9 +10,15 @@ const glyphFor = (hex: string) => {
   return lum > 0.7 ? '#000000' : '#FFFFFF';
 };
 
-export function AppIcon({ id, size = 48 }: { id: string; size?: number }) {
+export function AppIcon({ id, icon: uri, name, size = 48 }: { id: string; icon?: string; name?: string; size?: number }) {
+  if (uri) return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size * 0.22 }} accessibilityLabel={name} />;
   const icon = APP_ICONS[id];
-  if (!icon) return null;
+  if (!icon)
+    return (
+      <View style={{ width: size, height: size, borderRadius: size * 0.26, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ fontFamily: fonts.semibold, fontSize: size * 0.4, color: colors.text }}>{(name ?? '?').slice(0, 1).toUpperCase()}</Text>
+      </View>
+    );
   return (
     <View style={{ width: size, height: size, borderRadius: size * 0.26, backgroundColor: `#${icon.hex}`, alignItems: 'center', justifyContent: 'center' }}>
       <Svg width={size * 0.58} height={size * 0.58} viewBox="0 0 24 24">
@@ -22,7 +28,7 @@ export function AppIcon({ id, size = 48 }: { id: string; size?: number }) {
   );
 }
 
-export function AppTile({ id, name, selected, onPress }: { id: string; name: string; selected: boolean; onPress: () => void }) {
+export function AppTile({ id, name, icon, selected, onPress }: { id: string; name: string; icon?: string; selected: boolean; onPress: () => void }) {
   const { width } = useWindowDimensions();
   const size = Math.floor((width - 48 - 24) / 3); // 24px screen padding each side, two 12px gaps
   return (
@@ -33,7 +39,7 @@ export function AppTile({ id, name, selected, onPress }: { id: string; name: str
       onPress={onPress}
       style={[styles.tile, { width: size, height: size }, selected && styles.tileOn]}
     >
-      <AppIcon id={id} />
+      <AppIcon id={id} icon={icon} name={name} />
       <Text style={styles.name} numberOfLines={1}>{name}</Text>
       {selected ? (
         <View style={styles.badge}>

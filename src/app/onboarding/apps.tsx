@@ -2,11 +2,12 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { AppTile } from '../../components/AppTile';
 import { Quiz } from '../../components/Quiz';
-import { LOCKABLE_APPS } from '../../lib/apps';
+import { useApps } from '../../lib/useApps';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 
 export default function Apps() {
   const { lockedApps } = useOnboarding();
+  const apps = useApps();
   const toggle = (id: string) =>
     setOnboarding({ lockedApps: lockedApps.includes(id) ? lockedApps.filter((a) => a !== id) : [...lockedApps, id] });
   const n = lockedApps.length;
@@ -20,8 +21,8 @@ export default function Apps() {
       onContinue={() => router.push('/onboarding/commitment')}
     >
       <View style={styles.grid}>
-        {LOCKABLE_APPS.map((a) => (
-          <AppTile key={a.id} id={a.id} name={a.name} selected={lockedApps.includes(a.id)} onPress={() => toggle(a.id)} />
+        {apps.map((a) => (
+          <AppTile key={a.id} id={a.id} name={a.name} icon={a.icon} selected={lockedApps.includes(a.id)} onPress={() => toggle(a.id)} />
         ))}
       </View>
     </Quiz>

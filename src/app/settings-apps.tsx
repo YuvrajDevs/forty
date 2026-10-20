@@ -3,12 +3,13 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppTile } from '../components/AppTile';
-import { LOCKABLE_APPS } from '../lib/apps';
+import { useApps } from '../lib/useApps';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { colors, fonts, spacing } from '../theme';
 
 export default function SettingsApps() {
   const { lockedApps } = useOnboarding();
+  const apps = useApps();
   const toggle = (id: string) =>
     setOnboarding({ lockedApps: lockedApps.includes(id) ? lockedApps.filter((a) => a !== id) : [...lockedApps, id] });
   return (
@@ -22,8 +23,8 @@ export default function SettingsApps() {
         <Text style={styles.title}>Locked apps</Text>
         <Text style={styles.sub}>These stay locked until you read. Calls, messages, maps and emergency apps are never blocked.</Text>
         <View style={styles.grid}>
-          {LOCKABLE_APPS.map((a) => (
-            <AppTile key={a.id} id={a.id} name={a.name} selected={lockedApps.includes(a.id)} onPress={() => toggle(a.id)} />
+          {apps.map((a) => (
+            <AppTile key={a.id} id={a.id} name={a.name} icon={a.icon} selected={lockedApps.includes(a.id)} onPress={() => toggle(a.id)} />
           ))}
         </View>
       </ScrollView>

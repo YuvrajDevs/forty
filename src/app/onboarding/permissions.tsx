@@ -1,15 +1,42 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Quiz } from '../../components/Quiz';
+import { native } from '../../lib/lock';
 import { colors, fonts, radius } from '../../theme';
 
-const PERMISSIONS = [
-  { title: 'Accessibility', why: 'Lets FortyBible notice when a chosen app opens so it can ask you to read first. It never reads your screen.' },
-  { title: 'Display over other apps', why: 'Shows the reading prompt on top of a locked app.' },
-  { title: 'Usage access', why: 'Tells which app is in front, so only the ones you picked are locked.' },
+type Status = { acc: boolean; overlay: boolean; battery: boolean };
+
+const ITEMS: { key: keyof Status; title: string; why: string; open: () => void }[] = [
+  { key: 'acc', title: 'Accessibility', why: 'Lets FortyBible notice when a chosen app opens so it can ask you to read first. It never reads your screen.', open: () => native?.openAccessibilitySettings() },
+  { key: 'overlay', title: 'Display over other apps', why: 'Lets the reading prompt open on top of a locked app.', open: () => native?.openOverlaySettings() },
+  { key: 'battery', title: 'Run in background', why: 'Stops your phone from closing FortyBible, so the lock keeps working.', open: () => native?.openBatterySettings() },
 ];
 
 export default function Permissions() {
+  const [status, setStatus] = useState<Status>({ acc: false, overlay: false, battery: false });
+
+  const refresh = useCallback(() => {
+    if (!native) return;
+    try {
+      setStatus({ acc: native.isAccessibilityEnabled(), overlay: native.canDrawOverlays(), battery: native.isBatteryUnrestricted() });
+    } catch {
+      // keep what we had
+    }
+  }, []);
+
+  // Coming back from Android settings, check again.
+  useEffect(() => {
+    refresh();
+    const sub = AppState.addEventListener('change', (s) => s === 'active' && refresh());
+    return () => sub.remove();
+  }, [refresh]);
+
+  const allow = (open: () => void) => {
+    if (!native) return Alert.alert('Available in the installed app', 'This permission can only be turned on in the installed FortyBible app, not in Expo Go.');
+    open();
+  };
+
   return (
     <Quiz
       compact
@@ -19,15 +46,27 @@ export default function Permissions() {
       onContinue={() => router.push('/onboarding/notifications')}
       cta="Continue"
     >
-      {PERMISSIONS.map((p, i) => (
-        <View key={p.title} style={styles.card}>
-          <Text style={styles.num}>{i + 1}</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.name}>{p.title}</Text>
-            <Text style={styles.why}>{p.why}</Text>
+      {ITEMS.map((p, i) => {
+        const on = status[p.key];
+        return (
+          <View key={p.key} style={styles.card}>
+            <Text style={styles.num}>{i + 1}</Text>
+            <View style={{ flex: 1 }}>
+              <View style={styles.head}>
+                <Text style={styles.name}>{p.title}</Text>
+                {on ? (
+                  <Text style={styles.allowed}>Allowed {'✓'}</Text>
+                ) : (
+                  <Pressable accessibilityRole="button" onPress={() => allow(p.open)} style={styles.allow}>
+                    <Text style={styles.allowText}>Allow</Text>
+                  </Pressable>
+                )}
+              </View>
+              <Text style={styles.why}>{p.why}</Text>
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </Quiz>
   );
 }
@@ -35,6 +74,10 @@ export default function Permissions() {
 const styles = StyleSheet.create({
   card: { flexDirection: 'row', gap: 14, backgroundColor: colors.card, borderRadius: radius.card, paddingVertical: 14, paddingHorizontal: 18, marginBottom: 10 },
   num: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 32, lineHeight: 34, color: colors.gold },
-  name: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
+  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+  name: { flex: 1, fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
   why: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, lineHeight: 19, color: colors.textSecondary },
+  allow: { backgroundColor: colors.primary, borderRadius: 16, paddingVertical: 6, paddingHorizontal: 14 },
+  allowText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.text },
+  allowed: { fontFamily: fonts.semibold, fontSize: 13, color: colors.green },
 });

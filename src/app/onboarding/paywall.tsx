@@ -2,10 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
+import { billingAvailable, buy, loadOffers, refreshEntitlement } from '../../lib/billing';
+import type { Offers } from '../../lib/billing';
 import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { addActiveDays, iso } from '../../lib/schedule';
 import { summarize } from '../../lib/plan';
@@ -39,18 +41,58 @@ export default function Paywall() {
   const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
   const chosen = PLANS[plan];
 
-  const start = () => {
-    const { lockDays } = getOnboarding();
-    setOnboarding({
-      completed: true,
-      startedOn: iso(new Date()),
-      trialStartedAt: iso(new Date()),
-      deadline: iso(addActiveDays(new Date(), days, lockDays)),
-      dayPlan: null,
-      readChapters: [],
-      doneDates: [],
-    });
+  const [offers, setOffers] = useState<Offers | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    loadOffers().then(setOffers);
+  }, []);
+
+  const price = (id: PlanId) => offers?.[id]?.price ?? PLANS[id].price;
+
+  // Saves the plan and opens the app. `entitled` is true once Play confirms a trial or subscription.
+  const enter = () => {
+    const cur = getOnboarding();
+    const entitlement = { entitled: true, entitlementCheckedAt: Date.now() };
+    // Someone coming back to resubscribe keeps their plan and progress.
+    if (cur.completed) setOnboarding(entitlement);
+    else
+      setOnboarding({
+        ...entitlement,
+        completed: true,
+        startedOn: iso(new Date()),
+        trialStartedAt: iso(new Date()),
+        deadline: iso(addActiveDays(new Date(), days, cur.lockDays)),
+        dayPlan: null,
+        readChapters: [],
+        doneDates: [],
+      });
     router.replace('/today');
+  };
+
+  const start = async () => {
+    setMessage('');
+    // Preview builds (Expo Go) have no Google Play, so just let the person in.
+    if (!billingAvailable) return enter();
+    const offer = offers?.[plan];
+    if (!offer) return setMessage('Prices could not be loaded. Check your connection and try again.');
+    setBusy(true);
+    const result = await buy(offer);
+    setBusy(false);
+    if (result === 'purchased') enter();
+    else if (result === 'pending') setMessage('Your payment is pending. You will get access as soon as it clears.');
+    else if (result === 'error') setMessage('Something went wrong. You have not been charged. Please try again.');
+  };
+
+  const restore = async () => {
+    setMessage('');
+    if (!billingAvailable) return setMessage('Restore works in the installed app.');
+    setBusy(true);
+    const active = await refreshEntitlement();
+    setBusy(false);
+    if (active) enter();
+    else setMessage(active === false ? 'No active subscription was found for this Google account.' : 'Could not reach Google Play. Try again.');
   };
 
   return (
@@ -84,18 +126,19 @@ export default function Paywall() {
                 <Text style={styles.cardNote}>{p.note}</Text>
               </View>
               <Text style={styles.cardPrice}>
-                {p.price}
+                {price(id)}
                 <Text style={styles.cardPer}> / {p.per}</Text>
               </Text>
             </Pressable>
           );
         })}
         <Text style={styles.fine}>
-          No payment now. 7 days free, then {chosen.price}/{chosen.per}. Cancel any time in Google Play.
+          No payment now. 7 days free, then {price(plan)}/{chosen.per}. Cancel any time in Google Play.
         </Text>
-        <Button label="Start free trial" onPress={start} />
+        {message ? <Text style={styles.message}>{message}</Text> : null}
+        <Button label={busy ? 'One moment\u2026' : 'Start free trial'} disabled={busy} onPress={start} />
         <View style={styles.links}>
-          <Text style={styles.link}>Restore purchases</Text>
+          <Pressable onPress={restore} hitSlop={8}><Text style={styles.link}>Restore purchases</Text></Pressable>
           <Text style={styles.link}>Terms</Text>
           <Text style={styles.link}>Privacy</Text>
         </View>
@@ -122,6 +165,7 @@ const styles = StyleSheet.create({
   cardPrice: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   cardPer: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
   fine: { marginBottom: 10, fontFamily: fonts.body, fontSize: 12, lineHeight: 16, color: colors.textSecondary, textAlign: 'center' },
+  message: { marginBottom: 8, fontFamily: fonts.medium, fontSize: 13, lineHeight: 18, color: '#B3261E', textAlign: 'center' },
   links: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginTop: 10 },
   link: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary, textDecorationLine: 'underline' },
 });

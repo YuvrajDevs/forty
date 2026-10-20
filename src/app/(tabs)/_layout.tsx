@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Redirect, Tabs } from 'expo-router';
+import { billingAvailable } from '../../lib/billing';
 import { useOnboarding } from '../../lib/onboarding';
 import { colors, fonts } from '../../theme';
 
 export default function TabsLayout() {
-  const { completed } = useOnboarding();
+  const { completed, entitled } = useOnboarding();
   if (!completed) return <Redirect href="/" />;
+  // Hard paywall: no active trial or subscription means the paywall. (Preview builds without Play skip this.)
+  if (billingAvailable && !entitled) return <Redirect href="/onboarding/paywall" />;
   return (
     <Tabs
       screenOptions={{
