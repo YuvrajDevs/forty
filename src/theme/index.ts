@@ -12,6 +12,7 @@ export const colors = {
 
 // Bebas Neue for headings, Outfit for everything else.
 export const fonts = {
+  light: 'Outfit_300Light',
   body: 'Outfit_400Regular',
   medium: 'Outfit_500Medium',
   semibold: 'Outfit_600SemiBold',
