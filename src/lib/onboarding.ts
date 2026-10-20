@@ -38,7 +38,7 @@ const initial: OnboardingState = {
   phoneHours: 4,
   frequency: null,
   scope: 'gospels',
-  days: 30,
+  days: 90,
   lockedApps: [],
   remindersOn: false,
   startedOn: null,

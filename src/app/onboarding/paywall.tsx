@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
@@ -23,9 +24,17 @@ const BENEFITS: { icon: keyof typeof Ionicons.glyphMap; text: string }[] = [
   { icon: 'book-outline', text: 'Read the Bible every day' },
 ];
 
+const IMG_W = 1200;
+const IMG_H = 589;
+const coverTop = ({ width, height }: { width: number; height: number }) => {
+  const scale = Math.max(width / IMG_W, height / IMG_H) || 1;
+  return { position: 'absolute' as const, top: 0, left: (width - IMG_W * scale) / 2, width: IMG_W * scale, height: IMG_H * scale };
+};
+
 export default function Paywall() {
   const { scope, days } = useOnboarding();
   const [plan, setPlan] = useState<PlanId>('yearly');
+  const [box, setBox] = useState({ width: 0, height: 0 });
   const s = summarize(chaptersFor(scope), days);
   const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
   const chosen = PLANS[plan];
@@ -46,7 +55,11 @@ export default function Paywall() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <StatusBar style="light" />
-      <Image source={require('../../../assets/images/sunrise.webp')} style={styles.sun} resizeMode="cover" accessibilityLabel="A sunrise" />
+      <View style={styles.sun} onLayout={(e) => setBox(e.nativeEvent.layout)}>
+        {/* Scaled to cover the box but anchored to the top, so the sun stays in view. */}
+        <Image source={require('../../../assets/images/sunrise.webp')} style={coverTop(box)} accessibilityLabel="A sunrise" />
+        <LinearGradient colors={['rgba(250,246,234,0)', colors.background]} style={styles.sunFade} pointerEvents="none" />
+      </View>
       <View style={styles.body}>
         <Text style={styles.title}>Start your 7-day free trial</Text>
         <Text style={styles.planLine}>
@@ -93,7 +106,8 @@ export default function Paywall() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   // The image takes whatever height the content below leaves, so nothing needs to scroll.
-  sun: { width: '100%', flex: 1, minHeight: 90 },
+  sun: { width: '100%', flex: 1, minHeight: 90, overflow: 'hidden' },
+  sunFade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
   body: { paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.md },
   title: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 42, lineHeight: 44, color: colors.text },
   planLine: { marginTop: 4, fontFamily: fonts.medium, fontSize: 14, color: colors.gold },
