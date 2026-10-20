@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fortybible",
+      "url": "http://localhost:8081"
+    },
+    {
+      "name": "site",
+      "url": "http://localhost:4000"
+    }
+  ]
+}
