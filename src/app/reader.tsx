@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
 import { BOOKS } from '../data/books';
@@ -77,10 +78,10 @@ export default function Reader() {
         </Pressable>
         <Text style={styles.topTitle} numberOfLines={1}>{title}</Text>
         <Pressable accessibilityLabel="Smaller text" hitSlop={8} onPress={() => resize(-2)} style={styles.sizeBtn}>
-          <Text style={[styles.sizeText, { fontSize: 14 }]}>A</Text>
+          <Text style={[styles.sizeText, { fontSize: 14, lineHeight: 18 }]}>A</Text>
         </Pressable>
         <Pressable accessibilityLabel="Larger text" hitSlop={8} onPress={() => resize(2)} style={styles.sizeBtn}>
-          <Text style={[styles.sizeText, { fontSize: 22 }]}>A</Text>
+          <Text style={[styles.sizeText, { fontSize: 22, lineHeight: 26 }]}>A</Text>
         </Pressable>
       </View>
       <ScrollView contentContainerStyle={styles.body} onScroll={onScroll} scrollEventThrottle={100} showsVerticalScrollIndicator={false}>
@@ -116,10 +117,11 @@ export default function Reader() {
         ) : book ? (
           <View style={styles.pager}>
             <View style={{ flex: 1 }}>
-              <Button variant="soft" label="Previous" disabled={freeChapter <= 1} onPress={() => setFreeChapter((c) => c - 1)} />
+              <Button compact variant="soft" label="Previous" disabled={freeChapter <= 1} onPress={() => setFreeChapter((c) => c - 1)} />
             </View>
-            <View style={{ flex: 1.15 }}>
+            <View style={{ flex: 1.3 }}>
               <Button
+                compact
                 variant={isRead ? 'done' : 'primary'}
                 label={isRead ? 'Read ✓' : 'Read'}
                 disabled={isRead}
@@ -127,7 +129,7 @@ export default function Reader() {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <Button variant="soft" label="Next" disabled={freeChapter >= book.words.length} onPress={() => setFreeChapter((c) => c + 1)} />
+              <Button compact variant="soft" label="Next" disabled={freeChapter >= book.words.length} onPress={() => setFreeChapter((c) => c + 1)} />
             </View>
           </View>
         ) : null}
@@ -138,12 +140,11 @@ export default function Reader() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
-  top: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  top: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 56 },
   iconBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
-  closeText: { fontFamily: fonts.body, fontSize: 32, lineHeight: 34, color: colors.text },
-  topTitle: { flex: 1, fontFamily: fonts.medium, fontSize: 14, color: colors.textSecondary },
+  topTitle: { flex: 1, fontFamily: fonts.medium, fontSize: 15, lineHeight: 20, color: colors.textSecondary, includeFontPadding: false },
   sizeBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
-  sizeText: { fontFamily: fonts.scriptureBold, color: colors.text },
+  sizeText: { fontFamily: fonts.scriptureBold, color: colors.text, includeFontPadding: false, textAlign: 'center' },
   body: { paddingHorizontal: 28, paddingTop: spacing.lg, paddingBottom: spacing.lg },
   chapter: { marginBottom: spacing.xl },
   chapterTitle: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 48, lineHeight: 50, color: colors.text, marginBottom: spacing.lg },

@@ -1,10 +1,10 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { colors, fonts, radius } from '../theme';
 
-type Props = { label: string; onPress?: () => void; disabled?: boolean; variant?: 'primary' | 'soft' | 'done' };
+type Props = { label: string; onPress?: () => void; disabled?: boolean; variant?: 'primary' | 'soft' | 'done'; compact?: boolean };
 
 // Yellow button, black label centred both ways. `soft` is for secondary actions.
-export function Button({ label, onPress, disabled, variant = 'primary' }: Props) {
+export function Button({ label, onPress, disabled, variant = 'primary', compact }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -13,6 +13,7 @@ export function Button({ label, onPress, disabled, variant = 'primary' }: Props)
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        compact && styles.compact,
         variant === 'soft' && styles.soft,
         variant === 'done' && styles.done,
         disabled && variant === 'primary' && styles.disabled,
@@ -20,7 +21,9 @@ export function Button({ label, onPress, disabled, variant = 'primary' }: Props)
         pressed && { opacity: 0.85 },
       ]}
     >
-      <Text style={[styles.label, variant === 'done' && { color: '#FFFFFF' }]}>{label}</Text>
+      <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={[styles.label, compact && styles.compactLabel, variant === 'done' && { color: '#FFFFFF' }]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -34,6 +37,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  compact: { height: 54, paddingHorizontal: 6 },
+  compactLabel: { fontSize: 16, paddingHorizontal: 0 },
   soft: { backgroundColor: colors.card },
   softDisabled: { opacity: 0.45 },
   done: { backgroundColor: colors.green },
