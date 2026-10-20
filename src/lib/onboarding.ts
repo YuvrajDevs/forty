@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
+import type { TranslationId } from './bible';
 import type { ScopeId } from './scopes';
 
 export type OnboardingState = {
@@ -21,12 +22,29 @@ export type OnboardingState = {
   /** Hours between one reading prompt and the next. */
   gapHours: number;
   readerFontSize: number;
+  translation: TranslationId;
   /** Chapters read, as "bookId:chapter". */
   readChapters: string[];
   deadline: string | null;
   /** Today's readings as "bookId:chapter" keys, fixed at the start of the day so they stay stable. */
   dayPlan: { date: string; readings: string[][] } | null;
   doneDates: string[];
+  checkins: Checkin[];
+  /** Days the user chose to skip. They neither add to nor break the streak. */
+  skippedDates: string[];
+  /** Missed days are counted from this date; moved forward when the deadline is extended. */
+  behindFrom: string | null;
+  trialStartedAt: string | null;
+  entitled: boolean;
+  entitlementCheckedAt: number | null;
+};
+
+export type Checkin = {
+  date: string;
+  connection: number;
+  feelings: string[];
+  note: string;
+  verse: string;
 };
 
 const KEY = 'forty.onboarding.v1';
@@ -48,10 +66,17 @@ const initial: OnboardingState = {
   lockEndHour: 22,
   gapHours: 3,
   readerFontSize: 20,
+  translation: 'web',
   readChapters: [],
   deadline: null,
   dayPlan: null,
   doneDates: [],
+  checkins: [],
+  skippedDates: [],
+  behindFrom: null,
+  trialStartedAt: null,
+  entitled: false,
+  entitlementCheckedAt: null,
 };
 
 let state: OnboardingState = initial;
@@ -78,6 +103,17 @@ export function getOnboarding(): OnboardingState {
 
 export function resetOnboarding() {
   setOnboarding({ ...initial });
+}
+
+/** Wipes everything stored on the phone. */
+export async function deleteAllData() {
+  state = { ...initial };
+  try {
+    await AsyncStorage.removeItem(KEY);
+  } catch {
+    // Nothing stored.
+  }
+  listeners.forEach((l) => l());
 }
 
 export function useOnboarding(): OnboardingState {

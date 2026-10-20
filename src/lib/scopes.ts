@@ -1,4 +1,5 @@
-import { BOOKS } from '../data/books';
+import { booksFor } from './bible';
+import type { TranslationId } from './bible';
 import type { Chapter } from './plan';
 
 export type ScopeId = 'gospels' | 'nt' | 'ot' | 'bible' | 'wisdom' | `book:${string}`;
@@ -14,8 +15,8 @@ export const SCOPES: { id: Exclude<ScopeId, `book:${string}`>; title: string }[]
 const GOSPELS = ['matthew', 'mark', 'luke', 'john'];
 const WISDOM = ['psalms', 'proverbs'];
 
-export function chaptersFor(scope: ScopeId): Chapter[] {
-  const books = BOOKS.filter((b) => {
+export function chaptersFor(scope: ScopeId, translation: TranslationId = 'web'): Chapter[] {
+  const books = booksFor(translation).filter((b) => {
     if (scope === 'bible') return true;
     if (scope === 'nt') return b.testament === 'nt';
     if (scope === 'ot') return b.testament === 'ot';

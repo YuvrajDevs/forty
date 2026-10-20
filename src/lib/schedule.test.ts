@@ -31,3 +31,20 @@ test('open today does not break the streak', () => {
   const start = d('2026-11-02');
   assert.equal(streak(['2026-11-02', '2026-11-03'], ALL, d('2026-11-04'), start), 2);
 });
+
+import { missedDays } from './schedule.ts';
+
+test('missed days skip rest days, skipped days and read days', () => {
+  const from = d('2026-11-02'); // Monday
+  const today = d('2026-11-09'); // next Monday
+  assert.equal(missedDays([], [], ALL, from, today), 7);
+  assert.equal(missedDays(['2026-11-02', '2026-11-03'], [], ALL, from, today), 5);
+  assert.equal(missedDays([], ['2026-11-04'], ALL, from, today), 6);
+  assert.equal(missedDays([], [], WEEKDAYS, from, today), 5);
+});
+
+test('a skipped day does not break the streak', () => {
+  const start = d('2026-11-02');
+  const today = d('2026-11-05');
+  assert.equal(streak(['2026-11-02', '2026-11-04', '2026-11-05'], ALL, today, start, ['2026-11-03']), 3);
+});

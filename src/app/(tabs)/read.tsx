@@ -2,23 +2,23 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BOOKS } from '../../data/books';
+import { booksFor, translationName } from '../../lib/bible';
 import { useOnboarding } from '../../lib/onboarding';
 import { colors, fonts, radius, spacing } from '../../theme';
 
 export default function Read() {
   const [testament, setTestament] = useState<'ot' | 'nt'>('nt');
   const [open, setOpen] = useState<string | null>(null);
-  const { readChapters } = useOnboarding();
+  const { readChapters, translation } = useOnboarding();
   const readSet = new Set(readChapters);
-  const books = BOOKS.filter((b) => b.testament === testament);
+  const books = booksFor(translation).filter((b) => b.testament === testament);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <Text style={styles.eyebrow}>FORTYBIBLE</Text>
         <Text style={styles.title}>Read</Text>
-        <Text style={styles.sub}>World English Bible, offline. Reading here is for you and doesn't change your plan.</Text>
+        <Text style={styles.sub}>{translationName(translation)}, offline. Chapters you read here count towards your plan.</Text>
 
         <View style={styles.seg}>
           {(['nt', 'ot'] as const).map((t) => (

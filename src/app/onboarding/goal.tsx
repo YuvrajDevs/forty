@@ -10,11 +10,11 @@ const hoursLabel = (minutes: number) => {
 };
 
 export default function Goal() {
-  const { scope } = useOnboarding();
+  const { scope, translation } = useOnboarding();
   return (
     <Quiz step={7} title="What do you want to read?" subtitle="You can change this later." onContinue={() => router.push('/onboarding/days')}>
       {SCOPES.map((o) => {
-        const chapters = chaptersFor(o.id);
+        const chapters = chaptersFor(o.id, translation);
         return (
           <Option
             key={o.id}

@@ -10,8 +10,8 @@ const PRESETS = [7, 14, 30, 60, 90, 180, 365];
 const label = (d: number) => (d === 365 ? '1 year' : `${d} days`);
 
 export default function Days() {
-  const { scope, days } = useOnboarding();
-  const chapters = chaptersFor(scope);
+  const { scope, days, translation } = useOnboarding();
+  const chapters = chaptersFor(scope, translation);
   const s = summarize(chapters, days);
   const plan = buildPlan(chapters, days).slice(0, 3);
   const end = finishDate(new Date(), days).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });

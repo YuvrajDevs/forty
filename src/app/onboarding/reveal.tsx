@@ -16,8 +16,8 @@ const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
 export default function Reveal() {
-  const { phoneHours } = useOnboarding();
-  const bibleHours = summarize(chaptersFor('bible'), 1).totalMinutes / 60;
+  const { phoneHours, translation } = useOnboarding();
+  const bibleHours = summarize(chaptersFor('bible', translation), 1).totalMinutes / 60;
   const yearHours = phoneHours * 365;
   const percent = (bibleHours / yearHours) * 100;
   const times = yearHours / bibleHours;

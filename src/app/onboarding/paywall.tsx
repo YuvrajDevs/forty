@@ -32,10 +32,10 @@ const coverTop = ({ width, height }: { width: number; height: number }) => {
 };
 
 export default function Paywall() {
-  const { scope, days } = useOnboarding();
+  const { scope, days, translation } = useOnboarding();
   const [plan, setPlan] = useState<PlanId>('yearly');
   const [box, setBox] = useState({ width: 0, height: 0 });
-  const s = summarize(chaptersFor(scope), days);
+  const s = summarize(chaptersFor(scope, translation), days);
   const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
   const chosen = PLANS[plan];
 
@@ -44,6 +44,7 @@ export default function Paywall() {
     setOnboarding({
       completed: true,
       startedOn: iso(new Date()),
+      trialStartedAt: iso(new Date()),
       deadline: iso(addActiveDays(new Date(), days, lockDays)),
       dayPlan: null,
       readChapters: [],

@@ -8,6 +8,7 @@ export type PlanState = {
   deadline: string | null;
   readChapters: string[];
   dayPlan: { date: string; readings: string[][] } | null;
+  skippedDates?: string[];
 };
 
 export type Today = {
@@ -20,6 +21,7 @@ export type Today = {
   daysLeft: number;
   active: boolean;
   finished: boolean;
+  skipped: boolean;
   chaptersRead: number;
   unreadChapters: Chapter[];
 };
@@ -43,10 +45,12 @@ export function computeToday(chapters: Chapter[], s: PlanState, now = new Date()
   const unreadChapters = chapters.filter((c) => !read.has(key(c)));
   const deadline = s.deadline ? fromIso(s.deadline) : now;
   const daysLeft = Math.max(1, activeDaysBetween(now, deadline, s.lockDays));
-  const active = isActive(now, s.lockDays);
 
-  const readings: Reading[] =
-    s.dayPlan?.date === date
+  const skipped = (s.skippedDates ?? []).includes(date);
+  const active = isActive(now, s.lockDays) && !skipped;
+  const readings: Reading[] = skipped
+    ? []
+    : s.dayPlan?.date === date
       ? s.dayPlan.readings.map((keys) => makeReading(keys.map((k) => byKey.get(k)).filter((c): c is Chapter => !!c))).filter((r) => r.chapters.length)
       : freshReadings(chapters, s, now);
 
@@ -60,6 +64,7 @@ export function computeToday(chapters: Chapter[], s: PlanState, now = new Date()
     daysLeft,
     active,
     finished: unreadChapters.length === 0,
+    skipped,
     chaptersRead: chapters.length - unreadChapters.length,
     unreadChapters,
   };

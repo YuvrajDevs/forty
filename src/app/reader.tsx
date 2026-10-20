@@ -4,8 +4,7 @@ import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSh
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
-import { BOOKS } from '../data/books';
-import { WEB } from '../data/web';
+import { booksFor, chapterVerses, translationName } from '../lib/bible';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { getToday, markChaptersRead } from '../lib/progress';
 import { key } from '../lib/today';
@@ -44,7 +43,7 @@ export default function Reader() {
 
   const today = getToday(s);
   const reading = plan && today.nextIndex >= 0 ? today.readings[today.nextIndex] : undefined;
-  const book = BOOKS.find((b) => b.id === params.book);
+  const book = booksFor(s.translation).find((b) => b.id === params.book);
 
   const refs: Ref[] = useMemo(() => {
     if (plan) return (reading?.chapters ?? []).map((c) => ({ bookId: c.bookId, bookName: c.bookName, chapter: c.chapter }));
@@ -90,7 +89,7 @@ export default function Reader() {
         {refs.map((r) => (
           <View key={`${r.bookId}-${r.chapter}`} style={styles.chapter}>
             <Text style={styles.chapterTitle}>{r.bookName} {r.chapter}</Text>
-            {paragraphs(WEB[r.bookId]?.[r.chapter - 1] ?? []).map((p, pi) => (
+            {paragraphs(chapterVerses(s.translation, r.bookId, r.chapter)).map((p, pi) => (
               <Text key={pi} style={[styles.verse, { fontSize: size, lineHeight: size * 1.75 }]}>
                 {p.map((run, ri) => (
                   <Text key={ri}>
@@ -103,7 +102,7 @@ export default function Reader() {
             ))}
           </View>
         ))}
-        <Text style={styles.credit}>World English Bible, public domain.</Text>
+        <Text style={styles.credit}>{translationName(s.translation)}, public domain.</Text>
       </ScrollView>
       <View style={styles.footer}>
         {plan ? (

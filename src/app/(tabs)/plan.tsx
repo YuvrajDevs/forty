@@ -1,9 +1,8 @@
 import Slider from '@react-native-community/slider';
-import { router } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from '../../components/Calendar';
-import { resetOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
+import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { currentLocksPerDay, getToday, setLockDays, setReadingDays, setReadingsPerDay } from '../../lib/progress';
 import { fromIso, iso } from '../../lib/schedule';
 import { chaptersFor, SCOPES } from '../../lib/scopes';
@@ -140,17 +139,8 @@ export default function Plan() {
             </Pressable>
           ))}
         </View>
-        <Text style={styles.hint}>{chaptersFor(s.scope).length} chapters in your current plan.</Text>
+        <Text style={styles.hint}>{chaptersFor(s.scope, s.translation).length} chapters in your current plan.</Text>
 
-        <Pressable
-          onPress={() => {
-            resetOnboarding();
-            router.replace('/');
-          }}
-          style={styles.reset}
-        >
-          <Text style={styles.resetText}>Restart onboarding</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -196,6 +186,4 @@ const styles = StyleSheet.create({
   day: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
   dayOn: { backgroundColor: colors.primary },
   dayText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.text },
-  reset: { marginTop: spacing.xl, alignItems: 'center', padding: 12 },
-  resetText: { fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary, textDecorationLine: 'underline' },
 });

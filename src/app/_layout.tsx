@@ -5,7 +5,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { loadOnboarding } from '../lib/onboarding';
+import { syncNotifications } from '../lib/notifications';
+import { loadOnboarding, useOnboarding } from '../lib/onboarding';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -14,9 +15,15 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({ Outfit_300Light, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular, Lora_400Regular, Lora_600SemiBold });
 
   const [ready, setReady] = useState(false);
+  const app = useOnboarding();
   useEffect(() => {
     loadOnboarding().finally(() => setReady(true));
   }, []);
+
+  useEffect(() => {
+    if (ready) syncNotifications(app);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, app.remindersOn, app.completed, app.lockStartHour, app.trialStartedAt, app.lockDays.join()]);
 
   useEffect(() => {
     if ((loaded || error) && ready) SplashScreen.hideAsync();

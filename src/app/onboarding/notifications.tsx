@@ -1,21 +1,9 @@
-import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { router } from 'expo-router';
 import { Quiz } from '../../components/Quiz';
+import { requestNotificationPermission } from '../../lib/notifications';
 import { setOnboarding } from '../../lib/onboarding';
 import { Text, StyleSheet } from 'react-native';
 import { colors, fonts } from '../../theme';
-
-async function askForNotifications(): Promise<boolean> {
-  // Expo Go on Android has no notifications module; the real build does.
-  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return false;
-  try {
-    const Notifications = await import('expo-notifications');
-    const { status } = await Notifications.requestPermissionsAsync();
-    return status === 'granted';
-  } catch {
-    return false;
-  }
-}
 
 export default function Notifications() {
   return (
@@ -25,7 +13,7 @@ export default function Notifications() {
       subtitle="We'll also tell you before your free trial ends, so there are no surprises."
       cta="Yes, remind me"
       onContinue={async () => {
-        setOnboarding({ remindersOn: await askForNotifications() });
+        setOnboarding({ remindersOn: await requestNotificationPermission() });
         router.push('/onboarding/journey');
       }}
       secondary={{ label: 'Not now', onPress: () => router.push('/onboarding/journey') }}

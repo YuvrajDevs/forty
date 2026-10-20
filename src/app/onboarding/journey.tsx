@@ -16,8 +16,8 @@ const STEPS = [
 ];
 
 export default function Journey() {
-  const { scope, days } = useOnboarding();
-  const plan = buildPlan(chaptersFor(scope), days);
+  const { scope, days, translation } = useOnboarding();
+  const plan = buildPlan(chaptersFor(scope, translation), days);
   const name = SCOPES.find((s) => s.id === scope)?.title ?? 'the Bible';
   const chaptersBy = (d: number) =>
     plan.slice(0, d).reduce((n, day) => n + day.readings.reduce((m, r) => m + r.chapters.length, 0), 0);

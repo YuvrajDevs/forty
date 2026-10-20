@@ -1,14 +1,14 @@
 import { getOnboarding, setOnboarding } from './onboarding';
 import type { OnboardingState } from './onboarding';
 import { SESSION_WORDS, summarize } from './plan';
-import { addActiveDays, iso } from './schedule';
+import { activeDaysBetween, addActiveDays, fromIso, iso, missedDays } from './schedule';
 import { chaptersFor } from './scopes';
 import { computeToday, freshReadings, key } from './today';
 import type { Today } from './today';
 
 export type { Today };
 
-export const getToday = (s: OnboardingState, now = new Date()): Today => computeToday(chaptersFor(s.scope), s, now);
+export const getToday = (s: OnboardingState, now = new Date()): Today => computeToday(chaptersFor(s.scope, s.translation), s, now);
 
 /** Saves today's list the first time it is needed, so it does not shift as chapters get read. */
 export function ensureDayPlan() {
@@ -16,7 +16,7 @@ export function ensureDayPlan() {
   const now = new Date();
   const date = iso(now);
   if (s.dayPlan?.date === date) return;
-  const readings = freshReadings(chaptersFor(s.scope), s, now);
+  const readings = freshReadings(chaptersFor(s.scope, s.translation), s, now);
   setOnboarding({ dayPlan: { date, readings: readings.map((r) => r.chapters.map(key)) } });
 }
 
@@ -70,4 +70,27 @@ export function setLockDays(mask: boolean[]) {
 export function currentLocksPerDay(s: OnboardingState): number {
   const t = getToday(s);
   return summarize(t.unreadChapters, t.daysLeft).locksPerDay;
+}
+
+/** Lock days missed since the plan began (or since the deadline was last extended). */
+export function behindBy(s: OnboardingState, now = new Date()): number {
+  const from = fromIso(s.behindFrom ?? s.startedOn ?? iso(now));
+  return missedDays(s.doneDates, s.skippedDates, s.lockDays, from, new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+}
+
+/** Pushes the finish date back by the days that were missed, then starts counting afresh. */
+export function extendDeadline() {
+  const s = getOnboarding();
+  const now = new Date();
+  const missed = behindBy(s, now);
+  const left = Math.max(1, activeDaysBetween(now, s.deadline ? fromIso(s.deadline) : now, s.lockDays));
+  setOnboarding({ deadline: iso(addActiveDays(now, left + missed, s.lockDays)), behindFrom: iso(now) });
+  refreshDayPlan();
+}
+
+export function skipToday(skip: boolean) {
+  const s = getOnboarding();
+  const date = iso(new Date());
+  const rest = s.skippedDates.filter((d) => d !== date);
+  setOnboarding({ skippedDates: skip ? [...rest, date] : rest });
 }
