@@ -52,10 +52,10 @@ export default function Reveal() {
 }
 
 const styles = StyleSheet.create({
-  big: { fontFamily: fonts.displayRegular, fontSize: 20, lineHeight: 30, color: colors.text },
+  big: { fontFamily: fonts.medium, fontSize: 20, lineHeight: 30, color: colors.text },
   bars: { marginVertical: 28 },
   barLabel: { fontFamily: fonts.medium, fontSize: 13, color: colors.textSecondary, marginBottom: 6 },
-  track: { height: 28, borderRadius: radius.button, backgroundColor: '#EFE6CC', overflow: 'hidden' },
+  track: { height: 28, borderRadius: radius.button, backgroundColor: colors.card, overflow: 'hidden' },
   bar: { height: 28, borderRadius: radius.button },
   body: { fontFamily: fonts.body, fontSize: 15, lineHeight: 24, color: colors.text },
   note: { marginTop: 12, fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },

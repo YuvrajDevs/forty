@@ -9,6 +9,7 @@ export type OnboardingState = {
   frequency: string | null;
   scope: ScopeId;
   days: number;
+  lockedApps: string[];
 };
 
 let state: OnboardingState = {
@@ -19,6 +20,7 @@ let state: OnboardingState = {
   frequency: null,
   scope: 'gospels',
   days: 30,
+  lockedApps: [],
 };
 const listeners = new Set<() => void>();
 

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
-    "@expo-google-fonts/playfair-display": "^0.4.2",
-    "@expo-google-fonts/poppins": "^0.4.1",
+    "@expo-google-fonts/bebas-neue": "^0.4.1",
+    "@expo-google-fonts/outfit": "^0.4.3",
     "@expo/ui": "~57.0.25",
     "@react-native-community/slider": "5.2.0",
     "expo": "^57.0.0",
@@ -13,6 +13,7 @@
     "expo-device": "~57.0.2",
     "expo-font": "~57.0.4",
     "expo-glass-effect": "~57.0.4",
+    "expo-haptics": "~57.0.3",
     "expo-image": "~57.0.5",
     "expo-linking": "~57.0.13",
     "expo-router": "~57.0.28",

@@ -1,10 +1,5 @@
-import { Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import {
-  PlayfairDisplay_400Regular,
-  PlayfairDisplay_400Regular_Italic,
-  PlayfairDisplay_600SemiBold,
-  useFonts,
-} from '@expo-google-fonts/playfair-display';
+import { BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import { Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, useFonts } from '@expo-google-fonts/outfit';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -14,14 +9,7 @@ import { colors } from '../theme';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    PlayfairDisplay_400Regular,
-    PlayfairDisplay_400Regular_Italic,
-    PlayfairDisplay_600SemiBold,
-  });
+  const [loaded, error] = useFonts({ Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular });
 
   useEffect(() => {
     if (loaded || error) SplashScreen.hideAsync();

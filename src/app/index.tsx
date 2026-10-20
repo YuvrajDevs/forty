@@ -21,7 +21,7 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
-  title: { fontFamily: fonts.display, fontSize: 36, lineHeight: 46, color: colors.text, textAlign: 'center' },
-  subtitle: { marginTop: spacing.md, fontFamily: fonts.body, fontSize: 16, color: colors.textSecondary, textAlign: 'center' },
+  title: { fontFamily: fonts.display, fontSize: 72, lineHeight: 72, letterSpacing: 1, color: colors.text, textAlign: 'center' },
+  subtitle: { marginTop: spacing.md, fontFamily: fonts.body, fontSize: 17, color: colors.textSecondary, textAlign: 'center' },
   footer: { padding: spacing.lg },
 });

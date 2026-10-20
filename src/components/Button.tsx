@@ -3,7 +3,7 @@ import { colors, fonts, radius } from '../theme';
 
 type Props = { label: string; onPress?: () => void; disabled?: boolean };
 
-// Yellow button, white label centred both ways.
+// Yellow button, black label centred both ways.
 export function Button({ label, onPress, disabled }: Props) {
   return (
     <Pressable
@@ -22,17 +22,17 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderRadius: radius.button,
-    height: 56,
+    height: 58,
     paddingHorizontal: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  disabled: { opacity: 0.45 },
+  disabled: { opacity: 0.4 },
   label: {
     fontFamily: fonts.semibold,
-    fontSize: 16,
+    fontSize: 17,
     lineHeight: 22,
-    color: '#FFFFFF',
+    color: colors.text,
     textAlign: 'center',
     includeFontPadding: false,
     textAlignVertical: 'center',

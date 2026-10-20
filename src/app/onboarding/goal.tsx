@@ -48,8 +48,8 @@ export default function Goal() {
 const styles = StyleSheet.create({
   heading: { marginTop: 12, marginBottom: 10, fontFamily: fonts.medium, fontSize: 14, color: colors.textSecondary },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  chip: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: radius.button, borderWidth: 1.5, borderColor: '#EADFC2', backgroundColor: colors.card },
-  chipOn: { borderColor: colors.gold, backgroundColor: '#FFFBEF' },
+  chip: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.card },
+  chipOn: { backgroundColor: colors.cardSelected },
   chipText: { fontFamily: fonts.medium, fontSize: 14, color: colors.text },
   summary: { marginTop: 20, fontFamily: fonts.body, fontSize: 15, lineHeight: 24, color: colors.text },
   warn: { marginTop: 8, fontFamily: fonts.body, fontSize: 13, lineHeight: 20, color: colors.gold },

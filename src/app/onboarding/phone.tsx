@@ -34,7 +34,7 @@ export default function Phone() {
 
 const styles = StyleSheet.create({
   center: { alignItems: 'center', marginVertical: 24 },
-  value: { fontFamily: fonts.display, fontSize: 72, lineHeight: 84, color: colors.text },
+  value: { fontFamily: fonts.display, fontSize: 120, lineHeight: 120, color: colors.text },
   unit: { fontFamily: fonts.body, fontSize: 16, color: colors.textSecondary },
   ends: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 },
   end: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },

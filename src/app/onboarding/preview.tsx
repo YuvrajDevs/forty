@@ -14,7 +14,7 @@ export default function Preview() {
   const end = finishDate(new Date(), days).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
   const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
   return (
-    <Quiz step={8} title={`${s.locksPerDay} ${s.locksPerDay === 1 ? 'reading' : 'readings'} a day. Finish by ${end}.`} subtitle={title} onContinue={() => router.replace('/')} cta="Looks good">
+    <Quiz step={8} title={`${s.locksPerDay} ${s.locksPerDay === 1 ? 'reading' : 'readings'} a day. Finish by ${end}.`} subtitle={title} onContinue={() => router.push('/onboarding/apps')} cta="Looks good">
       {plan.map((d) => (
         <View key={d.day} style={styles.card}>
           <Text style={styles.day}>Day {d.day}</Text>
@@ -33,7 +33,7 @@ export default function Preview() {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 18, marginBottom: 12, borderWidth: 1, borderColor: '#EADFC2' },
+  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 12 },
   day: { fontFamily: fonts.semibold, fontSize: 12, color: colors.gold, marginBottom: 6, letterSpacing: 0.5, textTransform: 'uppercase' },
   reading: { fontFamily: fonts.medium, fontSize: 16, lineHeight: 26, color: colors.text },
   min: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },

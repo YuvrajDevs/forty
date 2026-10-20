@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, radius, spacing } from '../theme';
 import { Button } from './Button';
 
-export const TOTAL_STEPS = 9;
+export const TOTAL_STEPS = 12;
 
 type Props = {
   step: number;
@@ -15,9 +15,10 @@ type Props = {
   cta?: string;
   ctaDisabled?: boolean;
   onContinue: () => void;
+  footer?: ReactNode;
 };
 
-export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue }: Props) {
+export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
@@ -29,11 +30,13 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
+        <Text style={styles.eyebrow}>FORTY  {'·'}  {step} OF {TOTAL_STEPS}</Text>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         <View style={{ marginTop: spacing.lg }}>{children}</View>
       </ScrollView>
       <View style={styles.footer}>
+        {footer}
         <Button label={cta} disabled={ctaDisabled} onPress={onContinue} />
       </View>
     </SafeAreaView>
@@ -48,8 +51,11 @@ export function Option({ label, hint, selected, onPress }: { label: string; hint
       onPress={onPress}
       style={[styles.option, selected && styles.optionSelected]}
     >
-      <Text style={styles.optionLabel}>{label}</Text>
-      {hint ? <Text style={styles.optionHint}>{hint}</Text> : null}
+      <View style={{ flex: 1 }}>
+        <Text style={styles.optionLabel}>{label}</Text>
+        {hint ? <Text style={styles.optionHint}>{hint}</Text> : null}
+      </View>
+      <View style={[styles.radio, selected && styles.radioOn]} />
     </Pressable>
   );
 }
@@ -59,22 +65,25 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, gap: spacing.md },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
   backText: { fontFamily: fonts.body, fontSize: 32, lineHeight: 34, color: colors.text, includeFontPadding: false },
-  track: { flex: 1, height: 6, borderRadius: 3, backgroundColor: '#EADFC2', overflow: 'hidden' },
-  fill: { height: 6, borderRadius: 3, backgroundColor: colors.gold },
-  body: { padding: spacing.lg, paddingTop: spacing.xl },
-  title: { fontFamily: fonts.display, fontSize: 28, lineHeight: 38, color: colors.text },
-  subtitle: { marginTop: spacing.sm, fontFamily: fonts.body, fontSize: 14, lineHeight: 22, color: colors.textSecondary },
-  footer: { padding: spacing.lg, paddingBottom: spacing.lg },
+  track: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border, overflow: 'hidden' },
+  fill: { height: 4, borderRadius: 2, backgroundColor: colors.gold },
+  body: { padding: spacing.lg, paddingTop: spacing.lg },
+  eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
+  title: { marginTop: spacing.md, fontFamily: fonts.display, fontSize: 46, lineHeight: 48, letterSpacing: 0.5, color: colors.text },
+  subtitle: { marginTop: spacing.sm, fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.textSecondary },
+  footer: { padding: spacing.lg, gap: 12 },
   option: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.card,
     borderRadius: radius.card,
-    borderWidth: 1.5,
-    borderColor: '#EADFC2',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 22,
     marginBottom: 12,
   },
-  optionSelected: { borderColor: colors.gold, backgroundColor: '#FFFBEF' },
-  optionLabel: { fontFamily: fonts.medium, fontSize: 16, color: colors.text },
+  optionSelected: { backgroundColor: colors.cardSelected },
+  optionLabel: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   optionHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },
+  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: '#BDB398' },
+  radioOn: { backgroundColor: colors.gold, borderColor: colors.gold },
 });
