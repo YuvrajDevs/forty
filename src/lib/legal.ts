@@ -13,7 +13,7 @@ export const LEGAL: LegalDoc[] = [
       { heading: 'No ads, no selling', body: 'There are no ads and no analytics in this version. We do not sell or share your data.' },
       { heading: 'Payments', body: 'Subscriptions are handled by Google Play. We never see your card details. Google tells the app whether your subscription is active.' },
       { heading: 'Permissions', body: 'Accessibility is used only to notice which app is open so the lock can ask you to read first. Display over other apps is used to show the reading prompt. Notifications are used for your daily reminder and a reminder before your trial ends. None of this information leaves your phone.' },
-      { heading: 'Your control', body: 'You can export or delete everything at any time in Settings. Uninstalling the app also removes the data.' },
+      { heading: 'Your control', body: 'You can delete everything at any time in Settings. Uninstalling the app also removes the data.' },
       { heading: 'Support', body: 'Not a replacement for care. FortyBible is not counselling, and it does not replace a pastor or professional help. If you are in crisis, please contact a local helpline or emergency service.' },
     ],
   },

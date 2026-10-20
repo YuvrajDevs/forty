@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { Alert, Linking, Pressable, ScrollView, Share, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TRANSLATIONS } from '../lib/bible';
 import { requestNotificationPermission } from '../lib/notifications';
@@ -17,8 +17,6 @@ export default function Settings() {
     if (ok) setOnboarding({ remindersOn: true });
     else Alert.alert('Notifications are off', 'Turn on notifications for FortyBible in your phone settings to get reminders.');
   };
-
-  const exportData = () => Share.share({ title: 'FortyBible data', message: JSON.stringify(getOnboarding(), null, 2) });
 
   const wipe = () =>
     Alert.alert('Delete everything?', 'This removes your plan, reading history, streak and journal from this phone. It cannot be undone.', [
@@ -61,7 +59,7 @@ export default function Settings() {
         {TRANSLATIONS.map((t) => {
           const on = s.translation === t.id;
           return (
-            <Pressable key={t.id} accessibilityRole="radio" accessibilityState={{ selected: on }} onPress={() => setOnboarding({ translation: t.id })} style={[styles.card, on && styles.cardOn]}>
+            <Pressable key={t.id} accessibilityRole="radio" accessibilityState={{ selected: on }} onPress={() => setOnboarding({ translation: t.id, dayPlan: null })} style={[styles.card, on && styles.cardOn]}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.cardTitle}>{t.name}</Text>
                 <Text style={styles.cardHint}>{t.note}</Text>
@@ -88,7 +86,6 @@ export default function Settings() {
         <Row icon="card-outline" label="Manage subscription" onPress={() => Linking.openURL('https://play.google.com/store/account/subscriptions')} />
 
         <Text style={styles.section}>Your data</Text>
-        <Row icon="share-outline" label="Export my data" onPress={exportData} />
         <Row icon="refresh-outline" label="Restart onboarding" onPress={restart} />
         <Row icon="trash-outline" label="Delete everything" danger onPress={wipe} />
 
