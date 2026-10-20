@@ -18,9 +18,11 @@ type Props = {
   onContinue: () => void;
   footer?: ReactNode;
   secondary?: { label: string; onPress: () => void };
+  /** Tighter title and spacing, for screens that must fit without scrolling. */
+  compact?: boolean;
 };
 
-export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer, secondary }: Props) {
+export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer, secondary, compact }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
@@ -33,9 +35,9 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <Text style={styles.eyebrow}>{step ? `FORTYBIBLE  \u00B7  ${step} OF ${TOTAL_STEPS}` : 'FORTYBIBLE'}</Text>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, compact && styles.titleCompact]}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-        <View style={{ marginTop: spacing.lg }}>{children}</View>
+        <View style={{ marginTop: compact ? spacing.md : spacing.lg }}>{children}</View>
       </ScrollView>
       <View style={styles.footer}>
         {footer}
@@ -76,6 +78,7 @@ const styles = StyleSheet.create({
   body: { padding: spacing.lg, paddingTop: spacing.lg },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
   title: { marginTop: spacing.md, fontFamily: fonts.display, includeFontPadding: false, fontSize: 46, lineHeight: 48, letterSpacing: 0.5, color: colors.text },
+  titleCompact: { fontSize: 36, lineHeight: 38, marginTop: spacing.sm },
   subtitle: { marginTop: spacing.sm, fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.textSecondary },
   footer: { padding: spacing.lg, gap: 12 },
   option: {

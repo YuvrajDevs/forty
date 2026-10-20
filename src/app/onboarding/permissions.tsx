@@ -4,17 +4,18 @@ import { Quiz } from '../../components/Quiz';
 import { colors, fonts, radius } from '../../theme';
 
 const PERMISSIONS = [
-  { title: 'Accessibility', why: 'Lets FortyBible notice when one of your chosen apps opens, so it can ask you to read first. FortyBible never reads what is on your screen.' },
-  { title: 'Display over other apps', why: 'Lets FortyBible show the reading prompt on top of a locked app.' },
-  { title: 'Usage access', why: 'Helps FortyBible tell which app is in front so it only locks the ones you picked.' },
+  { title: 'Accessibility', why: 'Lets FortyBible notice when a chosen app opens so it can ask you to read first. It never reads your screen.' },
+  { title: 'Display over other apps', why: 'Shows the reading prompt on top of a locked app.' },
+  { title: 'Usage access', why: 'Tells which app is in front, so only the ones you picked are locked.' },
 ];
 
 export default function Permissions() {
   return (
     <Quiz
+      compact
       step={11}
       title="Three quick permissions"
-      subtitle="Android needs your OK for the lock to work. Each one has a plain reason, and you can turn them off any time."
+      subtitle="Android needs your OK for the lock to work. You can turn each off any time."
       onContinue={() => router.push('/onboarding/notifications')}
       cta="Continue"
     >
@@ -32,8 +33,8 @@ export default function Permissions() {
 }
 
 const styles = StyleSheet.create({
-  card: { flexDirection: 'row', gap: 16, backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 12 },
-  num: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 36, lineHeight: 38, color: colors.gold },
-  name: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
-  why: { marginTop: 4, fontFamily: fonts.body, fontSize: 14, lineHeight: 21, color: colors.textSecondary },
+  card: { flexDirection: 'row', gap: 14, backgroundColor: colors.card, borderRadius: radius.card, paddingVertical: 14, paddingHorizontal: 18, marginBottom: 10 },
+  num: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 32, lineHeight: 34, color: colors.gold },
+  name: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
+  why: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, lineHeight: 19, color: colors.textSecondary },
 });
