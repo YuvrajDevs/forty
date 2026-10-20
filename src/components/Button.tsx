@@ -1,12 +1,17 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { colors, fonts, radius } from '../theme';
 
-export function Button({ label, onPress }: { label: string; onPress?: () => void }) {
+type Props = { label: string; onPress?: () => void; disabled?: boolean };
+
+// Yellow button, white label centred both ways.
+export function Button({ label, onPress, disabled }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.button, pressed && { opacity: 0.85 }]}
+      style={({ pressed }) => [styles.button, disabled && styles.disabled, pressed && { opacity: 0.85 }]}
     >
       <Text style={styles.label}>{label}</Text>
     </Pressable>
@@ -17,9 +22,19 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderRadius: radius.button,
-    paddingVertical: 16,
+    height: 56,
     paddingHorizontal: 32,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  label: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
+  disabled: { opacity: 0.45 },
+  label: {
+    fontFamily: fonts.semibold,
+    fontSize: 16,
+    lineHeight: 22,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
 });

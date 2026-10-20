@@ -6,6 +6,7 @@
     "@expo-google-fonts/playfair-display": "^0.4.2",
     "@expo-google-fonts/poppins": "^0.4.1",
     "@expo/ui": "~57.0.25",
+    "@react-native-community/slider": "5.2.0",
     "expo": "^57.0.0",
     "expo-constants": "~57.0.22",
     "expo-dev-client": "~57.0.20",
