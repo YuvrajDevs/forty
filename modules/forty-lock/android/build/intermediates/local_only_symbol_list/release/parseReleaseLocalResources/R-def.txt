@@ -1,4 +1,12 @@
 R_DEF: Internal format may change without notice
 local
+drawable forty_widget_bg
+id forty_widget_ref
+id forty_widget_root
+id forty_widget_streak
+id forty_widget_verse
+layout forty_widget
 string forty_lock_service_description
+string forty_widget_description
 xml forty_lock_service
+xml forty_widget_info

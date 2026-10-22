@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-27:12
-INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-27:12
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-39:12
+INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-39:12
 	package
 		INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml
 	xmlns:android
@@ -23,7 +23,7 @@ ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/mai
 	android:name
 		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:17-64
 application
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:3-26:17
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:3-38:17
 service#expo.modules.fortylock.FortyLockService
 ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:5-25:15
 	android:label
@@ -46,6 +46,26 @@ ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/mai
 		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:24:9-51
 	android:name
 		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:23:9-52
+receiver#expo.modules.fortylock.FortyWidgetProvider
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:27:5-37:16
+	android:label
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:30:7-33
+	android:exported
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:29:7-31
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:28:7-64
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:31:7-33:23
+action#android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:9-76
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:17-73
+meta-data#android.appwidget.provider
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:34:7-36:53
+	android:resource
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:36:9-50
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:35:9-50
 uses-sdk
 INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "expo.modules.fortylock.forty-lock-release-3:/values/values.xml",
+            "outputFile": "/Users/yuvraj/.gradle/daemon/9.3.1/expo.modules.fortylock.forty-lock-release-3:/values/values.xml",
             "map": [
                 {
                     "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",
@@ -23,7 +23,51 @@
             ]
         },
         {
+            "outputFile": "expo.modules.fortylock.forty-lock-release-3:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "-1,2",
+                        "startColumns": "-1,2",
+                        "startOffsets": "-1,192",
+                        "endColumns": "-1,87",
+                        "endOffsets": "-1,277"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,235",
+                        "endColumns": "179,89",
+                        "endOffsets": "230,320"
+                    }
+                }
+            ]
+        },
+        {
             "outputFile": "expo.modules.fortylock.forty-lock-mergeReleaseResources-1:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "-1,2",
+                        "startColumns": "-1,2",
+                        "startOffsets": "-1,192",
+                        "endColumns": "-1,87",
+                        "endOffsets": "-1,277"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,235",
+                        "endColumns": "179,89",
+                        "endOffsets": "230,320"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/Users/yuvraj/.gradle/daemon/9.3.1/expo.modules.fortylock.forty-lock-mergeReleaseResources-1:/values/values.xml",
             "map": [
                 {
                     "source": "/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/res/values/strings.xml",

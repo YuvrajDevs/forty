@@ -35,6 +35,8 @@ buttons and their live status, the notification permission prompt, the lock prom
 Chrome, reading then returning to Chrome with the gap applied, the second reading, Emergency access,
 and a standalone release build with no dev server.
 
+Also tested on the emulator: audio mode (Google TTS), search and jump to a verse, the verse sheet, verse cards and the Android share sheet, pausing and resuming a plan (the lock stays off while paused), and the home-screen widget (added from the widget picker).
+
 Not tested: Google Play billing (no Play Store on the emulator), notification delivery at the
 scheduled time, real Vivo background-killing behaviour.
 
