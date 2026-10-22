@@ -22,7 +22,7 @@ type Props = {
   /** A verse to flash, such as the one a search result points to. */
   flashVerse?: number;
   onVerse: (verse: number) => void;
-  onParagraphLayout?: (paraIdx: number, y: number) => void;
+  onParagraphLayout?: (paraIdx: number, y: number, height: number) => void;
   onChapterLayout?: (y: number) => void;
 };
 
@@ -36,7 +36,7 @@ function ChapterTextBase({ bookId, bookName, chapter, translation, size, highlig
     <View style={styles.chapter} onLayout={(e) => onChapterLayout?.(e.nativeEvent.layout.y)}>
       <Text style={styles.title}>{bookName} {chapter}</Text>
       {paras.map((p, pi) => (
-        <View key={pi} onLayout={(e) => onParagraphLayout?.(pi, e.nativeEvent.layout.y)} style={[styles.para, activePara === pi && styles.paraActive]}>
+        <View key={pi} onLayout={(e) => onParagraphLayout?.(pi, e.nativeEvent.layout.y, e.nativeEvent.layout.height)} style={[styles.para, activePara === pi && styles.paraActive]}>
           <Text style={[styles.verse, { fontSize: size, lineHeight: size * 1.75 }]}>
             {p.map((run, ri) => {
               const k = `${bookId}:${chapter}:${run.verse}`;

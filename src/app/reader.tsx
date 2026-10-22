@@ -59,10 +59,12 @@ export default function Reader() {
   // Positions, so the page can follow the voice and jump to a searched verse.
   const scroller = useRef<ScrollView>(null);
   const chapterY = useRef<Record<number, number>>({});
-  const paraY = useRef<Record<string, number>>({});
-  const scrollToPara = useCallback((ci: number, pi: number) => {
-    const y = (chapterY.current[ci] ?? 0) + (pi >= 0 ? paraY.current[`${ci}-${pi}`] ?? 0 : 0);
-    scroller.current?.scrollTo({ y: Math.max(0, y - 90), animated: true });
+  const paraY = useRef<Record<string, { y: number; h: number }>>({});
+  // `frac` is how far into the paragraph to go (0 to 1), so a verse in the middle of a long paragraph is found.
+  const scrollToPara = useCallback((ci: number, pi: number, frac = 0) => {
+    const p = pi >= 0 ? paraY.current[`${ci}-${pi}`] : undefined;
+    const y = (chapterY.current[ci] ?? 0) + (p ? p.y + p.h * frac : 0);
+    scroller.current?.scrollTo({ y: Math.max(0, y - (frac > 0 ? 160 : 90)), animated: true });
   }, []);
 
   useEffect(() => {
@@ -76,7 +78,14 @@ export default function Reader() {
     const target = Number(params.verse);
     const paras = paragraphsFor(s.translation, refs[0].bookId, refs[0].chapter);
     const pi = paras.findIndex((p) => p.some((r) => r.verse === target));
-    const wait = setTimeout(() => pi >= 0 && scrollToPara(0, pi), 350);
+    let frac = 0;
+    if (pi >= 0) {
+      const p = paras[pi];
+      const total = p.reduce((n, r) => n + r.text.length, 0) || 1;
+      const before = p.slice(0, p.findIndex((r) => r.verse === target)).reduce((n, r) => n + r.text.length, 0);
+      frac = before / total;
+    }
+    const wait = setTimeout(() => pi >= 0 && scrollToPara(0, pi, frac), 450);
     const clear = setTimeout(() => setFlash(undefined), 3500);
     return () => {
       clearTimeout(wait);
@@ -144,7 +153,7 @@ export default function Reader() {
             activePara={audio.current?.chapterIdx === ci && audio.current.paraIdx >= 0 ? audio.current.paraIdx : undefined}
             flashVerse={ci === 0 ? flash : undefined}
             onVerse={(verse) => setSheet({ bookId: r.bookId, chapter: r.chapter, verse })}
-            onParagraphLayout={(pi, y) => (paraY.current[`${ci}-${pi}`] = y)}
+            onParagraphLayout={(pi, y, h) => (paraY.current[`${ci}-${pi}`] = { y, h })}
             onChapterLayout={(y) => (chapterY.current[ci] = y)}
           />
         ))}
