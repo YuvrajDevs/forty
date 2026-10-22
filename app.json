@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "fortybible",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FAF6EA",
@@ -32,7 +32,11 @@
         {
           "backgroundColor": "#FAF6EA",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 220
+          "imageWidth": 200,
+          "dark": {
+            "backgroundColor": "#15120D",
+            "image": "./assets/images/splash-icon-dark.png"
+          }
         }
       ],
       "expo-font",

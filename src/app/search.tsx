@@ -7,12 +7,14 @@ import { booksFor, getSearchIndex, refLabel, translationName } from '../lib/bibl
 import { useOnboarding } from '../lib/onboarding';
 import { parseReference, searchVerses } from '../lib/search';
 import type { Hit } from '../lib/search';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /** The verse text with the searched words marked. */
 function Snippet({ text, query }: { text: string; query: string }) {
+  const styles = useStyles(createStyles);
   const words = query.trim().split(/\s+/).filter((w) => w.length > 2);
   if (!words.length) return <Text style={styles.snippet} numberOfLines={3}>{text}</Text>;
   const parts = text.split(new RegExp(`(${words.map(escape).join('|')})`, 'gi'));
@@ -24,6 +26,8 @@ function Snippet({ text, query }: { text: string; query: string }) {
 }
 
 export default function Search() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { translation } = useOnboarding();
   const [query, setQuery] = useState('');
   const [term, setTerm] = useState('');
@@ -115,7 +119,7 @@ export default function Search() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 60 },
   back: { width: 32, height: 40, alignItems: 'center', justifyContent: 'center' },
@@ -128,6 +132,6 @@ const styles = StyleSheet.create({
   row: { paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.border },
   refText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.gold, marginBottom: 3 },
   snippet: { fontFamily: fonts.scripture, fontSize: 15, lineHeight: 23, color: colors.text },
-  mark: { backgroundColor: 'rgba(245, 200, 66, 0.45)' },
+  mark: { backgroundColor: colors.washStrong },
   empty: { marginTop: 40, textAlign: 'center', fontFamily: fonts.body, fontSize: 15, lineHeight: 23, color: colors.textSecondary, paddingHorizontal: spacing.lg },
 });

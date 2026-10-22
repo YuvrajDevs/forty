@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { Quiz } from '../../components/Quiz';
-import { colors, fonts, radius } from '../../theme';
+import { fonts, radius, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const POINTS = [
   { title: 'Scripture before scrolling', body: 'Your apps stay locked until you have read. The habit you already have becomes the reminder.' },
@@ -10,6 +11,7 @@ const POINTS = [
 ];
 
 export default function WhyItWorks() {
+  const styles = useStyles(createStyles);
   return (
     <Quiz
       title="Why it works"
@@ -29,7 +31,7 @@ export default function WhyItWorks() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   card: { flexDirection: 'row', gap: 16, backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 12 },
   num: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 40, lineHeight: 42, color: colors.gold },
   name: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },

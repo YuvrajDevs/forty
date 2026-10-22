@@ -8,10 +8,13 @@ import { parseVerseKey, refLabel, verseText } from '../lib/bible';
 import { dueCards, review } from '../lib/memory';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { iso } from '../lib/schedule';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 /** Flashcards for the verses you chose to memorize. */
 export default function Memory() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
   const today = iso(new Date());
   // The queue is fixed when the screen opens, so cards that come back later today do not loop.
@@ -71,7 +74,7 @@ export default function Memory() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 56 },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },

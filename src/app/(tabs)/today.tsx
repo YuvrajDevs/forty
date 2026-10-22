@@ -9,7 +9,8 @@ import { useOnboarding } from '../../lib/onboarding';
 import { behindBy, effectiveSkipped, ensureDayPlan, extendDeadline, getToday, resumePlan, settlePause, skipToday } from '../../lib/progress';
 import { fromIso, streak } from '../../lib/schedule';
 import { scopeTitle } from '../../lib/scopes';
-import { colors, fonts, radius, spacing } from '../../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const greeting = () => {
   const h = new Date().getHours();
@@ -17,6 +18,8 @@ const greeting = () => {
 };
 
 export default function Today() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
   useEffect(() => {
     settlePause();
@@ -51,7 +54,7 @@ export default function Today() {
             <Text style={styles.statNum}>{run}</Text>
             <Text style={styles.statLabel}>{run === 1 ? 'day streak' : 'day streak'}</Text>
           </View>
-          <View style={[styles.stat, { backgroundColor: '#E3EBDD' }]}>
+          <View style={[styles.stat, { backgroundColor: colors.tintGreen }]}>
             <Text style={[styles.statNum, { color: colors.green }]}>{done}</Text>
             <Text style={styles.statLabel}>of {totalChapters} chapters</Text>
           </View>
@@ -141,7 +144,7 @@ export default function Today() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xl },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: 36 },
@@ -163,9 +166,9 @@ const styles = StyleSheet.create({
   cardDone: { opacity: 0.6 },
   cardTitle: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   cardHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },
-  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: '#BDB398', alignItems: 'center', justifyContent: 'center' },
+  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: colors.radioBorder, alignItems: 'center', justifyContent: 'center' },
   radioOn: { backgroundColor: colors.green, borderColor: colors.green },
-  tick: { color: '#FFFFFF', fontSize: 15, lineHeight: 18, fontFamily: fonts.semibold },
+  tick: { color: colors.onGreen, fontSize: 15, lineHeight: 18, fontFamily: fonts.semibold },
   memory: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.card, borderRadius: radius.card, paddingVertical: 16, paddingHorizontal: 20 },
   memoryText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.text },
   checkin: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, borderRadius: radius.card, padding: 20 },
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
   bannerTitle: { fontFamily: fonts.semibold, fontSize: 16, lineHeight: 22, color: colors.text },
   bannerText: { marginTop: 4, fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textSecondary },
   bannerBtn: { marginTop: 12, alignSelf: 'flex-start', backgroundColor: colors.primary, borderRadius: radius.button, paddingVertical: 10, paddingHorizontal: 18 },
-  bannerBtnText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.text },
+  bannerBtnText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.onPrimary },
   link: { alignSelf: 'center', padding: 12 },
   linkText: { fontFamily: fonts.body, fontSize: 14, color: colors.textSecondary, textDecorationLine: 'underline' },
   empty: { fontFamily: fonts.body, fontSize: 15, lineHeight: 23, color: colors.textSecondary },

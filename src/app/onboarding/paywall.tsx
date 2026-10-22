@@ -12,7 +12,8 @@ import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboardin
 import { addActiveDays, iso } from '../../lib/schedule';
 import { summarize } from '../../lib/plan';
 import { chaptersFor, scopeTitle } from '../../lib/scopes';
-import { colors, fonts, radius, spacing } from '../../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 type PlanId = 'weekly' | 'yearly';
 // Placeholder prices until they are read from Google Play Billing.
@@ -34,6 +35,8 @@ const coverTop = ({ width, height }: { width: number; height: number }) => {
 };
 
 export default function Paywall() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { scope, days, translation } = useOnboarding();
   const [plan, setPlan] = useState<PlanId>('yearly');
   const [box, setBox] = useState({ width: 0, height: 0 });
@@ -103,7 +106,7 @@ export default function Paywall() {
       <View style={styles.sun} onLayout={(e) => setBox(e.nativeEvent.layout)}>
         {/* Scaled to cover the box but anchored to the top, so the sun stays in view. */}
         <Image source={require('../../../assets/images/sunrise.webp')} style={coverTop(box)} accessibilityLabel="A sunrise" />
-        <LinearGradient colors={['rgba(250,246,234,0)', colors.background]} style={styles.sunFade} pointerEvents="none" />
+        <LinearGradient colors={[colors.background + '00', colors.background]} style={styles.sunFade} pointerEvents="none" />
       </View>
       <View style={styles.body}>
         <Text style={styles.title}>Start your 7-day free trial</Text>
@@ -149,7 +152,7 @@ export default function Paywall() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   // The image takes whatever height the content below leaves, so nothing needs to scroll.
   sun: { width: '100%', flex: 1, minHeight: 90, overflow: 'hidden' },
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
   cardPrice: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   cardPer: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
   fine: { marginBottom: 10, fontFamily: fonts.body, fontSize: 12, lineHeight: 16, color: colors.textSecondary, textAlign: 'center' },
-  message: { marginBottom: 8, fontFamily: fonts.medium, fontSize: 13, lineHeight: 18, color: '#B3261E', textAlign: 'center' },
+  message: { marginBottom: 8, fontFamily: fonts.medium, fontSize: 13, lineHeight: 18, color: colors.danger, textAlign: 'center' },
   links: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginTop: 10 },
   link: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary, textDecorationLine: 'underline' },
 });

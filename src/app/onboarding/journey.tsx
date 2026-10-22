@@ -4,7 +4,8 @@ import { Quiz } from '../../components/Quiz';
 import { useOnboarding } from '../../lib/onboarding';
 import { buildPlan } from '../../lib/plan';
 import { chaptersFor, scopeTitle } from '../../lib/scopes';
-import { colors, fonts, radius } from '../../theme';
+import { fonts, radius, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const STEPS = [
   { title: 'You begin', text: 'A small first step. Opening a locked app and reading first may feel a little unusual.' },
@@ -16,6 +17,8 @@ const STEPS = [
 ];
 
 export default function Journey() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { scope, days, translation } = useOnboarding();
   const plan = buildPlan(chaptersFor(scope, translation), days);
   const name = scopeTitle(scope);
@@ -43,7 +46,7 @@ export default function Journey() {
       <View style={styles.row}>
         <View style={styles.rail}>
           <View style={[styles.badge, styles.badgeFinal]}>
-            <Text style={[styles.badgeText, { color: colors.text }]}>7</Text>
+            <Text style={[styles.badgeText, { color: colors.onPrimary }]}>7</Text>
           </View>
         </View>
         <View style={styles.final}>
@@ -61,7 +64,7 @@ export default function Journey() {
 }
 
 const BADGE = 34;
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   row: { flexDirection: 'row', gap: 14 },
   rail: { alignItems: 'center', width: BADGE },
   badge: { width: BADGE, height: BADGE, borderRadius: BADGE / 2, backgroundColor: colors.cardSelected, borderWidth: 2, borderColor: colors.gold, alignItems: 'center', justifyContent: 'center' },
@@ -73,8 +76,8 @@ const styles = StyleSheet.create({
   readings: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, lineHeight: 19, color: colors.textSecondary },
   final: { flex: 1, backgroundColor: colors.primary, borderRadius: radius.card, padding: 20, overflow: 'hidden', marginBottom: 8 },
   sunDisc: { position: 'absolute', right: -30, top: -30, width: 120, height: 120, borderRadius: 60, backgroundColor: '#FBE08A' },
-  finalEyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.text },
-  finalTitle: { marginTop: 4, fontFamily: fonts.display, includeFontPadding: false, fontSize: 46, lineHeight: 48, color: colors.text },
-  finalBody: { marginTop: 6, fontFamily: fonts.medium, fontSize: 16, lineHeight: 23, color: colors.text },
-  finalFine: { marginTop: 10, fontFamily: fonts.body, fontSize: 12, lineHeight: 18, color: '#4A3F1A' },
+  finalEyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.onPrimary },
+  finalTitle: { marginTop: 4, fontFamily: fonts.display, includeFontPadding: false, fontSize: 46, lineHeight: 48, color: colors.onPrimary },
+  finalBody: { marginTop: 6, fontFamily: fonts.medium, fontSize: 16, lineHeight: 23, color: colors.onPrimary },
+  finalFine: { marginTop: 10, fontFamily: fonts.body, fontSize: 12, lineHeight: 18, color: colors.onPrimary, opacity: 0.75 },
 });

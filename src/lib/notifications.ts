@@ -1,7 +1,9 @@
 // Local reminders. There is one daily nudge when the lock starts, and one before the trial ends.
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform } from 'react-native';
+import { timesFor } from './lockTimes';
 import type { OnboardingState } from './onboarding';
+import { currentLocksPerDay } from './progress';
 import { addDays, fromIso } from './schedule';
 
 const inExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
@@ -38,7 +40,8 @@ export async function syncNotifications(s: OnboardingState) {
     await N.cancelAllScheduledNotificationsAsync();
     if (!s.remindersOn || !s.completed) return;
 
-    // Daily: when the lock starts, on each lock day. Expo weekdays run 1 (Sunday) to 7 (Saturday).
+    const first = timesFor(s.lockTimes, currentLocksPerDay(s))[0];
+    // Daily: when the first lock starts, on each lock day. Expo weekdays run 1 (Sunday) to 7 (Saturday).
     s.lockDays.forEach((on, i) => {
       if (!on) return;
       N.scheduleNotificationAsync({
@@ -46,7 +49,7 @@ export async function syncNotifications(s: OnboardingState) {
           title: 'Your apps are locked',
           body: 'Pray and read first, then scroll. It only takes a few minutes.',
         },
-        trigger: { type: N.SchedulableTriggerInputTypes.WEEKLY, weekday: ((i + 1) % 7) + 1, hour: s.lockStartHour, minute: 0 },
+        trigger: { type: N.SchedulableTriggerInputTypes.WEEKLY, weekday: ((i + 1) % 7) + 1, hour: Math.floor(first / 60), minute: first % 60 },
       }).catch(() => {});
     });
 

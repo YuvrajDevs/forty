@@ -3,9 +3,11 @@ import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
 import { useOnboarding } from '../lib/onboarding';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 export default function Welcome() {
+  const styles = useStyles(createStyles);
   const { completed } = useOnboarding();
   const { width, height } = useWindowDimensions();
   const size = Math.min(width - 24, 400, height * 0.4);
@@ -25,7 +27,7 @@ export default function Welcome() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   brand: { marginTop: spacing.md, textAlign: 'center', fontFamily: fonts.medium, fontSize: 13, letterSpacing: 2, color: colors.textSecondary },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg },

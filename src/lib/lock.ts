@@ -4,6 +4,7 @@ import FortyLock from '../../modules/forty-lock';
 import type { InstalledApp } from '../../modules/forty-lock';
 import { LOCKABLE_APPS } from './apps';
 import type { OnboardingState } from './onboarding';
+import { timesFor, unlockUntil } from './lockTimes';
 import type { Today } from './today';
 
 export const native = FortyLock;
@@ -19,8 +20,8 @@ export function syncLock(s: OnboardingState, t: Today) {
         entitled: s.entitled,
         packages: s.lockedApps,
         lockDays: s.lockDays,
-        startHour: s.lockStartHour,
-        endHour: s.lockEndHour,
+        times: timesFor(s.lockTimes, Math.max(1, t.readings.length)),
+        done: t.doneCount,
         date: t.date,
         pending: t.active ? Math.max(0, t.readings.length - t.doneCount) : 0,
         skipDate: t.skipped ? t.date : '',
@@ -33,13 +34,11 @@ export function syncLock(s: OnboardingState, t: Today) {
   }
 }
 
-/** After a reading: open apps for the gap you chose, or for the rest of the day if you are done. */
-export function unlockAfterReading(gapHours: number, allDone: boolean) {
+/** After a reading: open apps until the next lock time, or for the rest of the day if you are done. */
+export function unlockAfterReading(times: number[], done: number, total: number) {
   if (!native) return;
-  const now = new Date();
-  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
   try {
-    native.setUnlockedUntil(allDone ? midnight : now.getTime() + gapHours * 3_600_000);
+    native.setUnlockedUntil(unlockUntil(times, done, total, new Date()));
   } catch {
     // ignore
   }

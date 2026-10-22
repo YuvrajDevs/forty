@@ -6,7 +6,8 @@ import { Quiz } from '../../components/Quiz';
 import { useOnboarding } from '../../lib/onboarding';
 import { summarize } from '../../lib/plan';
 import { chaptersFor } from '../../lib/scopes';
-import { colors, fonts } from '../../theme';
+import { fonts, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const fmt = (n: number) => Math.round(n).toLocaleString('en-US');
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -16,6 +17,8 @@ const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
 export default function Reveal() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { phoneHours, translation } = useOnboarding();
   const bibleHours = summarize(chaptersFor('bible', translation), 1).totalMinutes / 60;
   const yearHours = phoneHours * 365;
@@ -31,7 +34,7 @@ export default function Reveal() {
   const offset = progress.interpolate({ inputRange: [0, 1], outputRange: [C, C * (1 - sweep)] });
 
   return (
-    <Quiz step={5} title="Imagine what's possible" onContinue={() => router.push('/onboarding/frequency')}>
+    <Quiz step={6} title="Imagine what's possible" onContinue={() => router.push('/onboarding/frequency')}>
       <View style={styles.donutWrap} accessible accessibilityLabel={`The whole Bible is about ${percent.toFixed(1)} percent of your yearly phone time`}>
         <Svg width={SIZE} height={SIZE} style={{ transform: [{ rotate: '-90deg' }] }}>
           <Circle cx={SIZE / 2} cy={SIZE / 2} r={R} stroke="#E7C766" strokeWidth={STROKE} fill="none" />
@@ -74,7 +77,7 @@ export default function Reveal() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   donutWrap: { alignSelf: 'center', width: SIZE, height: SIZE, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
   center: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
   pct: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 84, lineHeight: 88, color: colors.green },

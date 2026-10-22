@@ -9,7 +9,7 @@ export const LEGAL: LegalDoc[] = [
     title: 'Privacy policy',
     sections: [
       { heading: 'Your data stays on your phone', body: 'FortyBible has no accounts and no server. Your answers, plan, reading history, streak and journal notes are stored only on this device. We cannot see them.' },
-      { heading: 'What is stored', body: 'Your denomination, optional gender, phone-time answer, chosen apps, plan, chapters read, check-ins and notes. Denomination, gender and notes are sensitive, so they are never sent anywhere, never shared and never used for ads.' },
+      { heading: 'What is stored', body: 'Your denomination, optional gender, age range, phone-time answer, chosen apps, plan, chapters read, check-ins and notes. Denomination, gender, age range and notes are sensitive, so they are never sent anywhere, never shared and never used for ads.' },
       { heading: 'No ads, no selling', body: 'There are no ads and no analytics in this version. We do not sell or share your data.' },
       { heading: 'Payments', body: 'Subscriptions are handled by Google Play. We never see your card details. Google tells the app whether your subscription is active.' },
       { heading: 'Permissions', body: 'Accessibility is used only to notice which app is open so the lock can ask you to read first. Display over other apps is used to show the reading prompt. Notifications are used for your daily reminder and a reminder before your trial ends. None of this information leaves your phone.' },

@@ -1,7 +1,8 @@
 import { Image, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { APP_ICONS } from '../lib/appIcons';
-import { colors, fonts, radius } from '../theme';
+import { fonts, radius, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 // Black glyph on very light brand colours (e.g. Snapchat yellow), white otherwise.
 const glyphFor = (hex: string) => {
@@ -11,6 +12,7 @@ const glyphFor = (hex: string) => {
 };
 
 export function AppIcon({ id, icon: uri, name, size = 48 }: { id: string; icon?: string; name?: string; size?: number }) {
+  const colors = useColors();
   if (uri) return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size * 0.22 }} accessibilityLabel={name} />;
   const icon = APP_ICONS[id];
   if (!icon)
@@ -29,6 +31,7 @@ export function AppIcon({ id, icon: uri, name, size = 48 }: { id: string; icon?:
 }
 
 export function AppTile({ id, name, icon, selected, onPress }: { id: string; name: string; icon?: string; selected: boolean; onPress: () => void }) {
+  const styles = useStyles(createStyles);
   const { width } = useWindowDimensions();
   const size = Math.floor((width - 48 - 24) / 3); // 24px screen padding each side, two 12px gaps
   return (
@@ -50,10 +53,10 @@ export function AppTile({ id, name, icon, selected, onPress }: { id: string; nam
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   tile: { backgroundColor: colors.card, borderRadius: radius.card, alignItems: 'center', justifyContent: 'center', gap: 10 },
   tileOn: { backgroundColor: colors.cardSelected },
   name: { fontFamily: fonts.medium, fontSize: 13, color: colors.text, paddingHorizontal: 4 },
   badge: { position: 'absolute', top: 8, right: 8, width: 22, height: 22, borderRadius: 11, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' },
-  tick: { color: '#FFFFFF', fontSize: 13, lineHeight: 16, fontFamily: fonts.semibold },
+  tick: { color: colors.onGreen, fontSize: 13, lineHeight: 16, fontFamily: fonts.semibold },
 });

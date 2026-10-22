@@ -1,27 +1,30 @@
 import { Ionicons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from '../../components/Calendar';
+import { formatTime, timesFor, withTime } from '../../lib/lockTimes';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { currentLocksPerDay, getToday, pausePlan, resumePlan, setLockDays, setReadingDays, setReadingsPerDay } from '../../lib/progress';
 import { fromIso, iso } from '../../lib/schedule';
 import { chaptersFor, SCOPES, scopeTitle } from '../../lib/scopes';
 import type { ScopeId } from '../../lib/scopes';
-import { colors, fonts, radius, spacing } from '../../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const DAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const DEADLINES = [14, 30, 60, 90, 180, 365];
-const hourLabel = (h: number) => `${h % 12 === 0 ? 12 : h % 12} ${h < 12 || h === 24 ? 'AM' : 'PM'}`;
 const fmtDate = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 export default function Plan() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
   const t = getToday(s);
   const locks = currentLocksPerDay(s);
+  const times = timesFor(s.lockTimes, locks);
   const finish = s.deadline ? fromIso(s.deadline) : null;
   const title = scopeTitle(s.scope);
   const [choosing, setChoosing] = useState(false);
@@ -47,12 +50,6 @@ export default function Plan() {
     ]);
   };
 
-  const step = (key: 'lockStartHour' | 'lockEndHour', delta: number) => {
-    const v = s[key] + delta;
-    if (key === 'lockStartHour' && (v < 0 || v >= s.lockEndHour)) return;
-    if (key === 'lockEndHour' && (v > 24 || v <= s.lockStartHour)) return;
-    setOnboarding({ [key]: v });
-  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -84,7 +81,7 @@ export default function Plan() {
         <View style={styles.chips}>
           {DEADLINES.map((d) => (
             <Pressable key={d} onPress={() => setReadingDays(d)} style={[styles.chip, t.daysLeft === d && styles.chipOn]}>
-              <Text style={styles.chipText}>{d === 365 ? '1 year' : `${d} days`}</Text>
+              <Text style={[styles.chipText, t.daysLeft === d && styles.onPrimary]}>{d === 365 ? '1 year' : `${d} days`}</Text>
             </Pressable>
           ))}
         </View>
@@ -94,46 +91,22 @@ export default function Plan() {
         <View style={styles.days}>
           {DAY_LETTERS.map((l, i) => (
             <Pressable key={i} accessibilityRole="checkbox" accessibilityLabel={DAY_NAMES[i]} accessibilityState={{ checked: s.lockDays[i] }} onPress={() => toggleDay(i)} style={[styles.day, s.lockDays[i] && styles.dayOn]}>
-              <Text style={styles.dayText}>{l}</Text>
+              <Text style={[styles.dayText, s.lockDays[i] && styles.onPrimary]}>{l}</Text>
             </Pressable>
           ))}
         </View>
 
-        <Text style={styles.section}>Timing</Text>
+        <Text style={styles.section}>Lock times</Text>
+        <Text style={styles.hint}>
+          {locks === 1 ? 'Your apps lock once a day, at this time.' : `Your apps lock ${locks} times a day, once for each reading.`} Pick when each lock begins.
+        </Text>
         <View style={styles.card}>
-          <View style={styles.stepRow}>
-            <Text style={[styles.cardTitle, { flex: 1 }]}>Locks start at</Text>
-            <Stepper value={hourLabel(s.lockStartHour)} onMinus={() => step('lockStartHour', -1)} onPlus={() => step('lockStartHour', 1)} />
-          </View>
-          <View style={[styles.stepRow, { marginTop: 14 }]}>
-            <Text style={[styles.cardTitle, { flex: 1 }]}>Locks stop at</Text>
-            <Stepper value={hourLabel(s.lockEndHour)} onMinus={() => step('lockEndHour', -1)} onPlus={() => step('lockEndHour', 1)} />
-          </View>
-        </View>
-        <View style={[styles.card, { marginTop: 12 }]}>
-          <View style={styles.stepRow}>
-            <Text style={[styles.cardTitle, { flex: 1 }]}>Time between readings</Text>
-            <Text style={styles.gapValue}>{s.gapHours} {s.gapHours === 1 ? 'hour' : 'hours'}</Text>
-          </View>
-          <Slider
-            style={{ marginTop: 8 }}
-            minimumValue={1}
-            maximumValue={12}
-            step={1}
-            value={s.gapHours}
-            onValueChange={(v) => setOnboarding({ gapHours: v })}
-            minimumTrackTintColor={colors.gold}
-            maximumTrackTintColor={colors.border}
-            thumbTintColor={colors.gold}
-            accessibilityLabel="Hours between readings"
-          />
-          <View style={styles.sliderEnds}>
-            <Text style={styles.cardHint}>1 hr</Text>
-            <Text style={styles.cardHint}>12 hrs</Text>
-          </View>
-          <Text style={[styles.cardHint, { marginTop: 8 }]}>
-            Your first reading appears when you first open a locked app. The next one comes at least this long after you finish.
-          </Text>
+          {times.map((m, i) => (
+            <View key={i} style={[styles.stepRow, i > 0 && { marginTop: 14 }]}>
+              <Text style={[styles.cardTitle, { flex: 1 }]}>{locks === 1 ? 'Lock begins' : `Lock ${i + 1}`}</Text>
+              <Stepper value={formatTime(m)} onMinus={() => setOnboarding({ lockTimes: withTime(s.lockTimes, locks, i, m - 30) })} onPlus={() => setOnboarding({ lockTimes: withTime(s.lockTimes, locks, i, m + 30) })} />
+            </View>
+          ))}
         </View>
 
         <Text style={styles.section}>Pause</Text>
@@ -170,7 +143,7 @@ export default function Plan() {
         <View style={styles.chips}>
           {SCOPES.map((o) => (
             <Pressable key={o.id} onPress={() => changeScope(o.id)} style={[styles.chip, s.scope === o.id && styles.chipOn]}>
-              <Text style={styles.chipText}>{o.title}</Text>
+              <Text style={[styles.chipText, s.scope === o.id && styles.onPrimary]}>{o.title}</Text>
             </Pressable>
           ))}
         </View>
@@ -189,6 +162,7 @@ export default function Plan() {
 }
 
 function Stepper({ value, onMinus, onPlus }: { value: string; onMinus: () => void; onPlus: () => void }) {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.stepper}>
       <Pressable accessibilityLabel="Decrease" hitSlop={8} onPress={onMinus} style={styles.stepBtn}><Text style={styles.stepBtnText}>{'−'}</Text></Pressable>
@@ -198,7 +172,7 @@ function Stepper({ value, onMinus, onPlus }: { value: string; onMinus: () => voi
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xxl },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
@@ -214,19 +188,18 @@ const styles = StyleSheet.create({
   stepRow: { flexDirection: 'row', alignItems: 'center' },
   cardTitle: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
   cardHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
-  gapValue: { fontFamily: fonts.semibold, fontSize: 16, color: colors.gold },
-  sliderEnds: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 6 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   stepBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' },
   stepBtnText: { fontFamily: fonts.medium, fontSize: 20, lineHeight: 24, color: colors.text },
-  stepValue: { minWidth: 56, textAlign: 'center', fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
+  stepValue: { minWidth: 78, textAlign: 'center', fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   chip: { paddingVertical: 11, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.card },
   chipOn: { backgroundColor: colors.primary },
   pill: { backgroundColor: colors.primary, borderRadius: radius.button, paddingVertical: 10, paddingHorizontal: 18 },
-  pillText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.text },
+  pillText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.onPrimary },
   chipSoft: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.background },
   more: { flexDirection: 'row', alignItems: 'center', marginTop: 12, backgroundColor: colors.card, borderRadius: radius.card, padding: 18 },
+  onPrimary: { color: colors.onPrimary },
   chipText: { fontFamily: fonts.medium, fontSize: 14, color: colors.text },
   days: { flexDirection: 'row', justifyContent: 'space-between' },
   day: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },

@@ -11,8 +11,10 @@ data class LockConfig(
   val packages: Set<String>,
   /** Monday first. */
   val lockDays: BooleanArray,
-  val startHour: Int,
-  val endHour: Int,
+  /** Minutes after midnight when each daily lock begins, one per reading. */
+  val times: IntArray,
+  /** Readings finished on [date]. */
+  val done: Int,
   /** Day the numbers below were calculated for, as yyyy-MM-dd. */
   val date: String,
   /** Readings still to do on [date]. */
@@ -50,8 +52,8 @@ data class LockConfig(
           entitled = o.optBoolean("entitled", false),
           packages = pkgs,
           lockDays = days,
-          startHour = o.optInt("startHour", 7),
-          endHour = o.optInt("endHour", 22),
+          times = o.optJSONArray("times")?.let { a -> IntArray(a.length()) { a.optInt(it, 0) } } ?: intArrayOf(420),
+          done = o.optInt("done", 0),
           date = o.optString("date", ""),
           pending = o.optInt("pending", 1),
           skipDate = o.optString("skipDate", ""),
@@ -80,10 +82,11 @@ object LockRules {
     // Monday = 0 ... Sunday = 6. Calendar.SUNDAY is 1.
     val dayIndex = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
     if (!cfg.lockDays[dayIndex]) return false
-    val hour = cal.get(Calendar.HOUR_OF_DAY)
-    if (hour < cfg.startHour || hour >= cfg.endHour) return false
-    // If the numbers are from another day, let the app open and recalculate.
+    // Numbers from an earlier day: the first reading is due once the first lock time has passed.
+    val done = if (cfg.date == today) cfg.done else 0
     if (cfg.date == today && cfg.pending <= 0) return false
-    return true
+    val nowMin = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+    if (cfg.times.isEmpty()) return true
+    return nowMin >= cfg.times[minOf(done, cfg.times.size - 1)]
   }
 }

@@ -3,9 +3,10 @@ import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { billingAvailable } from '../../lib/billing';
 import { useOnboarding } from '../../lib/onboarding';
-import { colors, fonts } from '../../theme';
+import { fonts, useColors } from '../../theme';
 
 export default function TabsLayout() {
+  const colors = useColors();
   const insets = useSafeAreaInsets();
   const { completed, entitled } = useOnboarding();
   if (!completed) return <Redirect href="/" />;

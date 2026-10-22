@@ -5,9 +5,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppTile } from '../components/AppTile';
 import { useApps } from '../lib/useApps';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 export default function SettingsApps() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { lockedApps } = useOnboarding();
   const apps = useApps();
   const toggle = (id: string) =>
@@ -32,7 +35,7 @@ export default function SettingsApps() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 48, justifyContent: 'center' },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },

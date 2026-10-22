@@ -3,9 +3,12 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LEGAL, SUPPORT_EMAIL } from '../lib/legal';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 export default function Legal() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { doc } = useLocalSearchParams<{ doc?: string }>();
   const page = LEGAL.find((d) => d.id === doc) ?? LEGAL[0];
   return (
@@ -29,7 +32,7 @@ export default function Legal() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 48, justifyContent: 'center' },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },

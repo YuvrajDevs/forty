@@ -3,11 +3,14 @@ import * as Haptics from 'expo-haptics';
 import { useRef, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, fonts, spacing } from '../../theme';
+import { fonts, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const HOLD_MS = 1200;
 
 export default function Commitment() {
+  const styles = useStyles(createStyles);
+  const colors = useColors();
   const progress = useRef(new Animated.Value(0)).current;
   const [done, setDone] = useState(false);
 
@@ -50,7 +53,7 @@ export default function Commitment() {
       <View style={styles.footer}>
         <Pressable accessibilityRole="button" accessibilityLabel="Press and hold to commit" onPressIn={start} onPressOut={stop} style={styles.hold}>
           <Animated.View style={[styles.fill, { width: progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) }]} />
-          <Text style={styles.holdText}>{done ? 'Committed' : 'Hold to commit'}</Text>
+          <Text style={[styles.holdText, done && { color: colors.onPrimary }]}>{done ? 'Committed' : 'Hold to commit'}</Text>
         </Pressable>
         <Text style={styles.hint}>I'm ready to put God first</Text>
       </View>
@@ -58,7 +61,7 @@ export default function Commitment() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, justifyContent: 'center', padding: spacing.lg },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },

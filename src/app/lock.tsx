@@ -12,10 +12,12 @@ import { refLabel, unquote, verseText } from '../lib/bible';
 import { ensureDayPlan, getToday, skipToday } from '../lib/progress';
 import { iso } from '../lib/schedule';
 import { verseOfDay } from '../lib/votd';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 // Opened by the Android lock service when a chosen app comes to the front.
 export default function Lock() {
+  const styles = useStyles(createStyles);
   const { pkg = '' } = useLocalSearchParams<{ pkg?: string }>();
   const s = useOnboarding();
   const t = getToday(s);
@@ -85,7 +87,7 @@ export default function Lock() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
   eyebrow: { marginTop: spacing.lg, fontFamily: fonts.medium, fontSize: 12, letterSpacing: 2, color: colors.textSecondary },

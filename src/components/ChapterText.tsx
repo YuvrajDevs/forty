@@ -5,9 +5,9 @@ import type { TranslationId } from '../lib/bible';
 import type { HighlightColor } from '../lib/onboarding';
 import { paragraphs } from '../lib/paragraphs';
 import type { Run } from '../lib/paragraphs';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
-export const HIGHLIGHTS: Record<HighlightColor, string> = { gold: '#F6E3A1', green: '#D6E6CE', rose: '#F4D5D0' };
 
 type Props = {
   bookId: string;
@@ -30,6 +30,8 @@ export const paragraphsFor = (t: TranslationId, bookId: string, chapter: number)
   paragraphs(chapterVerses(t, bookId, chapter));
 
 function ChapterTextBase({ bookId, bookName, chapter, translation, size, highlights, bookmarks, activePara, flashVerse, onVerse, onParagraphLayout, onChapterLayout }: Props) {
+  const styles = useStyles(createStyles);
+  const colors = useColors();
   const paras = paragraphsFor(translation, bookId, chapter);
   const marked = new Set(bookmarks);
   return (
@@ -45,7 +47,7 @@ function ChapterTextBase({ bookId, bookName, chapter, translation, size, highlig
                 <Text
                   key={ri}
                   onPress={() => onVerse(run.verse)}
-                  style={[hl && { backgroundColor: HIGHLIGHTS[hl] }, flashVerse === run.verse && styles.flash]}
+                  style={[hl && { backgroundColor: colors.highlight[hl] }, flashVerse === run.verse && styles.flash]}
                 >
                   {run.text.startsWith('\n') ? '\n' : ri > 0 ? ' ' : ''}
                   {run.showNum ? <Text style={[styles.num, { fontSize: Math.round(size * 0.58) }, marked.has(k) && styles.numSaved]}>{run.verse} </Text> : null}
@@ -62,13 +64,13 @@ function ChapterTextBase({ bookId, bookName, chapter, translation, size, highlig
 
 export const ChapterText = memo(ChapterTextBase);
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   chapter: { marginBottom: spacing.xl },
   title: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 48, lineHeight: 50, color: colors.text, marginBottom: spacing.lg },
   para: { marginBottom: 12, marginHorizontal: -10, paddingHorizontal: 10, borderRadius: 12 },
-  paraActive: { backgroundColor: 'rgba(245, 200, 66, 0.22)' },
+  paraActive: { backgroundColor: colors.wash },
   verse: { fontFamily: fonts.scripture, color: colors.text, textAlign: 'left', letterSpacing: 0.1 },
   num: { fontFamily: fonts.semibold, color: colors.gold },
   numSaved: { color: colors.green },
-  flash: { backgroundColor: 'rgba(245, 200, 66, 0.5)' },
+  flash: { backgroundColor: colors.washStrong },
 });

@@ -10,7 +10,8 @@ import { weeklyReflection } from '../../lib/reflection';
 import type { Checkin } from '../../lib/onboarding';
 import { useOnboarding } from '../../lib/onboarding';
 import { iso } from '../../lib/schedule';
-import { colors, fonts, radius, spacing } from '../../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 // One dot colour per connection score, from distant to very close.
 const DOT = ['#C9BFA4', '#E3C56A', '#F0B429', '#9CB78A', '#4F7A4A'];
@@ -20,6 +21,8 @@ const monthTitle = (key: string) => new Date(key + '-01T00:00:00').toLocaleDateS
 const dayTitle = (date: string) => new Date(date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
 export default function Journal() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { checkins, translation } = useOnboarding();
   const today = iso(new Date());
   const [selected, setSelected] = useState<Checkin | null>(null);
@@ -87,6 +90,8 @@ export default function Journal() {
 }
 
 function Entry({ entry, translation, onClose }: { entry: Checkin; translation: Parameters<typeof verseText>[0]; onClose: () => void }) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   // The same verse and line the check-in gave that day.
   const pick = pickVerse(entry.connection, entry.feelings);
   const text = verseText(translation, pick.ref.bookId, pick.ref.chapter, pick.ref.verse);
@@ -119,7 +124,7 @@ function Entry({ entry, translation, onClose }: { entry: Checkin; translation: P
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xxl },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
   sub: { marginTop: 1, fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },
   feelings: { fontFamily: fonts.medium, fontSize: 14, color: colors.gold },
   note: { marginTop: 8, fontFamily: fonts.scripture, fontSize: 16, lineHeight: 26, color: colors.text },
-  backdrop: { flex: 1, backgroundColor: 'rgba(26,26,26,0.45)', justifyContent: 'center', padding: spacing.lg },
+  backdrop: { flex: 1, backgroundColor: colors.backdrop, justifyContent: 'center', padding: spacing.lg },
   popup: { backgroundColor: colors.background, borderRadius: 28, padding: 22 },
   popupHead: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 12 },
   popupDate: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 36, lineHeight: 38, color: colors.text },

@@ -13,7 +13,7 @@ export default function Apps() {
   const n = lockedApps.length;
   return (
     <Quiz
-      step={9}
+      step={10}
       title="Which apps steal your time?"
       subtitle="Pick the ones to lock until you've read. Calls, messages, maps and emergency apps are never blocked."
       ctaDisabled={n === 0}

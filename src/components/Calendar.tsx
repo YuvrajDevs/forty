@@ -2,13 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { addDays, fromIso, isActive, iso, weekdayIndex } from '../lib/schedule';
-import { colors, fonts } from '../theme';
+import { fonts, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 type Props = { doneDates: string[]; lockDays: boolean[]; startedOn: string | null; deadline: string | null };
 
 const HEAD = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 export function Calendar({ doneDates, lockDays, startedOn, deadline }: Props) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const now = new Date();
   const [month, setMonth] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
   const done = new Set(doneDates);
@@ -76,14 +79,17 @@ export function Calendar({ doneDates, lockDays, startedOn, deadline }: Props) {
   );
 }
 
-const Legend = ({ color, label }: { color: string; label: string }) => (
-  <View style={styles.legendItem}>
-    <View style={[styles.legendDot, { backgroundColor: color }]} />
-    <Text style={styles.legendText}>{label}</Text>
-  </View>
-);
+const Legend = ({ color, label }: { color: string; label: string }) => {
+  const styles = useStyles(createStyles);
+  return (
+    <View style={styles.legendItem}>
+      <View style={[styles.legendDot, { backgroundColor: color }]} />
+      <Text style={styles.legendText}>{label}</Text>
+    </View>
+  );
+};
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   wrap: { backgroundColor: colors.card, borderRadius: 22, padding: 16 },
   nav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
   arrow: { fontFamily: fonts.body, fontSize: 28, lineHeight: 30, color: colors.text, paddingHorizontal: 8 },
@@ -93,12 +99,12 @@ const styles = StyleSheet.create({
   cell: { flex: 1, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
   day: { width: '84%', aspectRatio: 1, borderRadius: 100, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'transparent' },
   planned: { backgroundColor: colors.cardSelected },
-  missed: { backgroundColor: '#EFE9D8' },
+  missed: { backgroundColor: colors.missed },
   doneDay: { backgroundColor: colors.green },
   endDay: { backgroundColor: colors.primary },
   today: { borderColor: colors.gold },
   dayText: { fontFamily: fonts.medium, fontSize: 14, color: colors.text },
-  dayTextOn: { color: '#FFFFFF' },
+  dayTextOn: { color: colors.onGreen },
   legend: { flexDirection: 'row', justifyContent: 'center', gap: 18, marginTop: 10 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   legendDot: { width: 10, height: 10, borderRadius: 5 },

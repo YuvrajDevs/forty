@@ -3,10 +3,11 @@ import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 import { Button } from './Button';
 
-export const TOTAL_STEPS = 12;
+export const TOTAL_STEPS = 13;
 
 type Props = {
   step?: number;
@@ -23,6 +24,8 @@ type Props = {
 };
 
 export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDisabled, onContinue, footer, secondary, compact }: Props) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
@@ -53,6 +56,7 @@ export function Quiz({ step, title, subtitle, children, cta = 'Continue', ctaDis
 }
 
 export function Option({ label, hint, selected, onPress }: { label: string; hint?: string; selected: boolean; onPress: () => void }) {
+  const styles = useStyles(createStyles);
   return (
     <Pressable
       accessibilityRole="radio"
@@ -69,7 +73,7 @@ export function Option({ label, hint, selected, onPress }: { label: string; hint
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, gap: spacing.md },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
@@ -95,6 +99,6 @@ const styles = StyleSheet.create({
   optionSelected: { backgroundColor: colors.cardSelected },
   optionLabel: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   optionHint: { marginTop: 2, fontFamily: fonts.body, fontSize: 13, color: colors.textSecondary },
-  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: '#BDB398' },
+  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: colors.radioBorder },
   radioOn: { backgroundColor: colors.gold, borderColor: colors.gold },
 });

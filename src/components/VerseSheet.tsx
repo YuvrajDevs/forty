@@ -8,13 +8,15 @@ import { addCard, removeCard } from '../lib/memory';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import type { HighlightColor } from '../lib/onboarding';
 import { iso } from '../lib/schedule';
-import { colors, fonts, radius, spacing } from '../theme';
-import { HIGHLIGHTS } from './ChapterText';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 type Props = { target: { bookId: string; chapter: number; verse: number } | null; onClose: () => void };
 
 /** What you can do with one verse: highlight, save, memorize, copy or turn into a card. */
 export function VerseSheet({ target, onClose }: Props) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
   const [copied, setCopied] = useState(false);
   if (!target) return <Modal visible={false} transparent />;
@@ -53,8 +55,8 @@ export function VerseSheet({ target, onClose }: Props) {
           <Text style={styles.text} numberOfLines={3}>{text}</Text>
 
           <View style={styles.swatches}>
-            {(Object.keys(HIGHLIGHTS) as HighlightColor[]).map((c) => (
-              <Pressable key={c} accessibilityRole="button" accessibilityLabel={`Highlight ${c}`} onPress={() => setColor(c)} style={[styles.swatch, { backgroundColor: HIGHLIGHTS[c] }, color === c && styles.swatchOn]}>
+            {(Object.keys(colors.highlight) as HighlightColor[]).map((c) => (
+              <Pressable key={c} accessibilityRole="button" accessibilityLabel={`Highlight ${c}`} onPress={() => setColor(c)} style={[styles.swatch, { backgroundColor: colors.highlight[c] }, color === c && styles.swatchOn]}>
                 {color === c ? <Ionicons name="checkmark" size={18} color={colors.text} /> : null}
               </Pressable>
             ))}
@@ -81,6 +83,8 @@ export function VerseSheet({ target, onClose }: Props) {
 }
 
 function Action({ icon, label, on, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; on?: boolean; onPress: () => void }) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.action}>
       <View style={[styles.actionIcon, on && styles.actionIconOn]}>
@@ -91,8 +95,8 @@ function Action({ icon, label, on, onPress }: { icon: keyof typeof Ionicons.glyp
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(26,26,26,0.4)', justifyContent: 'flex-end' },
+const createStyles = (colors: Palette) => StyleSheet.create({
+  backdrop: { flex: 1, backgroundColor: colors.backdrop, justifyContent: 'flex-end' },
   sheet: { backgroundColor: colors.background, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: spacing.lg, paddingBottom: spacing.xl },
   grab: { alignSelf: 'center', width: 44, height: 5, borderRadius: 3, backgroundColor: colors.border, marginBottom: spacing.md },
   ref: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 34, lineHeight: 36, color: colors.text },

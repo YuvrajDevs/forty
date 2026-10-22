@@ -14,7 +14,8 @@ import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { chunkText, spokenText } from '../lib/paragraphs';
 import { getToday, markChaptersRead } from '../lib/progress';
 import { key } from '../lib/today';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 type Ref = { bookId: string; bookName: string; chapter: number };
 
@@ -23,6 +24,8 @@ const MAX_SIZE = 28;
 const RATES = [0.8, 1, 1.2, 1.5];
 
 export default function Reader() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const params = useLocalSearchParams<{ mode?: string; book?: string; chapter?: string; verse?: string; lock?: string }>();
   const s = useOnboarding();
   const plan = params.mode === 'plan';
@@ -128,7 +131,7 @@ export default function Reader() {
         </Pressable>
         <Text style={styles.topTitle} numberOfLines={1}>{title}</Text>
         <Pressable accessibilityLabel={audio.open ? 'Close audio' : 'Listen'} hitSlop={8} onPress={() => (audio.open ? audio.close() : audio.start(0))} style={[styles.sizeBtn, audio.open && styles.sizeBtnOn]}>
-          <Ionicons name={audio.open ? 'volume-high' : 'volume-high-outline'} size={19} color={colors.text} />
+          <Ionicons name={audio.open ? 'volume-high' : 'volume-high-outline'} size={19} color={audio.open ? colors.onPrimary : colors.text} />
         </Pressable>
         <Pressable accessibilityLabel="Smaller text" hitSlop={8} onPress={() => resize(-2)} style={styles.sizeBtn}>
           <Text style={[styles.sizeText, { fontSize: 14, lineHeight: 18 }]}>A</Text>
@@ -166,7 +169,7 @@ export default function Reader() {
             <Ionicons name="play-skip-back" size={20} color={colors.text} />
           </Pressable>
           <Pressable accessibilityLabel={audio.playing ? 'Pause' : 'Play'} onPress={audio.playing ? audio.pause : audio.resume} style={[styles.playBtn, styles.playMain]}>
-            <Ionicons name={audio.playing ? 'pause' : 'play'} size={24} color={colors.text} />
+            <Ionicons name={audio.playing ? 'pause' : 'play'} size={24} color={colors.onPrimary} />
           </Pressable>
           <Pressable accessibilityLabel="Next paragraph" hitSlop={8} onPress={audio.next} style={styles.playBtn}>
             <Ionicons name="play-skip-forward" size={20} color={colors.text} />
@@ -219,7 +222,7 @@ export default function Reader() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 56 },
   iconBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },

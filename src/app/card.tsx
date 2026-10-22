@@ -8,7 +8,8 @@ import ViewShot from 'react-native-view-shot';
 import { Button } from '../components/Button';
 import { refLabel, verseText } from '../lib/bible';
 import { useOnboarding } from '../lib/onboarding';
-import { colors, fonts, spacing } from '../theme';
+import { fonts, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 type Look = 'cream' | 'sunrise' | 'ink';
 const LOOKS: { id: Look; label: string }[] = [
@@ -19,6 +20,8 @@ const LOOKS: { id: Look; label: string }[] = [
 
 /** A verse as a picture for WhatsApp or Instagram, with the app name. */
 export default function Card() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { book = '', chapter = '1', verse = '1' } = useLocalSearchParams<{ book?: string; chapter?: string; verse?: string }>();
   const { translation } = useOnboarding();
   const { width } = useWindowDimensions();
@@ -89,7 +92,7 @@ export default function Card() {
       <View style={styles.looks}>
         {LOOKS.map((l) => (
           <Pressable key={l.id} accessibilityRole="radio" accessibilityState={{ selected: look === l.id }} onPress={() => setLook(l.id)} style={[styles.look, look === l.id && styles.lookOn]}>
-            <Text style={styles.lookText}>{l.label}</Text>
+            <Text style={[styles.lookText, look === l.id && styles.onPrimary]}>{l.label}</Text>
           </Pressable>
         ))}
       </View>
@@ -101,7 +104,7 @@ export default function Card() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: spacing.lg, height: 56 },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
@@ -117,6 +120,7 @@ const styles = StyleSheet.create({
   looks: { flexDirection: 'row', justifyContent: 'center', gap: 10, paddingVertical: spacing.md },
   look: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 24, backgroundColor: colors.card },
   lookOn: { backgroundColor: colors.primary },
+  onPrimary: { color: colors.onPrimary },
   lookText: { fontFamily: fonts.medium, fontSize: 14, color: colors.text },
   footer: { padding: spacing.lg, paddingTop: spacing.sm },
 });

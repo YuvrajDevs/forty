@@ -1,7 +1,7 @@
 [
     {
-        "merged": "/Users/yuvraj/.gradle/daemon/9.3.1/expo.modules.fortylock.forty-lock-release-3:/xml/forty_lock_service.xml",
-        "source": "/Users/yuvraj/.gradle/daemon/9.3.1/expo.modules.fortylock.forty-lock-main-4:/xml/forty_lock_service.xml"
+        "merged": "expo.modules.fortylock.forty-lock-release-3:/xml/forty_lock_service.xml",
+        "source": "expo.modules.fortylock.forty-lock-main-4:/xml/forty_lock_service.xml"
     },
     {
         "merged": "expo.modules.fortylock.forty-lock-release-3:/xml/forty_widget_info.xml",

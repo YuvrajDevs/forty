@@ -3,12 +3,12 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { HIGHLIGHTS } from '../components/ChapterText';
 import { parseVerseKey, refLabel, verseText } from '../lib/bible';
 import { dueCards } from '../lib/memory';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { fromIso, iso } from '../lib/schedule';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 type Tab = 'saved' | 'highlights' | 'memorize';
 const TABS: { id: Tab; label: string }[] = [
@@ -24,6 +24,8 @@ const when = (due: string, today: string) => {
 };
 
 export default function Saved() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
   const [tab, setTab] = useState<Tab>('saved');
   const today = iso(new Date());
@@ -40,7 +42,7 @@ export default function Saved() {
       : tab === 'highlights'
         ? Object.entries(s.highlights).reverse().map(([k, c]) => ({
             key: k,
-            color: HIGHLIGHTS[c],
+            color: colors.highlight[c],
             onRemove: () => {
               const next = { ...s.highlights };
               delete next[k];
@@ -68,7 +70,7 @@ export default function Saved() {
         <View style={styles.seg}>
           {TABS.map((t) => (
             <Pressable key={t.id} accessibilityRole="tab" accessibilityState={{ selected: tab === t.id }} onPress={() => setTab(t.id)} style={[styles.segItem, tab === t.id && styles.segOn]}>
-              <Text style={styles.segText}>{t.label}</Text>
+              <Text style={[styles.segText, tab === t.id && styles.onPrimary]}>{t.label}</Text>
             </Pressable>
           ))}
         </View>
@@ -102,7 +104,7 @@ export default function Saved() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 48, justifyContent: 'center' },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
@@ -111,6 +113,7 @@ const styles = StyleSheet.create({
   seg: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.button, padding: 4, marginVertical: spacing.lg },
   segItem: { flex: 1, height: 42, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center' },
   segOn: { backgroundColor: colors.primary },
+  onPrimary: { color: colors.onPrimary },
   segText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.text },
   review: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.cardSelected, borderRadius: radius.card, padding: 18, marginBottom: spacing.md },
   reviewText: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },

@@ -8,70 +8,129 @@
 7-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:3:3-76
 7-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:3:20-73
 8
-9    <!-- Lists launchable apps without needing the broad QUERY_ALL_PACKAGES permission. -->
-10    <queries>
-10-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:3-11:13
-11        <intent>
-11-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:5-10:14
-12            <action android:name="android.intent.action.MAIN" />
-12-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:7-59
-12-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:15-56
-13
-14            <category android:name="android.intent.category.LAUNCHER" />
-14-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:7-67
-14-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:17-64
-15        </intent>
-16    </queries>
-17
-18    <application>
-18-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:3-38:17
-19        <service
-19-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:5-25:15
-20            android:name="expo.modules.fortylock.FortyLockService"
-20-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:7-61
-21            android:exported="false"
-21-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:16:7-31
-22            android:label="FortyBible"
-22-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:17:7-33
-23            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
-23-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:18:7-73
-24            <intent-filter>
-24-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:19:7-21:23
-25                <action android:name="android.accessibilityservice.AccessibilityService" />
-25-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:9-84
-25-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:17-81
-26            </intent-filter>
-27
-28            <meta-data
-28-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:22:7-24:54
-29                android:name="android.accessibilityservice"
-29-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:23:9-52
-30                android:resource="@xml/forty_lock_service" />
-30-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:24:9-51
-31        </service>
-32
-33        <receiver
-33-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:27:5-37:16
-34            android:name="expo.modules.fortylock.FortyWidgetProvider"
-34-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:28:7-64
-35            android:exported="false"
-35-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:29:7-31
-36            android:label="FortyBible" >
-36-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:30:7-33
-37            <intent-filter>
-37-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:31:7-33:23
-38                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-38-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:9-76
-38-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:17-73
-39            </intent-filter>
-40
-41            <meta-data
-41-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:34:7-36:53
-42                android:name="android.appwidget.provider"
-42-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:35:9-50
-43                android:resource="@xml/forty_widget_info" />
-43-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:36:9-50
-44        </receiver>
-45    </application>
-46
-47</manifest>
+9    <!-- Verse alarms: ring on time, show over the lock screen, and come back after a restart. -->
+10    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+10-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:3-79
+10-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:20-76
+11    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+11-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:3-79
+11-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:20-76
+12    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+12-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:3-75
+12-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:20-72
+13    <uses-permission android:name="android.permission.WAKE_LOCK" />
+13-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:3-66
+13-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:20-63
+14
+15    <!-- Lists launchable apps without needing the broad QUERY_ALL_PACKAGES permission. -->
+16    <queries>
+16-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:12:3-17:13
+17        <intent>
+17-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:5-16:14
+18            <action android:name="android.intent.action.MAIN" />
+18-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:7-59
+18-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:15-56
+19
+20            <category android:name="android.intent.category.LAUNCHER" />
+20-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:7-67
+20-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:17-64
+21        </intent>
+22    </queries>
+23
+24    <application>
+24-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:19:3-64:17
+25        <service
+25-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:5-31:15
+26            android:name="expo.modules.fortylock.FortyLockService"
+26-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:21:7-61
+27            android:exported="false"
+27-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:22:7-31
+28            android:label="FortyBible"
+28-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:23:7-33
+29            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+29-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:24:7-73
+30            <intent-filter>
+30-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:25:7-27:23
+31                <action android:name="android.accessibilityservice.AccessibilityService" />
+31-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:26:9-84
+31-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:26:17-81
+32            </intent-filter>
+33
+34            <meta-data
+34-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:28:7-30:54
+35                android:name="android.accessibilityservice"
+35-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:29:9-52
+36                android:resource="@xml/forty_lock_service" />
+36-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:30:9-51
+37        </service>
+38
+39        <activity
+39-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:33:5-40:72
+40            android:name="expo.modules.fortylock.AlarmActivity"
+40-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:34:7-58
+41            android:excludeFromRecents="true"
+41-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:36:7-40
+42            android:exported="false"
+42-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:35:7-31
+43            android:launchMode="singleTask"
+43-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:37:7-38
+44            android:showWhenLocked="true"
+44-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:38:7-36
+45            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+45-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:40:7-69
+46            android:turnScreenOn="true" />
+46-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:39:7-34
+47
+48        <receiver
+48-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:5-94
+49            android:name="expo.modules.fortylock.AlarmReceiver"
+49-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:15-66
+50            android:exported="false" />
+50-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:67-91
+51        <receiver
+51-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:5-51:16
+52            android:name="expo.modules.fortylock.BootReceiver"
+52-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:15-65
+53            android:exported="true" >
+53-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:66-89
+54            <intent-filter>
+54-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:45:7-50:23
+55                <action android:name="android.intent.action.BOOT_COMPLETED" />
+55-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:46:9-71
+55-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:46:17-68
+56                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+56-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:47:9-76
+56-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:47:17-73
+57                <action android:name="android.intent.action.TIME_SET" />
+57-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:48:9-65
+57-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:48:17-62
+58                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+58-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:49:9-73
+58-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:49:17-70
+59            </intent-filter>
+60        </receiver>
+61        <receiver
+61-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:53:5-63:16
+62            android:name="expo.modules.fortylock.FortyWidgetProvider"
+62-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:54:7-64
+63            android:exported="false"
+63-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:55:7-31
+64            android:label="FortyBible" >
+64-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:56:7-33
+65            <intent-filter>
+65-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:57:7-59:23
+66                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+66-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:58:9-76
+66-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:58:17-73
+67            </intent-filter>
+68
+69            <meta-data
+69-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:60:7-62:53
+70                android:name="android.appwidget.provider"
+70-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:61:9-50
+71                android:resource="@xml/forty_widget_info" />
+71-->/Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:62:9-50
+72        </receiver>
+73    </application>
+74
+75</manifest>

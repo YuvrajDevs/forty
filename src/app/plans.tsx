@@ -10,11 +10,14 @@ import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import { SESSION_WORDS, summarize, finishDate } from '../lib/plan';
 import { setReadingDays } from '../lib/progress';
 import { availablePlans, chaptersFor } from '../lib/scopes';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 export default function Plans() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { translation, scope, readChapters } = useOnboarding();
   const plans = useMemo(() => availablePlans(translation), [translation]);
   const [picked, setPicked] = useState<CatalogPlan | null>(null);
@@ -115,7 +118,7 @@ export default function Plans() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 48, justifyContent: 'center' },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   cardBlurb: { marginTop: 2, fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textSecondary },
   cardMeta: { marginTop: 6, fontFamily: fonts.medium, fontSize: 12, color: colors.gold },
-  backdrop: { flex: 1, backgroundColor: 'rgba(26,26,26,0.4)', justifyContent: 'flex-end' },
+  backdrop: { flex: 1, backgroundColor: colors.backdrop, justifyContent: 'flex-end' },
   sheet: { backgroundColor: colors.background, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: spacing.lg, paddingBottom: spacing.xl },
   grab: { alignSelf: 'center', width: 44, height: 5, borderRadius: 3, backgroundColor: colors.border, marginBottom: spacing.md },
   sheetTitle: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 44, lineHeight: 46, color: colors.text },

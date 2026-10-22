@@ -11,6 +11,9 @@ export interface FortyLockNative {
   isBatteryUnrestricted(): boolean;
   openBatterySettings(): void;
   setConfig(json: string): void;
+  setAlarms(json: string): void;
+  canUseFullScreen(): boolean;
+  openFullScreenSettings(): void;
   setUnlockedUntil(epochMs: number): void;
   updateWidget(json: string): void;
   launchApp(packageName: string): void;

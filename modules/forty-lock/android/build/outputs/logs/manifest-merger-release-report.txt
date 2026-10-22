@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-39:12
-INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-39:12
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-65:12
+INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:1:1-65:12
 	package
 		INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml
 	xmlns:android
@@ -10,62 +10,124 @@ uses-permission#android.permission.SYSTEM_ALERT_WINDOW
 ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:3:3-76
 	android:name
 		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:3:20-73
+uses-permission#android.permission.USE_FULL_SCREEN_INTENT
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:3-79
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:20-76
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:3-79
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:20-76
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:3-75
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:20-72
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:3-66
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:20-63
 queries
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:6:3-11:13
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:12:3-17:13
 intent#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:7:5-10:14
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:5-16:14
 action#android.intent.action.MAIN
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:7-59
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:7-59
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:8:15-56
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:15-56
 category#android.intent.category.LAUNCHER
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:7-67
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:7-67
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:9:17-64
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:17-64
 application
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:13:3-38:17
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:19:3-64:17
 service#expo.modules.fortylock.FortyLockService
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:14:5-25:15
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:5-31:15
 	android:label
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:17:7-33
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:23:7-33
 	android:exported
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:16:7-31
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:22:7-31
 	android:permission
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:18:7-73
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:24:7-73
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:15:7-61
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:21:7-61
 intent-filter#action:name:android.accessibilityservice.AccessibilityService
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:19:7-21:23
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:25:7-27:23
 action#android.accessibilityservice.AccessibilityService
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:9-84
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:26:9-84
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:20:17-81
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:26:17-81
 meta-data#android.accessibilityservice
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:22:7-24:54
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:28:7-30:54
 	android:resource
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:24:9-51
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:30:9-51
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:23:9-52
-receiver#expo.modules.fortylock.FortyWidgetProvider
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:27:5-37:16
-	android:label
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:30:7-33
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:29:9-52
+activity#expo.modules.fortylock.AlarmActivity
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:33:5-40:72
+	android:turnScreenOn
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:39:7-34
+	android:excludeFromRecents
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:36:7-40
+	android:showWhenLocked
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:38:7-36
+	android:launchMode
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:37:7-38
 	android:exported
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:29:7-31
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:35:7-31
+	android:theme
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:40:7-69
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:28:7-64
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:34:7-58
+receiver#expo.modules.fortylock.AlarmReceiver
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:5-94
+	android:exported
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:67-91
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:42:15-66
+receiver#expo.modules.fortylock.BootReceiver
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:5-51:16
+	android:exported
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:66-89
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:44:15-65
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:45:7-50:23
+action#android.intent.action.BOOT_COMPLETED
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:46:9-71
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:46:17-68
+action#android.intent.action.MY_PACKAGE_REPLACED
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:47:9-76
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:47:17-73
+action#android.intent.action.TIME_SET
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:48:9-65
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:48:17-62
+action#android.intent.action.TIMEZONE_CHANGED
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:49:9-73
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:49:17-70
+receiver#expo.modules.fortylock.FortyWidgetProvider
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:53:5-63:16
+	android:label
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:56:7-33
+	android:exported
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:55:7-31
+	android:name
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:54:7-64
 intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:31:7-33:23
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:57:7-59:23
 action#android.appwidget.action.APPWIDGET_UPDATE
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:9-76
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:58:9-76
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:32:17-73
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:58:17-73
 meta-data#android.appwidget.provider
-ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:34:7-36:53
+ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:60:7-62:53
 	android:resource
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:36:9-50
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:62:9-50
 	android:name
-		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:35:9-50
+		ADDED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml:61:9-50
 uses-sdk
 INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/yuvraj/Documents/FortyBible/modules/forty-lock/android/src/main/AndroidManifest.xml

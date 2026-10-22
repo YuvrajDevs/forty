@@ -3,12 +3,15 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { Quiz } from '../../components/Quiz';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
-import { colors, fonts } from '../../theme';
+import { fonts, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 export default function Phone() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const { phoneHours } = useOnboarding();
   return (
-    <Quiz step={4} title="How much time do you spend on your phone each day?" subtitle="A rough guess is fine." onContinue={() => router.push('/onboarding/reveal')}>
+    <Quiz step={5} title="How much time do you spend on your phone each day?" subtitle="A rough guess is fine." onContinue={() => router.push('/onboarding/reveal')}>
       <View style={styles.center}>
         <Text style={styles.value}>{phoneHours >= 10 ? '10+' : phoneHours}</Text>
         <Text style={styles.unit}>hours a day</Text>
@@ -20,7 +23,7 @@ export default function Phone() {
         value={phoneHours}
         onValueChange={(v) => setOnboarding({ phoneHours: v })}
         minimumTrackTintColor={colors.gold}
-        maximumTrackTintColor="#EADFC2"
+        maximumTrackTintColor={colors.border}
         thumbTintColor={colors.gold}
         accessibilityLabel="Hours on phone per day"
       />
@@ -32,7 +35,7 @@ export default function Phone() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   center: { alignItems: 'center', marginVertical: 24 },
   value: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 120, lineHeight: 120, color: colors.text },
   unit: { fontFamily: fonts.body, fontSize: 16, color: colors.textSecondary },

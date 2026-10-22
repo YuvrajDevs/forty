@@ -4,12 +4,14 @@ import { Quiz } from '../../components/Quiz';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { buildPlan, finishDate, summarize } from '../../lib/plan';
 import { chaptersFor, scopeTitle } from '../../lib/scopes';
-import { colors, fonts, radius } from '../../theme';
+import { fonts, radius, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 const PRESETS = [7, 14, 30, 60, 90, 180, 365];
 const label = (d: number) => (d === 365 ? '1 year' : `${d} days`);
 
 export default function Days() {
+  const styles = useStyles(createStyles);
   const { scope, days, translation } = useOnboarding();
   const chapters = chaptersFor(scope, translation);
   const s = summarize(chapters, days);
@@ -20,7 +22,7 @@ export default function Days() {
 
   return (
     <Quiz
-      step={8}
+      step={9}
       title="In how many days?"
       subtitle={`${title}, finished by ${end}.`}
       onContinue={() => router.push('/onboarding/apps')}
@@ -73,7 +75,7 @@ export default function Days() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   chip: { paddingVertical: 11, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.card },
   chipOn: { backgroundColor: colors.cardSelected, borderWidth: 0 },

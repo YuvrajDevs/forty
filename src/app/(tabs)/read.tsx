@@ -5,9 +5,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { booksFor, translationName } from '../../lib/bible';
 import { useOnboarding } from '../../lib/onboarding';
-import { colors, fonts, radius, spacing } from '../../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 export default function Read() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const [testament, setTestament] = useState<'ot' | 'nt'>('nt');
   const [open, setOpen] = useState<string | null>(null);
   const { readChapters, translation } = useOnboarding();
@@ -34,7 +37,7 @@ export default function Read() {
         <View style={styles.seg}>
           {(['nt', 'ot'] as const).map((t) => (
             <Pressable key={t} onPress={() => { setTestament(t); setOpen(null); }} style={[styles.segItem, testament === t && styles.segOn]}>
-              <Text style={styles.segText}>{t === 'nt' ? 'New Testament' : 'Old Testament'}</Text>
+              <Text style={[styles.segText, testament === t && styles.onPrimary]}>{t === 'nt' ? 'New Testament' : 'Old Testament'}</Text>
             </Pressable>
           ))}
         </View>
@@ -67,7 +70,7 @@ export default function Read() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xxl },
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
@@ -80,6 +83,7 @@ const styles = StyleSheet.create({
   seg: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.button, padding: 4, marginTop: spacing.md, marginBottom: spacing.lg },
   segItem: { flex: 1, height: 44, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center' },
   segOn: { backgroundColor: colors.primary },
+  onPrimary: { color: colors.onPrimary },
   segText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.text },
   book: { backgroundColor: colors.card, borderRadius: radius.card, marginBottom: 10, overflow: 'hidden' },
   bookRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 18 },
@@ -88,6 +92,6 @@ const styles = StyleSheet.create({
   chapters: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 14, paddingBottom: 16 },
   chapter: { width: 48, height: 48, borderRadius: 14, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' },
   chapterRead: { backgroundColor: colors.green },
-  chapterTextRead: { color: '#FFFFFF' },
+  chapterTextRead: { color: colors.onGreen },
   chapterText: { fontFamily: fonts.medium, fontSize: 15, color: colors.text },
 });

@@ -62,6 +62,21 @@ class FortyLockModule : Module() {
     // Streak and the next two weeks of verses for the home-screen widget, as JSON.
     Function("updateWidget") { json: String -> FortyWidgetProvider.save(context, json) }
 
+    // Verse alarms as JSON; arms them with the system alarm clock.
+    Function("setAlarms") { json: String -> AlarmScheduler.save(context, json) }
+
+    Function("canUseFullScreen") {
+      if (android.os.Build.VERSION.SDK_INT >= 34) {
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager).canUseFullScreenIntent()
+      } else true
+    }
+
+    Function("openFullScreenSettings") {
+      if (android.os.Build.VERSION.SDK_INT >= 34) {
+        launch(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + context.packageName)))
+      }
+    }
+
     Function("setUnlockedUntil") { epochMs: Double -> LockConfig.setUnlockedUntil(context, epochMs.toLong()) }
 
     Function("launchApp") { packageName: String ->

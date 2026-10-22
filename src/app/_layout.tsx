@@ -9,14 +9,16 @@ import { AppState } from 'react-native';
 import { syncNotifications } from '../lib/notifications';
 import { billingAvailable, OFFLINE_GRACE_MS, refreshEntitlement } from '../lib/billing';
 import { syncLock } from '../lib/lock';
+import { syncAlarms } from '../lib/alarms';
 import { syncWidget } from '../lib/widget';
 import { getOnboarding, loadOnboarding, setOnboarding, useOnboarding } from '../lib/onboarding';
 import { getToday, settlePause } from '../lib/progress';
-import { colors } from '../theme';
+import { useColors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const colors = useColors();
   const [loaded, error] = useFonts({ Outfit_300Light, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, BebasNeue_400Regular, Lora_400Regular, Lora_600SemiBold });
 
   const [ready, setReady] = useState(false);
@@ -28,7 +30,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready) syncNotifications(app);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, app.remindersOn, app.completed, app.lockStartHour, app.trialStartedAt, app.lockDays.join()]);
+  }, [ready, app.remindersOn, app.completed, app.lockTimes.join(), app.trialStartedAt, app.lockDays.join()]);
 
   // Ask Google Play whether the subscription is active, at launch and whenever the app comes back.
   useEffect(() => {
@@ -44,6 +46,10 @@ export default function RootLayout() {
     const sub = AppState.addEventListener('change', (s) => s === 'active' && check());
     return () => sub.remove();
   }, [ready, app.completed]);
+
+  useEffect(() => {
+    if (ready) syncAlarms(app);
+  }, [ready, app.alarms, app.completed]);
 
   useEffect(() => {
     if (ready) settlePause();
@@ -66,7 +72,7 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={colors.dark ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} />
     </>
   );

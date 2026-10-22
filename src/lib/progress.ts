@@ -4,6 +4,7 @@ import { SESSION_WORDS, summarize } from './plan';
 import { pausedDatesSoFar, resumeEffect } from './pause';
 import { activeDaysBetween, addActiveDays, addDays, fromIso, iso, missedDays } from './schedule';
 import { unlockAfterReading } from './lock';
+import { timesFor } from './lockTimes';
 import { chaptersFor } from './scopes';
 import { computeToday, freshReadings, key } from './today';
 import type { Today } from './today';
@@ -42,9 +43,9 @@ export function markChaptersRead(keys: string[]) {
     readChapters: [...new Set([...s.readChapters, ...keys])],
     doneDates: s.doneDates.includes(date) ? s.doneDates : [...s.doneDates, date],
   });
-  // A reading finished: open the apps for the gap you chose, or for the rest of the day.
+  // A reading finished: open the apps until the next lock time, or for the rest of the day.
   const after = getToday(getOnboarding());
-  if (after.doneCount > before.doneCount) unlockAfterReading(getOnboarding().gapHours, after.nextIndex === -1);
+  if (after.doneCount > before.doneCount) unlockAfterReading(timesFor(getOnboarding().lockTimes, after.readings.length), after.doneCount, after.readings.length);
 }
 
 const unreadWords = (s: OnboardingState) => getToday(s).unreadChapters.reduce((sum, c) => sum + c.words, 0);

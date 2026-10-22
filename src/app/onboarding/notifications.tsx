@@ -3,12 +3,14 @@ import { Quiz } from '../../components/Quiz';
 import { requestNotificationPermission } from '../../lib/notifications';
 import { setOnboarding } from '../../lib/onboarding';
 import { Text, StyleSheet } from 'react-native';
-import { colors, fonts } from '../../theme';
+import { fonts, useColors, useStyles } from '../../theme';
+import type { Palette } from '../../theme';
 
 export default function Notifications() {
+  const styles = useStyles(createStyles);
   return (
     <Quiz
-      step={12}
+      step={13}
       title="A gentle reminder each day?"
       subtitle="We'll also tell you before your free trial ends, so there are no surprises."
       cta="Yes, remind me"
@@ -25,4 +27,4 @@ export default function Notifications() {
   );
 }
 
-const styles = StyleSheet.create({ body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 24, color: colors.text } });
+const createStyles = (colors: Palette) => StyleSheet.create({ body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 24, color: colors.text } });

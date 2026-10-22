@@ -6,9 +6,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TRANSLATIONS } from '../lib/bible';
 import { requestNotificationPermission } from '../lib/notifications';
 import { deleteAllData, getOnboarding, resetOnboarding, setOnboarding, useOnboarding } from '../lib/onboarding';
-import { colors, fonts, radius, spacing } from '../theme';
+import { fonts, radius, spacing, useColors, useStyles } from '../theme';
+import type { Palette } from '../theme';
 
 export default function Settings() {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   const s = useOnboarding();
 
   const toggleReminders = async (on: boolean) => {
@@ -55,6 +58,15 @@ export default function Settings() {
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Settings</Text>
 
+        <Text style={styles.section}>Appearance</Text>
+        <View style={styles.seg}>
+          {(['system', 'light', 'dark'] as const).map((t) => (
+            <Pressable key={t} accessibilityRole="radio" accessibilityState={{ selected: s.theme === t }} onPress={() => setOnboarding({ theme: t })} style={[styles.segItem, s.theme === t && styles.segOn]}>
+              <Text style={[styles.segText, s.theme === t && styles.segTextOn]}>{t === 'system' ? 'Auto' : t === 'light' ? 'Light' : 'Dark'}</Text>
+            </Pressable>
+          ))}
+        </View>
+
         <Text style={styles.section}>Bible translation</Text>
         {TRANSLATIONS.map((t) => {
           const on = s.translation === t.id;
@@ -69,6 +81,9 @@ export default function Settings() {
           );
         })}
         <Text style={styles.hint}>All three work offline. Your plan keeps its chapters; the Psalms and a few books are numbered differently in the Douay-Rheims.</Text>
+
+        <Text style={styles.section}>Verse alarms</Text>
+        <Row icon="alarm-outline" label="Wake up to a verse" value={s.alarms.filter((a) => a.on).length ? `${s.alarms.filter((a) => a.on).length} on` : 'Off'} onPress={() => router.push('/alarms')} />
 
         <Text style={styles.section}>Lock</Text>
         <Row icon="apps-outline" label="Locked apps" value={`${s.lockedApps.length} chosen`} onPress={() => router.push('/settings-apps')} />
@@ -96,17 +111,19 @@ export default function Settings() {
 }
 
 function Row({ icon, label, value, onPress, danger }: { icon: keyof typeof Ionicons.glyphMap; label: string; value?: string; onPress: () => void; danger?: boolean }) {
+  const colors = useColors();
+  const styles = useStyles(createStyles);
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.row}>
-      <Ionicons name={icon} size={22} color={danger ? '#B3261E' : colors.text} />
-      <Text style={[styles.rowLabel, { flex: 1 }, danger && { color: '#B3261E' }]}>{label}</Text>
+      <Ionicons name={icon} size={22} color={danger ? colors.danger : colors.text} />
+      <Text style={[styles.rowLabel, { flex: 1 }, danger && { color: colors.danger }]}>{label}</Text>
       {value ? <Text style={styles.cardHint}>{value}</Text> : null}
       <Ionicons name="chevron-forward" size={18} color={colors.textSecondary} />
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Palette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   top: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, height: 48, justifyContent: 'center' },
   back: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
@@ -117,7 +134,12 @@ const styles = StyleSheet.create({
   cardOn: { backgroundColor: colors.cardSelected },
   cardTitle: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text },
   cardHint: { marginTop: 1, fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
-  radio: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: '#BDB398' },
+  seg: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.button, padding: 4 },
+  segItem: { flex: 1, height: 40, borderRadius: radius.button - 4, alignItems: 'center', justifyContent: 'center' },
+  segOn: { backgroundColor: colors.primary },
+  segText: { fontFamily: fonts.medium, fontSize: 14, color: colors.textSecondary },
+  segTextOn: { color: colors.onPrimary },
+  radio: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: colors.radioBorder },
   radioOn: { backgroundColor: colors.gold, borderColor: colors.gold },
   hint: { fontFamily: fonts.body, fontSize: 12, lineHeight: 18, color: colors.textSecondary },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: colors.card, borderRadius: radius.card, paddingVertical: 16, paddingHorizontal: 18, marginBottom: 10 },
