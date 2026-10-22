@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { refLabel, verseKey, verseText } from '../lib/bible';
+import { refLabel, unquote, verseKey, verseText } from '../lib/bible';
 import { addCard, removeCard } from '../lib/memory';
 import { setOnboarding, useOnboarding } from '../lib/onboarding';
 import type { HighlightColor } from '../lib/onboarding';
