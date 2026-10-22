@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -19,6 +20,16 @@ export default function Read() {
         <Text style={styles.eyebrow}>FORTYBIBLE</Text>
         <Text style={styles.title}>Read</Text>
         <Text style={styles.sub}>{translationName(translation)}, offline. Chapters you read here count towards your plan.</Text>
+
+        <View style={styles.tools}>
+          <Pressable accessibilityRole="search" accessibilityLabel="Search the Bible" onPress={() => router.push('/search')} style={styles.search}>
+            <Ionicons name="search" size={18} color={colors.textSecondary} />
+            <Text style={styles.searchText}>Search words or verses</Text>
+          </Pressable>
+          <Pressable accessibilityLabel="Saved verses" onPress={() => router.push('/saved')} style={styles.savedBtn}>
+            <Ionicons name="bookmark-outline" size={21} color={colors.text} />
+          </Pressable>
+        </View>
 
         <View style={styles.seg}>
           {(['nt', 'ot'] as const).map((t) => (
@@ -62,7 +73,11 @@ const styles = StyleSheet.create({
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
   title: { marginTop: spacing.md, fontFamily: fonts.display, includeFontPadding: false, fontSize: 64, lineHeight: 64, color: colors.text },
   sub: { marginTop: 6, fontFamily: fonts.body, fontSize: 14, lineHeight: 21, color: colors.textSecondary },
-  seg: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.button, padding: 4, marginVertical: spacing.lg },
+  tools: { flexDirection: 'row', gap: 10, marginTop: spacing.lg },
+  search: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 18, borderRadius: 24, backgroundColor: colors.card },
+  searchText: { fontFamily: fonts.body, fontSize: 15, color: colors.textSecondary },
+  savedBtn: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
+  seg: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: radius.button, padding: 4, marginTop: spacing.md, marginBottom: spacing.lg },
   segItem: { flex: 1, height: 44, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center' },
   segOn: { backgroundColor: colors.primary },
   segText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.text },

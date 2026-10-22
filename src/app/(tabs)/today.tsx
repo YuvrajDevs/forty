@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
+import { dueCards } from '../../lib/memory';
 import { useOnboarding } from '../../lib/onboarding';
-import { behindBy, effectiveSkipped, ensureDayPlan, extendDeadline, getToday, skipToday } from '../../lib/progress';
+import { behindBy, effectiveSkipped, ensureDayPlan, extendDeadline, getToday, resumePlan, settlePause, skipToday } from '../../lib/progress';
 import { fromIso, streak } from '../../lib/schedule';
 import { scopeTitle } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
@@ -18,12 +19,14 @@ const greeting = () => {
 export default function Today() {
   const s = useOnboarding();
   useEffect(() => {
+    settlePause();
     ensureDayPlan();
   }, []);
   const t = getToday(s);
   const title = scopeTitle(s.scope);
   const now = new Date();
   const run = streak(s.doneDates, s.lockDays, now, s.startedOn ? fromIso(s.startedOn) : now, effectiveSkipped(s, t.date));
+  const memoryDue = dueCards(s.memory, t.date).length;
   const behind = t.active && !t.finished ? behindBy(s) : 0;
   const totalChapters = t.chaptersRead + t.unreadChapters.length;
   const done = t.chaptersRead;
@@ -73,6 +76,13 @@ export default function Today() {
         <Text style={styles.section}>Today's readings</Text>
         {t.finished ? (
           <Text style={styles.empty}>You have finished {title}. Well done. Pick a new plan in the Plan tab.</Text>
+        ) : t.paused ? (
+          <View>
+            <Text style={styles.empty}>
+              Your plan is paused{s.pausedUntil ? ` until ${fromIso(s.pausedUntil).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}` : ''}. Your apps stay open and your streak is safe.
+            </Text>
+            <Pressable onPress={resumePlan} style={styles.link}><Text style={styles.linkText}>Resume now</Text></Pressable>
+          </View>
         ) : t.skipped ? (
           <View>
             <Text style={styles.empty}>You skipped today. Your apps stay open, and your streak is safe. See you tomorrow.</Text>
@@ -106,6 +116,12 @@ export default function Today() {
           <Pressable onPress={() => skipToday(true)} style={styles.link}><Text style={styles.linkText}>Skip today</Text></Pressable>
         ) : null}
         {allDone ? <Text style={styles.empty}>All done for today. Your apps are unlocked. See you tomorrow.</Text> : null}
+        {memoryDue > 0 ? (
+          <Pressable accessibilityRole="button" onPress={() => router.push('/memory')} style={styles.memory}>
+            <Text style={styles.memoryText}>{memoryDue} {memoryDue === 1 ? 'verse' : 'verses'} to review</Text>
+            <Ionicons name="chevron-forward" size={18} color={colors.textSecondary} />
+          </Pressable>
+        ) : null}
         {!s.checkins.some((c) => c.date === t.date) ? (
           <Pressable accessibilityRole="button" onPress={() => router.push('/checkin')} style={styles.checkin}>
             <View style={{ flex: 1 }}>
@@ -116,7 +132,7 @@ export default function Today() {
           </Pressable>
         ) : null}
       </ScrollView>
-      {!allDone && t.active && !t.skipped && !t.finished && t.readings.length > 0 ? (
+      {!allDone && t.active && !t.skipped && !t.paused && !t.finished && t.readings.length > 0 ? (
         <View style={styles.footer}>
           <Button label={t.doneCount === 0 ? 'Start reading' : 'Continue reading'} onPress={() => router.push('/reader?mode=plan')} />
         </View>
@@ -150,6 +166,8 @@ const styles = StyleSheet.create({
   radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: '#BDB398', alignItems: 'center', justifyContent: 'center' },
   radioOn: { backgroundColor: colors.green, borderColor: colors.green },
   tick: { color: '#FFFFFF', fontSize: 15, lineHeight: 18, fontFamily: fonts.semibold },
+  memory: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.card, borderRadius: radius.card, paddingVertical: 16, paddingHorizontal: 20 },
+  memoryText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.text },
   checkin: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, borderRadius: radius.card, padding: 20 },
   checkinTitle: { fontFamily: fonts.semibold, fontSize: 17, color: colors.text },
   banner: { marginTop: spacing.lg, backgroundColor: colors.cardSelected, borderRadius: radius.card, padding: 18 },

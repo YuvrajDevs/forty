@@ -18,6 +18,9 @@ data class LockConfig(
   /** Readings still to do on [date]. */
   val pending: Int,
   val skipDate: String,
+  /** While today falls in this range (yyyy-MM-dd, inclusive) the plan is paused and nothing is locked. */
+  val pausedFrom: String,
+  val pausedUntil: String,
   val unlockedUntil: Long,
 ) {
   companion object {
@@ -52,6 +55,8 @@ data class LockConfig(
           date = o.optString("date", ""),
           pending = o.optInt("pending", 1),
           skipDate = o.optString("skipDate", ""),
+          pausedFrom = o.optString("pausedFrom", ""),
+          pausedUntil = o.optString("pausedUntil", ""),
           unlockedUntil = prefs.getLong(KEY_UNLOCK, 0L),
         )
       } catch (e: Exception) {
@@ -71,6 +76,7 @@ object LockRules {
     if (nowMs < cfg.unlockedUntil) return false
     val today = LockConfig.today(cal)
     if (cfg.skipDate == today) return false
+    if (cfg.pausedFrom.isNotEmpty() && today >= cfg.pausedFrom && today <= cfg.pausedUntil.ifEmpty { "9999-12-31" }) return false
     // Monday = 0 ... Sunday = 6. Calendar.SUNDAY is 1.
     val dayIndex = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
     if (!cfg.lockDays[dayIndex]) return false

@@ -24,6 +24,8 @@ export function syncLock(s: OnboardingState, t: Today) {
         date: t.date,
         pending: t.active ? Math.max(0, t.readings.length - t.doneCount) : 0,
         skipDate: t.skipped ? t.date : '',
+        pausedFrom: s.pausedFrom ?? '',
+        pausedUntil: s.pausedUntil ?? (s.pausedFrom ? '9999-12-31' : ''),
       }),
     );
   } catch {

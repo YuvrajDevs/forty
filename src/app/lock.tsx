@@ -8,7 +8,10 @@ import { LOCKABLE_APPS } from '../lib/apps';
 import { emergencyUnlock, goHome, openApp } from '../lib/lock';
 import { useOnboarding } from '../lib/onboarding';
 import { useApps } from '../lib/useApps';
+import { verseText, refLabel } from '../lib/bible';
 import { ensureDayPlan, getToday, skipToday } from '../lib/progress';
+import { iso } from '../lib/schedule';
+import { verseOfDay } from '../lib/votd';
 import { colors, fonts, radius, spacing } from '../theme';
 
 // Opened by the Android lock service when a chosen app comes to the front.
@@ -18,6 +21,8 @@ export default function Lock() {
   const t = getToday(s);
   const pending = t.active ? t.readings.length - t.doneCount : 0;
   const next = t.nextIndex >= 0 ? t.readings[t.nextIndex] : undefined;
+  const votd = verseOfDay(iso(new Date()), s.translation);
+  const votdText = verseText(s.translation, votd[0], votd[1], votd[2]);
   const info = useApps().find((a) => a.id === pkg);
   const name = info?.name ?? LOCKABLE_APPS.find((a) => a.id === pkg)?.name ?? 'This app';
 
@@ -61,6 +66,12 @@ export default function Lock() {
           <Text style={styles.label}>{next.label}</Text>
           <Text style={styles.min}>about {next.minutes} min</Text>
         </View>
+        {votdText ? (
+          <View style={styles.votd}>
+            <Text style={styles.votdText} numberOfLines={4}>{'\u201C'}{votdText}{'\u201D'}</Text>
+            <Text style={styles.votdRef}>{refLabel(s.translation, votd[0], votd[1], votd[2])}</Text>
+          </View>
+        ) : null}
       </View>
       <View style={styles.footer}>
         <Button label="Start reading" onPress={() => router.replace(`/reader?mode=plan&lock=${encodeURIComponent(pkg)}`)} />
@@ -83,6 +94,9 @@ const styles = StyleSheet.create({
   count: { fontFamily: fonts.medium, fontSize: 13, color: colors.gold },
   label: { marginTop: 4, fontFamily: fonts.display, includeFontPadding: false, fontSize: 40, lineHeight: 42, color: colors.text, textAlign: 'center' },
   min: { marginTop: 2, fontFamily: fonts.body, fontSize: 14, color: colors.textSecondary },
+  votd: { marginTop: spacing.lg, alignSelf: 'stretch', paddingHorizontal: spacing.md },
+  votdText: { fontFamily: fonts.scripture, fontStyle: 'italic', fontSize: 16, lineHeight: 25, color: colors.textSecondary, textAlign: 'center' },
+  votdRef: { marginTop: 6, fontFamily: fonts.semibold, fontSize: 12, letterSpacing: 1, color: colors.gold, textAlign: 'center' },
   footer: { padding: spacing.lg, gap: 10 },
   links: { flexDirection: 'row', justifyContent: 'center', gap: 28, paddingTop: 4 },
   link: { fontFamily: fonts.body, fontSize: 14, color: colors.textSecondary, textDecorationLine: 'underline' },

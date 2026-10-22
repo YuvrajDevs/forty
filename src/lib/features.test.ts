@@ -95,3 +95,32 @@ test('pause: resuming pushes the finish date by the lock days that were paused',
   assert.equal(wk.extraActiveDays, 3);
   assert.equal(resumeEffect(s, '2026-10-22', ALL7).skipped.length, 0); // resumed the same day
 });
+
+import { chunkText, paragraphs, spokenText } from './paragraphs.ts';
+
+test('paragraphs: markers split paragraphs, verse numbers show once per verse', () => {
+  const p = paragraphs(['¶In the beginning', 'God made it.', '¶A new paragraph here']);
+  assert.equal(p.length, 2);
+  assert.deepEqual(p[0].map((r) => [r.verse, r.showNum]), [[1, true], [2, true]]);
+  assert.equal(p[1][0].verse, 3);
+});
+
+test('paragraphs: a verse that continues after a break keeps its number but shows it once', () => {
+  const p = paragraphs(['First part ¶second part of the same verse']);
+  assert.equal(p.length, 2);
+  assert.deepEqual(p.flat().map((r) => [r.verse, r.showNum]), [[1, true], [1, false]]);
+});
+
+test('spoken text has no verse numbers and poetry lines become pauses', () => {
+  const p = paragraphs(['¶Be still,\nand know that I am God']);
+  assert.equal(spokenText(p[0]), 'Be still, and know that I am God');
+});
+
+test('long text is chunked at sentence ends', () => {
+  const sentence = 'This is a sentence about faith. ';
+  const text = sentence.repeat(200);
+  const chunks = chunkText(text, 500);
+  assert.ok(chunks.length > 5);
+  assert.ok(chunks.every((c) => c.length <= 500));
+  assert.equal(chunks.join(' ').replace(/\s+/g, ' ').trim(), text.replace(/\s+/g, ' ').trim());
+});

@@ -37,3 +37,32 @@ export function verseText(t: TranslationId, bookId: string, chapter: number, ver
 }
 
 export const translationName = (t: TranslationId) => TRANSLATIONS.find((x) => x.id === t)?.name ?? '';
+
+/** "John 3:16" for a verse key's parts, using the book's name in this translation. */
+export function refLabel(t: TranslationId, bookId: string, chapter: number, verse: number): string {
+  const name = booksFor(t).find((b) => b.id === bookId)?.name ?? bookId;
+  return `${name} ${chapter}:${verse}`;
+}
+
+export const verseKey = (bookId: string, chapter: number, verse: number) => `${bookId}:${chapter}:${verse}`;
+
+export function parseVerseKey(key: string): { bookId: string; chapter: number; verse: number } {
+  const [bookId, c, v] = key.split(':');
+  return { bookId, chapter: Number(c), verse: Number(v) };
+}
+
+let searchIndex: { t: TranslationId; index: import('./search').VerseEntry[] } | null = null;
+
+/** Builds (once per translation) the in-memory list of every verse, for offline search. */
+export function getSearchIndex(t: TranslationId): import('./search').VerseEntry[] {
+  if (searchIndex?.t === t) return searchIndex.index;
+  const { buildIndex } = require('./search') as typeof import('./search');
+  const index = buildIndex(
+    booksFor(t).map((b) => ({
+      bookId: b.id,
+      chapters: b.words.map((_, i) => chapterVerses(t, b.id, i + 1)),
+    })),
+  );
+  searchIndex = { t, index };
+  return index;
+}

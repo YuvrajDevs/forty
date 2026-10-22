@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { verseText } from '../../lib/bible';
 import { CONNECTION, pickVerse } from '../../lib/checkin';
+import { weeklyReflection } from '../../lib/reflection';
 import type { Checkin } from '../../lib/onboarding';
 import { useOnboarding } from '../../lib/onboarding';
 import { iso } from '../../lib/schedule';
@@ -33,6 +34,7 @@ export default function Journal() {
     else months.push({ key, entries: [c] });
   }
   const doneToday = checkins.some((c) => c.date === today);
+  const reflection = weeklyReflection(checkins, today);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -44,6 +46,13 @@ export default function Journal() {
         <View style={{ marginTop: spacing.lg }}>
           <Button label={doneToday ? 'Update today’s check-in' : 'Check in'} onPress={() => router.push('/checkin')} />
         </View>
+
+        {reflection ? (
+          <View style={styles.reflection}>
+            <Text style={styles.reflectionHead}>{reflection.headline}</Text>
+            <Text style={styles.reflectionText}>{reflection.detail}</Text>
+          </View>
+        ) : null}
 
         {months.length === 0 ? (
           <Text style={styles.empty}>Your check-ins will appear here, month by month. How is your heart today? It takes about 30 seconds.</Text>
@@ -116,6 +125,9 @@ const styles = StyleSheet.create({
   eyebrow: { fontFamily: fonts.medium, fontSize: 11, letterSpacing: 2, color: colors.textSecondary },
   title: { marginTop: spacing.md, fontFamily: fonts.display, includeFontPadding: false, fontSize: 64, lineHeight: 64, color: colors.text },
   private: { marginTop: 6, fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
+  reflection: { marginTop: spacing.lg, backgroundColor: colors.cardSelected, borderRadius: radius.card, padding: 20 },
+  reflectionHead: { fontFamily: fonts.display, includeFontPadding: false, fontSize: 30, lineHeight: 32, color: colors.text },
+  reflectionText: { marginTop: 6, fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textSecondary },
   month: { marginTop: spacing.xl, marginBottom: spacing.sm, fontFamily: fonts.display, includeFontPadding: false, fontSize: 30, lineHeight: 32, color: colors.text },
   card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 18, marginBottom: 10 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 14 },

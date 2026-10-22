@@ -59,6 +59,9 @@ class FortyLockModule : Module() {
     // Stores the settings the service reads. Takes JSON so the shape can change without native edits.
     Function("setConfig") { json: String -> LockConfig.save(context, json) }
 
+    // Streak and the next two weeks of verses for the home-screen widget, as JSON.
+    Function("updateWidget") { json: String -> FortyWidgetProvider.save(context, json) }
+
     Function("setUnlockedUntil") { epochMs: Double -> LockConfig.setUnlockedUntil(context, epochMs.toLong()) }
 
     Function("launchApp") { packageName: String ->

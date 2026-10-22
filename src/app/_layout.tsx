@@ -9,8 +9,9 @@ import { AppState } from 'react-native';
 import { syncNotifications } from '../lib/notifications';
 import { billingAvailable, OFFLINE_GRACE_MS, refreshEntitlement } from '../lib/billing';
 import { syncLock } from '../lib/lock';
+import { syncWidget } from '../lib/widget';
 import { getOnboarding, loadOnboarding, setOnboarding, useOnboarding } from '../lib/onboarding';
-import { getToday } from '../lib/progress';
+import { getToday, settlePause } from '../lib/progress';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -43,6 +44,15 @@ export default function RootLayout() {
     const sub = AppState.addEventListener('change', (s) => s === 'active' && check());
     return () => sub.remove();
   }, [ready, app.completed]);
+
+  useEffect(() => {
+    if (ready) settlePause();
+  }, [ready]);
+
+  useEffect(() => {
+    if (ready) syncWidget(app);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, app.translation, app.doneDates.length, app.skippedDates.length, app.pausedFrom, app.pausedUntil, app.completed, app.lockDays.join()]);
 
   useEffect(() => {
     if (ready) syncLock(app, getToday(app));

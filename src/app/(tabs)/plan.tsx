@@ -1,9 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
+import { router } from 'expo-router';
+import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from '../../components/Calendar';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
-import { currentLocksPerDay, getToday, setLockDays, setReadingDays, setReadingsPerDay } from '../../lib/progress';
+import { currentLocksPerDay, getToday, pausePlan, resumePlan, setLockDays, setReadingDays, setReadingsPerDay } from '../../lib/progress';
 import { fromIso, iso } from '../../lib/schedule';
 import { chaptersFor, SCOPES, scopeTitle } from '../../lib/scopes';
 import type { ScopeId } from '../../lib/scopes';
@@ -21,6 +24,8 @@ export default function Plan() {
   const locks = currentLocksPerDay(s);
   const finish = s.deadline ? fromIso(s.deadline) : null;
   const title = scopeTitle(s.scope);
+  const [choosing, setChoosing] = useState(false);
+  const paused = !!s.pausedFrom;
 
   const toggleDay = (i: number) => {
     const mask = s.lockDays.map((v, j) => (j === i ? !v : v));
@@ -131,6 +136,36 @@ export default function Plan() {
           </Text>
         </View>
 
+        <Text style={styles.section}>Pause</Text>
+        <View style={styles.card}>
+          <View style={styles.stepRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.cardTitle}>{paused ? 'Plan paused' : 'Pause plan'}</Text>
+              <Text style={styles.cardHint}>
+                {paused
+                  ? s.pausedUntil ? `Until ${fmtDate(fromIso(s.pausedUntil))}. Your streak is safe.` : 'Until you resume. Your streak is safe.'
+                  : 'For travel or illness. Your apps stay open and your streak is safe.'}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => (paused ? resumePlan() : setChoosing(!choosing))}
+              style={styles.pill}
+            >
+              <Text style={styles.pillText}>{paused ? 'Resume' : choosing ? 'Cancel' : 'Pause'}</Text>
+            </Pressable>
+          </View>
+          {!paused && choosing ? (
+            <View style={[styles.chips, { marginTop: 14 }]}>
+              {([['3 days', 3], ['1 week', 7], ['2 weeks', 14], ['Until I resume', null]] as const).map(([label, days]) => (
+                <Pressable key={label} onPress={() => { pausePlan(days); setChoosing(false); }} style={styles.chipSoft}>
+                  <Text style={styles.chipText}>{label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+        </View>
+
         <Text style={styles.section}>Change plan</Text>
         <View style={styles.chips}>
           {SCOPES.map((o) => (
@@ -139,6 +174,13 @@ export default function Plan() {
             </Pressable>
           ))}
         </View>
+        <Pressable accessibilityRole="button" onPress={() => router.push('/plans')} style={styles.more}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.cardTitle}>More plans</Text>
+            <Text style={styles.cardHint}>Sermon on the Mount, Psalms for hard days, Advent and more</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={colors.textSecondary} />
+        </Pressable>
         <Text style={styles.hint}>{chaptersFor(s.scope, s.translation).length} chapters in your current plan.</Text>
 
       </ScrollView>
@@ -181,6 +223,10 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   chip: { paddingVertical: 11, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.card },
   chipOn: { backgroundColor: colors.primary },
+  pill: { backgroundColor: colors.primary, borderRadius: radius.button, paddingVertical: 10, paddingHorizontal: 18 },
+  pillText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.text },
+  chipSoft: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: radius.button, backgroundColor: colors.background },
+  more: { flexDirection: 'row', alignItems: 'center', marginTop: 12, backgroundColor: colors.card, borderRadius: radius.card, padding: 18 },
   chipText: { fontFamily: fonts.medium, fontSize: 14, color: colors.text },
   days: { flexDirection: 'row', justifyContent: 'space-between' },
   day: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },

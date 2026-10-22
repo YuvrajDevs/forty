@@ -12,6 +12,7 @@ export interface FortyLockNative {
   openBatterySettings(): void;
   setConfig(json: string): void;
   setUnlockedUntil(epochMs: number): void;
+  updateWidget(json: string): void;
   launchApp(packageName: string): void;
   goHome(): void;
   getInstalledApps(): Promise<InstalledApp[]>;
