@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 import type { TranslationId } from './bible';
+import type { MemoryCard } from './memory';
 import type { ScopeId } from './scopes';
 
 export type OnboardingState = {
@@ -30,6 +31,15 @@ export type OnboardingState = {
   dayPlan: { date: string; readings: string[][] } | null;
   doneDates: string[];
   checkins: Checkin[];
+  /** Verse highlights, by "bookId:chapter:verse". */
+  highlights: Record<string, HighlightColor>;
+  /** Saved verses, by "bookId:chapter:verse", newest last. */
+  bookmarks: string[];
+  memory: MemoryCard[];
+  pausedFrom: string | null;
+  pausedUntil: string | null;
+  /** Speech rate for audio mode (1 is normal). */
+  audioRate: number;
   /** Days the user chose to skip. They neither add to nor break the streak. */
   skippedDates: string[];
   /** Missed days are counted from this date; moved forward when the deadline is extended. */
@@ -38,6 +48,8 @@ export type OnboardingState = {
   entitled: boolean;
   entitlementCheckedAt: number | null;
 };
+
+export type HighlightColor = 'gold' | 'green' | 'rose';
 
 export type Checkin = {
   date: string;
@@ -72,6 +84,12 @@ const initial: OnboardingState = {
   dayPlan: null,
   doneDates: [],
   checkins: [],
+  highlights: {},
+  bookmarks: [],
+  memory: [],
+  pausedFrom: null,
+  pausedUntil: null,
+  audioRate: 1,
   skippedDates: [],
   behindFrom: null,
   trialStartedAt: null,

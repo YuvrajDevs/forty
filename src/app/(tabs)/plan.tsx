@@ -5,7 +5,7 @@ import { Calendar } from '../../components/Calendar';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { currentLocksPerDay, getToday, setLockDays, setReadingDays, setReadingsPerDay } from '../../lib/progress';
 import { fromIso, iso } from '../../lib/schedule';
-import { chaptersFor, SCOPES } from '../../lib/scopes';
+import { chaptersFor, SCOPES, scopeTitle } from '../../lib/scopes';
 import type { ScopeId } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
 
@@ -20,7 +20,7 @@ export default function Plan() {
   const t = getToday(s);
   const locks = currentLocksPerDay(s);
   const finish = s.deadline ? fromIso(s.deadline) : null;
-  const title = SCOPES.find((x) => x.id === s.scope)?.title ?? '';
+  const title = scopeTitle(s.scope);
 
   const toggleDay = (i: number) => {
     const mask = s.lockDays.map((v, j) => (j === i ? !v : v));

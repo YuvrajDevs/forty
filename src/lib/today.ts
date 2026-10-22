@@ -1,6 +1,7 @@
 // Pure "what is on today's list" logic. Kept free of storage imports so it can be unit tested.
 import { makeReading, replan } from './plan.ts';
 import type { Chapter, Reading } from './plan.ts';
+import { isPausedOn } from './pause.ts';
 import { activeDaysBetween, fromIso, isActive, iso } from './schedule.ts';
 
 export type PlanState = {
@@ -9,6 +10,8 @@ export type PlanState = {
   readChapters: string[];
   dayPlan: { date: string; readings: string[][] } | null;
   skippedDates?: string[];
+  pausedFrom?: string | null;
+  pausedUntil?: string | null;
 };
 
 export type Today = {
@@ -22,6 +25,7 @@ export type Today = {
   active: boolean;
   finished: boolean;
   skipped: boolean;
+  paused: boolean;
   chaptersRead: number;
   unreadChapters: Chapter[];
 };
@@ -32,7 +36,7 @@ export const key = (c: { bookId: string; chapter: number }) => `${c.bookId}:${c.
 export function freshReadings(chapters: Chapter[], s: PlanState, now: Date): Reading[] {
   const read = new Set(s.readChapters);
   const unread = chapters.filter((c) => !read.has(key(c)));
-  if (!unread.length || !isActive(now, s.lockDays)) return [];
+  if (!unread.length || !isActive(now, s.lockDays) || isPausedOn(s, iso(now))) return [];
   const deadline = s.deadline ? fromIso(s.deadline) : now;
   const daysLeft = Math.max(1, activeDaysBetween(now, deadline, s.lockDays));
   return replan(unread, 0, daysLeft)[0]?.readings ?? [];
@@ -46,9 +50,10 @@ export function computeToday(chapters: Chapter[], s: PlanState, now = new Date()
   const deadline = s.deadline ? fromIso(s.deadline) : now;
   const daysLeft = Math.max(1, activeDaysBetween(now, deadline, s.lockDays));
 
+  const paused = isPausedOn(s, date);
   const skipped = (s.skippedDates ?? []).includes(date);
-  const active = isActive(now, s.lockDays) && !skipped;
-  const readings: Reading[] = skipped
+  const active = isActive(now, s.lockDays) && !skipped && !paused;
+  const readings: Reading[] = skipped || paused
     ? []
     : s.dayPlan?.date === date
       ? s.dayPlan.readings.map((keys) => makeReading(keys.map((k) => byKey.get(k)).filter((c): c is Chapter => !!c))).filter((r) => r.chapters.length)
@@ -65,6 +70,7 @@ export function computeToday(chapters: Chapter[], s: PlanState, now = new Date()
     active,
     finished: unreadChapters.length === 0,
     skipped,
+    paused,
     chaptersRead: chapters.length - unreadChapters.length,
     unreadChapters,
   };

@@ -1,7 +1,8 @@
 import { getOnboarding, setOnboarding } from './onboarding';
 import type { OnboardingState } from './onboarding';
 import { SESSION_WORDS, summarize } from './plan';
-import { activeDaysBetween, addActiveDays, fromIso, iso, missedDays } from './schedule';
+import { pausedDatesSoFar, resumeEffect } from './pause';
+import { activeDaysBetween, addActiveDays, addDays, fromIso, iso, missedDays } from './schedule';
 import { unlockAfterReading } from './lock';
 import { chaptersFor } from './scopes';
 import { computeToday, freshReadings, key } from './today';
@@ -80,7 +81,7 @@ export function currentLocksPerDay(s: OnboardingState): number {
 /** Lock days missed since the plan began (or since the deadline was last extended). */
 export function behindBy(s: OnboardingState, now = new Date()): number {
   const from = fromIso(s.behindFrom ?? s.startedOn ?? iso(now));
-  return missedDays(s.doneDates, s.skippedDates, s.lockDays, from, new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+  return missedDays(s.doneDates, effectiveSkipped(s, iso(now)), s.lockDays, from, new Date(now.getFullYear(), now.getMonth(), now.getDate()));
 }
 
 /** Pushes the finish date back by the days that were missed, then starts counting afresh. */
@@ -98,4 +99,35 @@ export function skipToday(skip: boolean) {
   const date = iso(new Date());
   const rest = s.skippedDates.filter((d) => d !== date);
   setOnboarding({ skippedDates: skip ? [...rest, date] : rest });
+}
+
+/** Days that should not count against the person: skipped days plus any paused days so far. */
+export function effectiveSkipped(s: OnboardingState, today: string): string[] {
+  return [...new Set([...s.skippedDates, ...pausedDatesSoFar(s, today)])];
+}
+
+/** Pauses the plan from today. `days` is how long, or null to pause until resumed. */
+export function pausePlan(days: number | null) {
+  const today = new Date();
+  setOnboarding({ pausedFrom: iso(today), pausedUntil: days ? iso(new Date(today.getFullYear(), today.getMonth(), today.getDate() + days - 1)) : null, dayPlan: null });
+}
+
+/** Ends a pause: paused days become skipped days and the finish date moves back by the lock days missed. */
+export function resumePlan() {
+  const s = getOnboarding();
+  const today = iso(new Date());
+  const { skipped, extraActiveDays } = resumeEffect(s, today, s.lockDays);
+  setOnboarding({
+    skippedDates: [...new Set([...s.skippedDates, ...skipped])],
+    deadline: s.deadline && extraActiveDays > 0 ? iso(addActiveDays(addDays(fromIso(s.deadline), 1), extraActiveDays, s.lockDays)) : s.deadline,
+    pausedFrom: null,
+    pausedUntil: null,
+    dayPlan: null,
+  });
+}
+
+/** Called on launch: a pause with an end date that has passed finishes by itself. */
+export function settlePause() {
+  const s = getOnboarding();
+  if (s.pausedFrom && s.pausedUntil && s.pausedUntil < iso(new Date())) resumePlan();
 }

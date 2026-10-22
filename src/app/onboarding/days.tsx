@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Quiz } from '../../components/Quiz';
 import { setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { buildPlan, finishDate, summarize } from '../../lib/plan';
-import { chaptersFor, SCOPES } from '../../lib/scopes';
+import { chaptersFor, scopeTitle } from '../../lib/scopes';
 import { colors, fonts, radius } from '../../theme';
 
 const PRESETS = [7, 14, 30, 60, 90, 180, 365];
@@ -15,7 +15,7 @@ export default function Days() {
   const s = summarize(chapters, days);
   const plan = buildPlan(chapters, days).slice(0, 3);
   const end = finishDate(new Date(), days).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
+  const title = scopeTitle(scope);
   const set = (d: number) => setOnboarding({ days: Math.max(1, Math.min(730, d)) });
 
   return (

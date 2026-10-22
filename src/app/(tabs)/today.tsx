@@ -5,9 +5,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { useOnboarding } from '../../lib/onboarding';
-import { behindBy, ensureDayPlan, extendDeadline, getToday, skipToday } from '../../lib/progress';
+import { behindBy, effectiveSkipped, ensureDayPlan, extendDeadline, getToday, skipToday } from '../../lib/progress';
 import { fromIso, streak } from '../../lib/schedule';
-import { SCOPES } from '../../lib/scopes';
+import { scopeTitle } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
 
 const greeting = () => {
@@ -21,9 +21,9 @@ export default function Today() {
     ensureDayPlan();
   }, []);
   const t = getToday(s);
-  const title = SCOPES.find((x) => x.id === s.scope)?.title ?? '';
+  const title = scopeTitle(s.scope);
   const now = new Date();
-  const run = streak(s.doneDates, s.lockDays, now, s.startedOn ? fromIso(s.startedOn) : now, s.skippedDates);
+  const run = streak(s.doneDates, s.lockDays, now, s.startedOn ? fromIso(s.startedOn) : now, effectiveSkipped(s, t.date));
   const behind = t.active && !t.finished ? behindBy(s) : 0;
   const totalChapters = t.chaptersRead + t.unreadChapters.length;
   const done = t.chaptersRead;

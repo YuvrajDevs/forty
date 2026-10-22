@@ -11,7 +11,7 @@ import type { Offers } from '../../lib/billing';
 import { getOnboarding, setOnboarding, useOnboarding } from '../../lib/onboarding';
 import { addActiveDays, iso } from '../../lib/schedule';
 import { summarize } from '../../lib/plan';
-import { chaptersFor, SCOPES } from '../../lib/scopes';
+import { chaptersFor, scopeTitle } from '../../lib/scopes';
 import { colors, fonts, radius, spacing } from '../../theme';
 
 type PlanId = 'weekly' | 'yearly';
@@ -38,7 +38,7 @@ export default function Paywall() {
   const [plan, setPlan] = useState<PlanId>('yearly');
   const [box, setBox] = useState({ width: 0, height: 0 });
   const s = summarize(chaptersFor(scope, translation), days);
-  const title = SCOPES.find((x) => x.id === scope)?.title ?? '';
+  const title = scopeTitle(scope);
   const chosen = PLANS[plan];
 
   const [offers, setOffers] = useState<Offers | null>(null);

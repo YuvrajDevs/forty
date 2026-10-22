@@ -1,0 +1,138 @@
+// Verse of the day. A fixed list of well-loved single verses; the text always comes from the
+// translation the person reads, so a quote is never retyped.
+import type { TranslationId } from './bible';
+
+export type VerseRef = [bookId: string, chapter: number, verse: number];
+
+export const VOTD: VerseRef[] = [
+  ['joshua', 1, 9],
+  ['deuteronomy', 31, 6],
+  ['deuteronomy', 31, 8],
+  ['isaiah', 41, 10],
+  ['isaiah', 40, 31],
+  ['isaiah', 26, 3],
+  ['isaiah', 43, 2],
+  ['isaiah', 55, 8],
+  ['isaiah', 53, 5],
+  ['isaiah', 9, 6],
+  ['jeremiah', 29, 11],
+  ['jeremiah', 29, 13],
+  ['jeremiah', 17, 7],
+  ['lamentations', 3, 22],
+  ['lamentations', 3, 23],
+  ['micah', 6, 8],
+  ['nahum', 1, 7],
+  ['zephaniah', 3, 17],
+  ['proverbs', 3, 5],
+  ['proverbs', 3, 6],
+  ['proverbs', 16, 3],
+  ['proverbs', 18, 10],
+  ['proverbs', 4, 23],
+  ['ecclesiastes', 3, 1],
+  ['matthew', 5, 16],
+  ['matthew', 6, 33],
+  ['matthew', 6, 34],
+  ['matthew', 7, 7],
+  ['matthew', 11, 28],
+  ['matthew', 11, 29],
+  ['matthew', 28, 20],
+  ['matthew', 22, 37],
+  ['mark', 10, 27],
+  ['mark', 9, 23],
+  ['mark', 12, 30],
+  ['luke', 1, 37],
+  ['luke', 6, 31],
+  ['luke', 11, 9],
+  ['luke', 12, 32],
+  ['john', 1, 5],
+  ['john', 3, 16],
+  ['john', 8, 12],
+  ['john', 10, 10],
+  ['john', 13, 34],
+  ['john', 14, 6],
+  ['john', 14, 27],
+  ['john', 15, 5],
+  ['john', 15, 13],
+  ['john', 16, 33],
+  ['acts', 1, 8],
+  ['romans', 5, 8],
+  ['romans', 8, 1],
+  ['romans', 8, 28],
+  ['romans', 8, 31],
+  ['romans', 12, 2],
+  ['romans', 12, 12],
+  ['romans', 15, 13],
+  ['1corinthians', 13, 4],
+  ['1corinthians', 13, 13],
+  ['1corinthians', 16, 13],
+  ['2corinthians', 5, 7],
+  ['2corinthians', 5, 17],
+  ['2corinthians', 12, 9],
+  ['galatians', 2, 20],
+  ['ephesians', 2, 8],
+  ['ephesians', 3, 20],
+  ['ephesians', 4, 32],
+  ['ephesians', 6, 10],
+  ['philippians', 4, 6],
+  ['philippians', 4, 7],
+  ['philippians', 4, 13],
+  ['philippians', 1, 6],
+  ['colossians', 3, 23],
+  ['colossians', 3, 12],
+  ['1thessalonians', 5, 16],
+  ['1thessalonians', 5, 17],
+  ['1thessalonians', 5, 18],
+  ['2timothy', 1, 7],
+  ['hebrews', 11, 1],
+  ['hebrews', 12, 1],
+  ['hebrews', 13, 8],
+  ['hebrews', 4, 16],
+  ['james', 1, 5],
+  ['james', 4, 8],
+  ['1peter', 5, 7],
+  ['1peter', 4, 8],
+  ['2peter', 3, 9],
+  ['1john', 4, 19],
+  ['1john', 4, 18],
+  ['1john', 1, 9],
+  ['revelation', 21, 4],
+  ['revelation', 3, 20],
+  ['psalms', 23, 1],
+  ['psalms', 27, 1],
+  ['psalms', 34, 8],
+  ['psalms', 46, 1],
+  ['psalms', 46, 10],
+  ['psalms', 56, 3],
+  ['psalms', 91, 2],
+  ['psalms', 119, 105],
+  ['psalms', 121, 1],
+  ['psalms', 121, 2],
+  ['psalms', 139, 14],
+  ['psalms', 145, 18],
+  ['psalms', 37, 4],
+  ['psalms', 118, 24],
+  ['psalms', 19, 1],
+  ['psalms', 51, 10],
+  ['psalms', 55, 22],
+  ['psalms', 90, 12],
+  ['psalms', 16, 11],
+  ['psalms', 30, 5],
+];
+
+/**
+ * The Douay-Rheims numbers the Psalms differently (and Mark 9:23 sits one verse over), so those
+ * verses are left out for it rather than showing the wrong text.
+ */
+export const usableFor = (ref: VerseRef, translation: TranslationId) =>
+  translation !== 'drc' || (ref[0] !== 'psalms' && !(ref[0] === 'mark' && ref[1] === 9 && ref[2] === 23));
+
+const dayNumber = (date: string) => {
+  const [y, m, d] = date.split('-').map(Number);
+  return Math.floor(Date.UTC(y, m - 1, d) / 86_400_000);
+};
+
+/** The verse for a given day (yyyy-mm-dd). Everyone sees the same verse on the same day. */
+export function verseOfDay(date: string, translation: TranslationId): VerseRef {
+  const list = VOTD.filter((r) => usableFor(r, translation));
+  return list[dayNumber(date) % list.length];
+}

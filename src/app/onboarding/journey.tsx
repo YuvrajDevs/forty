@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Quiz } from '../../components/Quiz';
 import { useOnboarding } from '../../lib/onboarding';
 import { buildPlan } from '../../lib/plan';
-import { chaptersFor, SCOPES } from '../../lib/scopes';
+import { chaptersFor, scopeTitle } from '../../lib/scopes';
 import { colors, fonts, radius } from '../../theme';
 
 const STEPS = [
@@ -18,7 +18,7 @@ const STEPS = [
 export default function Journey() {
   const { scope, days, translation } = useOnboarding();
   const plan = buildPlan(chaptersFor(scope, translation), days);
-  const name = SCOPES.find((s) => s.id === scope)?.title ?? 'the Bible';
+  const name = scopeTitle(scope);
   const chaptersBy = (d: number) =>
     plan.slice(0, d).reduce((n, day) => n + day.readings.reduce((m, r) => m + r.chapters.length, 0), 0);
   const plural = (n: number) => `${n} ${n === 1 ? 'chapter' : 'chapters'}`;
