@@ -17,7 +17,7 @@ export function syncWidget(s: OnboardingState) {
     for (let i = 0; i < DAYS_AHEAD; i++) {
       const date = iso(addDays(now, i));
       const [book, chapter, verse] = verseOfDay(date, s.translation);
-      const text = (chapterVerses(s.translation, book, chapter)[verse - 1] ?? '').replace(/[¶\n]+/g, ' ').replace(/\s+/g, ' ').trim();
+      const text = unquote((chapterVerses(s.translation, book, chapter)[verse - 1] ?? '').replace(/[¶\n]+/g, ' ').replace(/\s+/g, ' ').trim());
       if (text) days[date] = { t: text, r: refLabel(s.translation, book, chapter, verse) };
     }
     const run = streak(s.doneDates, s.lockDays, now, s.startedOn ? fromIso(s.startedOn) : now, effectiveSkipped(s, today));

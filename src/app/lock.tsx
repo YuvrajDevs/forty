@@ -8,7 +8,7 @@ import { LOCKABLE_APPS } from '../lib/apps';
 import { emergencyUnlock, goHome, openApp } from '../lib/lock';
 import { useOnboarding } from '../lib/onboarding';
 import { useApps } from '../lib/useApps';
-import { verseText, refLabel } from '../lib/bible';
+import { refLabel, unquote, verseText } from '../lib/bible';
 import { ensureDayPlan, getToday, skipToday } from '../lib/progress';
 import { iso } from '../lib/schedule';
 import { verseOfDay } from '../lib/votd';
@@ -22,7 +22,7 @@ export default function Lock() {
   const pending = t.active ? t.readings.length - t.doneCount : 0;
   const next = t.nextIndex >= 0 ? t.readings[t.nextIndex] : undefined;
   const votd = verseOfDay(iso(new Date()), s.translation);
-  const votdText = verseText(s.translation, votd[0], votd[1], votd[2]);
+  const votdText = unquote(verseText(s.translation, votd[0], votd[1], votd[2]));
   const info = useApps().find((a) => a.id === pkg);
   const name = info?.name ?? LOCKABLE_APPS.find((a) => a.id === pkg)?.name ?? 'This app';
 
