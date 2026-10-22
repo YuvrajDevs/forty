@@ -13,6 +13,8 @@ export type Palette = {
   /** Text and icons that sit on top of the primary yellow. */
   onPrimary: string;
   gold: string;
+  /** Logo blue, for small accents like switches. */
+  accent: string;
   green: string;
   /** Text and ticks that sit on top of the green. */
   onGreen: string;
@@ -43,6 +45,7 @@ export const lightColors: Palette = {
   primary: '#F5C842',
   onPrimary: '#1A1A1A',
   gold: '#B8913A',
+  accent: '#1E9BFF',
   green: '#4F7A4A',
   onGreen: '#FFFFFF',
   text: '#1A1A1A',
@@ -67,6 +70,7 @@ export const darkColors: Palette = {
   primary: '#F5C842',
   onPrimary: '#1A1A1A',
   gold: '#D9B45F',
+  accent: '#4DB0FF',
   green: '#86B87E',
   onGreen: '#15120D',
   text: '#F3EEDF',

@@ -9,7 +9,7 @@ export default function Screen() {
   return (
     <Quiz step={7} title="How often do you read the Bible now?" subtitle="Be honest. We will start where you are." ctaDisabled={!value} onContinue={() => router.push('/onboarding/goal')}>
       {OPTIONS.map((o) => (
-        <Option key={o} label={o} selected={value === o} onPress={() => setOnboarding({ frequency: o })} />
+        <Option key={o} label={o} selected={value === o} onPress={() => { setOnboarding({ frequency: o }); setTimeout(() => router.push('/onboarding/goal'), 220); }} />
       ))}
     </Quiz>
   );

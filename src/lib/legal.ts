@@ -11,8 +11,9 @@ export const LEGAL: LegalDoc[] = [
       { heading: 'Your data stays on your phone', body: 'FortyBible has no accounts and no server. Your answers, plan, reading history, streak and journal notes are stored only on this device. We cannot see them.' },
       { heading: 'What is stored', body: 'Your denomination, optional gender, age range, phone-time answer, chosen apps, plan, chapters read, check-ins and notes. Denomination, gender, age range and notes are sensitive, so they are never sent anywhere, never shared and never used for ads.' },
       { heading: 'No ads, no selling', body: 'There are no ads and no analytics in this version. We do not sell or share your data.' },
+      { heading: 'Age', body: 'FortyBible is for people aged 13 and over. We do not knowingly collect anything from children under 13, and the age range you choose never leaves your phone.' },
       { heading: 'Payments', body: 'Subscriptions are handled by Google Play. We never see your card details. Google tells the app whether your subscription is active.' },
-      { heading: 'Permissions', body: 'Accessibility is used only to notice which app is open so the lock can ask you to read first. Display over other apps is used to show the reading prompt. Notifications are used for your daily reminder and a reminder before your trial ends. None of this information leaves your phone.' },
+      { heading: 'Permissions', body: 'Verse alarms use your phone’s alarm clock and may show a full-screen alert; notifications are used for reminders and alarms. Accessibility is used only to notice which app is open so the lock can ask you to read first. Display over other apps is used to show the reading prompt. Notifications are used for your daily reminder and a reminder before your trial ends. None of this information leaves your phone.' },
       { heading: 'Your control', body: 'You can delete everything at any time in Settings. Uninstalling the app also removes the data.' },
       { heading: 'Support', body: 'Not a replacement for care. FortyBible is not counselling, and it does not replace a pastor or professional help. If you are in crisis, please contact a local helpline or emergency service.' },
     ],
@@ -23,6 +24,7 @@ export const LEGAL: LegalDoc[] = [
     sections: [
       { heading: 'Using FortyBible', body: 'FortyBible helps you read the Bible by locking the apps you choose until you have read. You can change or remove the lock at any time, and emergency access always works.' },
       { heading: 'Subscription', body: 'FortyBible is a paid subscription with a 7-day free trial, billed weekly or yearly through Google Play. You will be billed only if you keep going after the trial. You can cancel at any time in Google Play. When a subscription ends, every lock is removed.' },
+      { heading: 'Who can use it', body: 'You must be at least 13 years old, and if you are under the age of majority where you live, a parent or guardian should agree to the subscription.' },
       { heading: 'Estimates', body: 'Reading times and finish dates are estimates based on average reading speed. They are a guide, not a promise.' },
       { heading: 'Scripture', body: 'The World English Bible, King James Version and Douay-Rheims (Challoner) texts in this app are in the public domain.' },
     ],

@@ -93,7 +93,7 @@ export default function Settings() {
             <Text style={styles.rowLabel}>Lock reminder</Text>
             <Text style={styles.cardHint}>A nudge when your apps lock each day</Text>
           </View>
-          <Switch value={s.remindersOn} onValueChange={toggleReminders} trackColor={{ true: colors.gold, false: colors.border }} thumbColor="#FFFFFF" />
+          <Switch value={s.remindersOn} onValueChange={toggleReminders} trackColor={{ true: colors.accent, false: colors.border }} thumbColor="#FFFFFF" />
         </View>
         <Row icon="information-circle-outline" label="How the lock works" onPress={() => router.push('/legal?doc=lock')} />
 

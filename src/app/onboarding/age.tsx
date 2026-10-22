@@ -9,7 +9,7 @@ export default function Screen() {
   return (
     <Quiz step={4} title="How old are you?" subtitle="A rough range is fine. It only helps us pick the right tone and plans. It stays on your phone." ctaDisabled={!value} onContinue={() => router.push('/onboarding/phone')}>
       {OPTIONS.map((o) => (
-        <Option key={o} label={o} selected={value === o} onPress={() => setOnboarding({ ageRange: o })} />
+        <Option key={o} label={o} selected={value === o} onPress={() => { setOnboarding({ ageRange: o }); setTimeout(() => router.push('/onboarding/phone'), 220); }} />
       ))}
     </Quiz>
   );

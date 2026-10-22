@@ -53,7 +53,7 @@ export default function Alarms() {
           <View key={a.id} style={[styles.card, !a.on && { opacity: 0.6 }]}>
             <View style={styles.head}>
               <Text style={styles.time}>{formatTime(a.minutes)}</Text>
-              <Switch accessibilityLabel="Alarm on" value={a.on} onValueChange={(v) => turnOn(a, v)} trackColor={{ true: colors.gold, false: colors.border }} thumbColor={colors.dark ? colors.text : '#FFFFFF'} />
+              <Switch accessibilityLabel="Alarm on" value={a.on} onValueChange={(v) => turnOn(a, v)} trackColor={{ true: colors.accent, false: colors.border }} thumbColor={colors.dark ? colors.text : '#FFFFFF'} />
             </View>
             <View style={styles.steppers}>
               <Stepper label="Hour" value={String(Math.floor(a.minutes / 60) % 12 === 0 ? 12 : Math.floor(a.minutes / 60) % 12) + (a.minutes < 720 ? ' AM' : ' PM')} onMinus={() => updateAlarm(a.id, { minutes: (a.minutes - 60 + 1440) % 1440 })} onPlus={() => updateAlarm(a.id, { minutes: (a.minutes + 60) % 1440 })} />
@@ -123,7 +123,7 @@ function Option({ icon, label, value, onChange }: { icon: keyof typeof Ionicons.
     <View style={styles.opt}>
       <Ionicons name={icon} size={20} color={colors.textSecondary} />
       <Text style={styles.optLabel}>{label}</Text>
-      <Switch accessibilityLabel={label} value={value} onValueChange={onChange} trackColor={{ true: colors.gold, false: colors.border }} thumbColor={colors.dark ? colors.text : '#FFFFFF'} />
+      <Switch accessibilityLabel={label} value={value} onValueChange={onChange} trackColor={{ true: colors.accent, false: colors.border }} thumbColor={colors.dark ? colors.text : '#FFFFFF'} />
     </View>
   );
 }

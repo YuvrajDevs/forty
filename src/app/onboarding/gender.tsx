@@ -9,7 +9,7 @@ export default function Screen() {
   return (
     <Quiz step={3} title="Gender (optional)" subtitle="Only used to suggest plans and wording. Never shared, never used for ads." ctaDisabled={!value} onContinue={() => router.push('/onboarding/age')}>
       {OPTIONS.map((o) => (
-        <Option key={o} label={o} selected={value === o} onPress={() => setOnboarding({ gender: o })} />
+        <Option key={o} label={o} selected={value === o} onPress={() => { setOnboarding({ gender: o }); setTimeout(() => router.push('/onboarding/age'), 220); }} />
       ))}
     </Quiz>
   );

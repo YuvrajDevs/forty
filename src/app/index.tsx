@@ -22,6 +22,11 @@ export default function Welcome() {
       </View>
       <View style={styles.footer}>
         <Button label="Begin" onPress={() => router.push('/onboarding/why')} />
+        <Text style={styles.consent}>
+          By continuing you confirm you are 13 or older and agree to the{' '}
+          <Text style={styles.consentLink} onPress={() => router.push('/legal?doc=terms')}>Terms</Text> and{' '}
+          <Text style={styles.consentLink} onPress={() => router.push('/legal?doc=privacy')}>Privacy Policy</Text>.
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -29,7 +34,9 @@ export default function Welcome() {
 
 const createStyles = (colors: Palette) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  brand: { marginTop: spacing.md, textAlign: 'center', fontFamily: fonts.medium, fontSize: 13, letterSpacing: 2, color: colors.textSecondary },
+  consent: { marginTop: 12, textAlign: 'center', fontFamily: fonts.body, fontSize: 12, lineHeight: 18, color: colors.textSecondary },
+  consentLink: { color: colors.text, textDecorationLine: 'underline' },
+  brand: { marginTop: spacing.md, textAlign: 'center', fontFamily: fonts.display, includeFontPadding: false, fontSize: 30, letterSpacing: 3, color: colors.text },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
   title: { marginTop: spacing.lg, fontFamily: fonts.display, includeFontPadding: false, fontSize: 64, lineHeight: 64, letterSpacing: 1, color: colors.text, textAlign: 'center' },
   subtitle: { marginTop: spacing.md, fontFamily: fonts.light, fontSize: 16, color: colors.text, textAlign: 'center' },

@@ -9,7 +9,7 @@ export default function Screen() {
   return (
     <Quiz step={2} title="Your denomination" subtitle="We use this to pick the right books and translation. It stays on your phone." ctaDisabled={!value} onContinue={() => router.push('/onboarding/gender')}>
       {OPTIONS.map((o) => (
-        <Option key={o} label={o} selected={value === o} onPress={() => setOnboarding({ denomination: o, translation: o === 'Catholic' ? 'drc' : 'web' })} />
+        <Option key={o} label={o} selected={value === o} onPress={() => { setOnboarding({ denomination: o, translation: o === 'Catholic' ? 'drc' : 'web' }); setTimeout(() => router.push('/onboarding/gender'), 220); }} />
       ))}
     </Quiz>
   );

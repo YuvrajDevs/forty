@@ -9,7 +9,7 @@ export default function Screen() {
   return (
     <Quiz step={1} title="Why are you here?" subtitle="There is no wrong answer. This helps us shape your plan." ctaDisabled={!value} onContinue={() => router.push('/onboarding/denomination')}>
       {OPTIONS.map((o) => (
-        <Option key={o} label={o} selected={value === o} onPress={() => setOnboarding({ why: o })} />
+        <Option key={o} label={o} selected={value === o} onPress={() => { setOnboarding({ why: o }); setTimeout(() => router.push('/onboarding/denomination'), 220); }} />
       ))}
     </Quiz>
   );
