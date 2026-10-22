@@ -35,7 +35,7 @@ export function VerseSheet({ target, onClose }: Props) {
   const toggleSaved = () => setOnboarding({ bookmarks: saved ? s.bookmarks.filter((b) => b !== key) : [...s.bookmarks, key] });
   const toggleMemory = () => setOnboarding({ memory: memorized ? removeCard(s.memory, key) : addCard(s.memory, key, iso(new Date())) });
   const copy = async () => {
-    await Clipboard.setStringAsync(`“${text}” ${label}`);
+    await Clipboard.setStringAsync(`“${unquote(text)}” ${label}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
