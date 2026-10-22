@@ -47,9 +47,9 @@ function ChapterTextBase({ bookId, bookName, chapter, translation, size, highlig
                   onPress={() => onVerse(run.verse)}
                   style={[hl && { backgroundColor: HIGHLIGHTS[hl] }, flashVerse === run.verse && styles.flash]}
                 >
-                  {ri > 0 && !run.text.startsWith('\n') ? ' ' : ''}
+                  {run.text.startsWith('\n') ? '\n' : ri > 0 ? ' ' : ''}
                   {run.showNum ? <Text style={[styles.num, { fontSize: Math.round(size * 0.58) }, marked.has(k) && styles.numSaved]}>{run.verse} </Text> : null}
-                  {run.text}
+                  {run.text.replace(/^\n/, '')}
                 </Text>
               );
             })}

@@ -31,6 +31,9 @@ export function chapterVerses(t: TranslationId, bookId: string, chapter: number)
   return book?.[chapter - 1] ?? [];
 }
 
+/** Removes a quotation mark left at the start or end of a verse, so it can be wrapped in our own quotes. */
+export const unquote = (s: string) => s.replace(/^[\u201C\u2018"']+/, '').replace(/[\u201D\u2019"']+$/, '').trim();
+
 /** One verse as plain text, for quoting. */
 export function verseText(t: TranslationId, bookId: string, chapter: number, verse: number): string {
   return (chapterVerses(t, bookId, chapter)[verse - 1] ?? '').replace(/[¶]/g, '').replace(/\s+/g, ' ').trim();

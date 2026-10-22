@@ -1,5 +1,5 @@
 // Sends the streak and the next two weeks of verses to the Android home-screen widget.
-import { chapterVerses, refLabel } from './bible';
+import { chapterVerses, refLabel, unquote } from './bible';
 import { native } from './lock';
 import type { OnboardingState } from './onboarding';
 import { effectiveSkipped } from './progress';
